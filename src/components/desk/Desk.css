@@ -1,0 +1,24 @@
+.desk {
+  width: 500px;
+}
+.desk-welcome-img-con {
+  width: 100%;
+}
+.desk-welcome-img {
+  width: 100%;
+  position: relative;
+}
+.welcome-text {
+  color: white;
+  font-size: 60px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -70%);
+}
+.apps-con {
+  height: 80px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}

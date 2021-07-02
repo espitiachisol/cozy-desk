@@ -1,24 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import Header from "./components/header/Header";
+import MainBody from "./components/MainBody/MainBody";
+import { auth } from "./firebaseConfig";
+import React, { useState, useEffect } from "react";
+import "./App.css";
 
 function App() {
+  const [userState, setUserstate] = useState("");
+  const [showWindow, setShowWindow] = useState({
+    SignWindow: { display: false },
+    Desk: { display: true },
+  });
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        const uid = user.uid;
+        setUserstate(uid);
+      } else {
+        console.log("not sign in");
+      }
+    });
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Header
+        userState={userState}
+        setUserstate={setUserstate}
+        setShowWindow={setShowWindow}
+        showWindow={showWindow}
+      />
+      <MainBody
+        userState={userState}
+        setUserstate={setUserstate}
+        setShowWindow={setShowWindow}
+        showWindow={showWindow}
+      />
+    </>
   );
 }
 
