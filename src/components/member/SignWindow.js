@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import Sign from "./Sign";
 import useDrag from "../hooks/useDrag";
 import "./Sign.css";
@@ -35,6 +35,7 @@ const SignWindow = ({ userState, setUserstate, setShowWindow, showWindow }) => {
         <i
           className="close-window pointer"
           onClick={() => {
+            console.log(setShowWindow);
             setShowWindow({ ...showWindow, SignWindow: { display: false } });
           }}
         >
@@ -46,6 +47,8 @@ const SignWindow = ({ userState, setUserstate, setShowWindow, showWindow }) => {
           userState={userState}
           setUserstate={setUserstate}
           SignInShow={SignInShow}
+          setShowWindow={setShowWindow}
+          showWindow={showWindow}
         />
 
         <div

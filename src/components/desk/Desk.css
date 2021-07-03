@@ -1,5 +1,6 @@
 .desk {
   width: 500px;
+  height: 470px;
 }
 .desk-welcome-img-con {
   width: 100%;
@@ -9,16 +10,22 @@
   position: relative;
 }
 .welcome-text {
+  text-align: center;
   color: white;
-  font-size: 60px;
+  font-size: 50px;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -70%);
 }
 .apps-con {
-  height: 80px;
+  height: 100px;
   display: flex;
   justify-content: space-around;
   align-items: center;
+}
+.list-icon {
+  width: 40px;
+  text-align: center;
+  cursor: pointer;
 }

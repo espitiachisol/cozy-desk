@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 const useDrag = (startingPosition) => {
+  const { innerHeight, innerWidth } = window;
   const [x, setX] = useState("100px");
   const [y, setY] = useState("100px");
   const [xxyy, setxxyy] = useState({});
@@ -8,7 +9,6 @@ const useDrag = (startingPosition) => {
   let startX = 0;
   let startY = 0;
 
-  const { innerHeight, innerWidth } = window;
   const move = (e) => {
     let x = e.clientX - startX;
     let y = e.clientY - startY;

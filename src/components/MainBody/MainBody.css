@@ -1,0 +1,12 @@
+.icon-con {
+  z-index: -1;
+  width: 40px;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  text-align: center;
+}
+.desk-icon {
+  width: 100%;
+  cursor: pointer;
+}

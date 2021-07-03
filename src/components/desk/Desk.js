@@ -2,13 +2,14 @@ import React, { useState, useCallback } from "react";
 import useDrag from "../hooks/useDrag";
 import "./Desk.css";
 
-const Desk = (setShowWindow, showWindow) => {
+const Desk = ({ setShowWindow, showWindow }) => {
   const [size, setSize] = useState({});
   const [startPositon, setStartPositon] = useState({});
 
   const curWindow = useCallback((node) => {
     if (node !== null) {
       const response = node.getBoundingClientRect();
+      console.log(response);
       setStartPositon({
         x: response.x,
         y: response.y - 40,
@@ -42,13 +43,26 @@ const Desk = (setShowWindow, showWindow) => {
         </i>
       </div>
       <div className="desk-welcome-img-con window-body">
-        <img className="desk-welcome-img" src="/desk-s.jpg" alt="desk" />
-        <p className="welcome-text">Welcome</p>
+        <img className="desk-welcome-img" src="/desk-s-low.jpg" alt="desk" />
+        <p className="welcome-text">
+          Welcome
+          <br />
+          CozyDesk
+        </p>
       </div>
       <div className="apps-con">
-        <div className="app">Tomato</div>
-        <div className="app">Music</div>
-        <div className="app">todo</div>
+        <div className="list-icon">
+          <img className="desk-icon" src="/icon-tomato.png" alt="tomato" />
+          <p>Tomato</p>
+        </div>
+        <div className="list-icon">
+          <img className="desk-icon" src="/icon-music.png" alt="music" />
+          <p>Music</p>
+        </div>
+        <div className="list-icon">
+          <img className="desk-icon" src="/icon-todo.png" alt="music" />
+          <p>todo</p>
+        </div>
       </div>
     </div>
   );
