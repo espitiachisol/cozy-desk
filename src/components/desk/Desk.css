@@ -1,6 +1,6 @@
 .desk {
   width: 500px;
-  height: 470px;
+  min-height: 465px;
 }
 .desk-welcome-img-con {
   width: 100%;

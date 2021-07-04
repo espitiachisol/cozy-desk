@@ -9,6 +9,7 @@ function App() {
   const [zIndex, setZIndex] = useState({
     SignWindow: 1,
     Desk: 1,
+    Music: 1,
     cur: 2,
     curW: "",
   });
@@ -16,6 +17,9 @@ function App() {
   const [showWindow, setShowWindow] = useState({
     SignWindow: { display: false },
     Desk: { display: true },
+    Tomato: { display: false },
+    Music: { display: false },
+    Todo: { display: false },
   });
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
@@ -27,7 +31,7 @@ function App() {
       }
     });
   }, []);
-  console.log(zIndex);
+
   return (
     <>
       <Header

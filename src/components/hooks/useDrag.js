@@ -4,7 +4,7 @@ const useDrag = (startingPosition) => {
   const { innerHeight, innerWidth } = window;
   const [x, setX] = useState(`${startingPosition.defaultX}px`);
   const [y, setY] = useState(`${startingPosition.defaultY}px`);
-  console.log(startingPosition);
+
   const [xxyy, setxxyy] = useState({});
   let xx, yy;
   let startX = 0;

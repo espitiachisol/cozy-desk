@@ -1,6 +1,6 @@
 import React from "react";
 import Desk from "../desk/Desk";
-// import SignWindowCopy from "../member/SignWindowCopy";
+import Music from "../Music/Music";
 import SignWindow from "../member/SignWindow";
 import "./MainBody.css";
 const MainBody = ({
@@ -27,6 +27,14 @@ const MainBody = ({
       ) : null}
       {showWindow.Desk.display ? (
         <Desk
+          showWindow={showWindow}
+          setShowWindow={setShowWindow}
+          setZIndex={setZIndex}
+          zIndex={zIndex}
+        />
+      ) : null}
+      {showWindow.Music.display ? (
+        <Music
           showWindow={showWindow}
           setShowWindow={setShowWindow}
           setZIndex={setZIndex}

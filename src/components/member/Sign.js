@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { auth } from "../../firebaseConfig";
-const Sign = ({ setUserstate, SignInShow, setShowWindow, showWindow }) => {
+const Sign = ({
+  setUserstate,
+  SignInShow,
+  setShowWindow,
+  showWindow,
+  setSignInShow,
+}) => {
   const [userMail, setUserMail] = useState("");
   const [userPassword, setUserPassword] = useState("");
 
@@ -45,31 +51,61 @@ const Sign = ({ setUserstate, SignInShow, setShowWindow, showWindow }) => {
   return (
     <>
       <div className="sign">
-        <h3>
-          {SignInShow ? "Welcome back!Login in here" : "hey you! Sign up now!"}
+        <h3 className="sign-title">
+          {SignInShow ? "Welcome back! Login in here" : "hey you! Sign up now!"}
         </h3>
-        <hr />
-        <form onSubmit={userSubmit}>
-          <label htmlFor="mail">Mail</label>
-          <input
-            type="text"
-            name="mail"
-            onChange={(e) => {
-              setUserMail(e.target.value);
-            }}
-          />
-          <label htmlFor="password">password</label>
-          <input
-            type="password"
-            name="password"
-            onChange={(e) => {
-              setUserPassword(e.target.value);
-            }}
-          />
+        <form onSubmit={userSubmit} className="sign-form">
+          <div>
+            <label htmlFor="mail">Mail</label>
+            <input
+              type="text"
+              name="mail"
+              onChange={(e) => {
+                setUserMail(e.target.value);
+              }}
+            />
+
+            <label htmlFor="password">password</label>
+            <input
+              type="password"
+              name="password"
+              onChange={(e) => {
+                setUserPassword(e.target.value);
+              }}
+            />
+          </div>
           <button type="submit" className="pointer">
             {SignInShow ? "Login in" : "Create account"}
           </button>
         </form>
+        <div className="sign-switch-con">
+          {SignInShow ? (
+            <p>
+              doesn't have an account&nbsp;
+              <button
+                className="pointer"
+                onClick={() => {
+                  setSignInShow(!SignInShow);
+                }}
+              >
+                {" "}
+                Signup
+              </button>
+            </p>
+          ) : (
+            <p>
+              already have an acoount&nbsp;
+              <button
+                className="pointer"
+                onClick={() => {
+                  setSignInShow(!SignInShow);
+                }}
+              >
+                Singin
+              </button>
+            </p>
+          )}
+        </div>
       </div>
     </>
   );

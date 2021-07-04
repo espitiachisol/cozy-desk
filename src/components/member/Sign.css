@@ -1,3 +1,32 @@
 .sign-window {
   width: 180px;
 }
+.sign {
+}
+.sign .sign-title {
+  border-bottom: 1px solid gainsboro;
+}
+.sign-form {
+  height: 120px;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.sign-form input {
+  width: 100%;
+}
+.sign-form label {
+  display: block;
+}
+
+.sign-form button[type="submit"] {
+  width: 100%;
+}
+.sign-switch-con button {
+  text-decoration: underline;
+  background-color: none;
+  color: rgb(83, 83, 83);
+  background-color: transparent;
+  border: none;
+}

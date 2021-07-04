@@ -60,6 +60,9 @@ const SignWindow = ({
         >
           &times;
         </i>
+        <div className="window-header-text">
+          {SignInShow ? <p>Log in</p> : <p>Sign up</p>}
+        </div>
       </div>
       <div className="window-body">
         <Sign
@@ -68,25 +71,8 @@ const SignWindow = ({
           SignInShow={SignInShow}
           setShowWindow={setShowWindow}
           showWindow={showWindow}
+          setSignInShow={setSignInShow}
         />
-
-        <div
-          onClick={() => {
-            setSignInShow(!SignInShow);
-          }}
-        >
-          {SignInShow ? (
-            <p>
-              doesn't have an account
-              <button className="pointer"> Signup</button>
-            </p>
-          ) : (
-            <p>
-              already have an acoount{" "}
-              <button className="pointer">Singin</button>
-            </p>
-          )}
-        </div>
       </div>
     </div>
   );

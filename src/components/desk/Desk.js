@@ -10,7 +10,6 @@ const Desk = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
   const curWindow = useCallback((node) => {
     if (node !== null) {
       const response = node.getBoundingClientRect();
-      console.log(response);
 
       setStartPositon({
         x: response.x,
@@ -19,9 +18,6 @@ const Desk = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
       setSize({ width: response.width, height: response.height });
     }
   }, []);
-
-  // defaultX: startPositon.defaultX, 如何增加初始位置
-  // defaultY: startPositon.defaultY, 如何增加初始位置
 
   let startingPosition = {
     x: startPositon.x,
@@ -58,6 +54,7 @@ const Desk = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
         >
           &times;
         </i>
+        <div className="window-header-text">Desk</div>
       </div>
       <div className="desk-welcome-img-con window-body">
         <img
@@ -80,7 +77,20 @@ const Desk = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
           />
           <p>Tomato</p>
         </div>
-        <div className="list-icon">
+        <div
+          className="list-icon"
+          onDoubleClick={() => {
+            setShowWindow({ ...showWindow, Music: { display: true } });
+            if (zIndex.curW !== "Music") {
+              setZIndex({
+                ...zIndex,
+                Music: zIndex.cur,
+                cur: zIndex.cur + 1,
+                curW: "Music",
+              });
+            }
+          }}
+        >
           <img className="desk-icon" src="/images/icon-music.png" alt="music" />
           <p>Music</p>
         </div>
