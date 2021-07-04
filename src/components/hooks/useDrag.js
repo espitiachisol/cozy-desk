@@ -2,8 +2,11 @@ import { useState } from "react";
 
 const useDrag = (startingPosition) => {
   const { innerHeight, innerWidth } = window;
-  const [x, setX] = useState("100px");
-  const [y, setY] = useState("100px");
+  // const [x, setX] = useState(`${(innerWidth - startingPosition.width) / 2}px`);
+  // const [y, setY] = useState(`${(innerWidth - startingPosition.height) / 2}px`);
+  const [x, setX] = useState(`500px`);
+  const [y, setY] = useState(`200px`);
+
   const [xxyy, setxxyy] = useState({});
   let xx, yy;
   let startX = 0;

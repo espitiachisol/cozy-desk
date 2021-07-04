@@ -3,7 +3,14 @@ import Desk from "../desk/Desk";
 // import SignWindowCopy from "../member/SignWindowCopy";
 import SignWindow from "../member/SignWindow";
 import "./MainBody.css";
-const MainBody = ({ userState, setUserstate, setShowWindow, showWindow }) => {
+const MainBody = ({
+  userState,
+  setUserstate,
+  setShowWindow,
+  showWindow,
+  zIndex,
+  setZIndex,
+}) => {
   // const [mousePositon, setMousePositon] = useState({});
 
   return (
@@ -14,10 +21,17 @@ const MainBody = ({ userState, setUserstate, setShowWindow, showWindow }) => {
           setUserstate={setUserstate}
           showWindow={showWindow}
           setShowWindow={setShowWindow}
+          setZIndex={setZIndex}
+          zIndex={zIndex}
         />
       ) : null}
       {showWindow.Desk.display ? (
-        <Desk showWindow={showWindow} setShowWindow={setShowWindow} />
+        <Desk
+          showWindow={showWindow}
+          setShowWindow={setShowWindow}
+          setZIndex={setZIndex}
+          zIndex={zIndex}
+        />
       ) : null}
       <div className="icon-con">
         <div
@@ -26,7 +40,11 @@ const MainBody = ({ userState, setUserstate, setShowWindow, showWindow }) => {
             setShowWindow({ ...showWindow, Desk: { display: true } });
           }}
         >
-          <img className="desk-icon" src="/icon-desk.png" alt="icon-desk" />
+          <img
+            className="desk-icon"
+            src="/images/icon-desk.png"
+            alt="icon-desk"
+          />
           <p>Desk </p>
         </div>
       </div>

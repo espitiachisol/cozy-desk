@@ -2,7 +2,14 @@ import React, { useState, useCallback } from "react";
 import Sign from "./Sign";
 import useDrag from "../hooks/useDrag";
 import "./Sign.css";
-const SignWindow = ({ userState, setUserstate, setShowWindow, showWindow }) => {
+const SignWindow = ({
+  userState,
+  setUserstate,
+  setShowWindow,
+  showWindow,
+  zIndex,
+  setZIndex,
+}) => {
   const [size, setSize] = useState({});
   const [startPositon, setStartPositon] = useState({});
   const [SignInShow, setSignInShow] = useState(true);
@@ -29,7 +36,17 @@ const SignWindow = ({ userState, setUserstate, setShowWindow, showWindow }) => {
     <div
       className="window sign-window"
       ref={curWindow}
-      style={{ top: position.y, left: position.x }}
+      style={{ top: position.y, left: position.x, zIndex: zIndex.SignWindow }}
+      onClick={() => {
+        if (zIndex.curW !== "SignWindow") {
+          setZIndex({
+            ...zIndex,
+            SignWindow: zIndex.cur,
+            cur: zIndex.cur + 1,
+            curW: "SignWindow",
+          });
+        }
+      }}
     >
       <div className="window-header" id="sign" onMouseDown={mouseDown}>
         <i

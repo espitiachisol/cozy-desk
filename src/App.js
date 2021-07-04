@@ -6,6 +6,13 @@ import "./App.css";
 
 function App() {
   const [userState, setUserstate] = useState("");
+  const [zIndex, setZIndex] = useState({
+    SignWindow: 1,
+    Desk: 1,
+    cur: 2,
+    curW: "",
+  });
+
   const [showWindow, setShowWindow] = useState({
     SignWindow: { display: false },
     Desk: { display: true },
@@ -20,7 +27,7 @@ function App() {
       }
     });
   }, []);
-
+  console.log(zIndex);
   return (
     <>
       <Header
@@ -28,12 +35,16 @@ function App() {
         setUserstate={setUserstate}
         setShowWindow={setShowWindow}
         showWindow={showWindow}
+        setZIndex={setZIndex}
+        zIndex={zIndex}
       />
       <MainBody
         userState={userState}
         setUserstate={setUserstate}
         setShowWindow={setShowWindow}
         showWindow={showWindow}
+        setZIndex={setZIndex}
+        zIndex={zIndex}
       />
     </>
   );

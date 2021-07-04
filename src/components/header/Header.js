@@ -4,7 +4,14 @@ import { auth } from "../../firebaseConfig";
 
 import "./Header.css";
 
-const Header = ({ userState, setUserstate, setShowWindow, showWindow }) => {
+const Header = ({
+  userState,
+  setUserstate,
+  setShowWindow,
+  showWindow,
+  zIndex,
+  setZIndex,
+}) => {
   const userSignout = () => {
     auth
       .signOut()
@@ -30,9 +37,17 @@ const Header = ({ userState, setUserstate, setShowWindow, showWindow }) => {
           ) : (
             <button
               className="item pointer"
-              onClick={() =>
-                setShowWindow({ ...showWindow, SignWindow: { display: true } })
-              }
+              onClick={() => {
+                setShowWindow({ ...showWindow, SignWindow: { display: true } });
+                if (zIndex.curW !== "SignWindow") {
+                  setZIndex({
+                    ...zIndex,
+                    SignWindow: zIndex.cur,
+                    cur: zIndex.cur + 1,
+                    curW: "SignWindow",
+                  });
+                }
+              }}
             >
               Sign in
             </button>
