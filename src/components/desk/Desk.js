@@ -5,6 +5,7 @@ import "./Desk.css";
 const Desk = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
   const [size, setSize] = useState({});
   const [startPositon, setStartPositon] = useState({});
+  const { innerHeight, innerWidth } = window;
 
   const curWindow = useCallback((node) => {
     if (node !== null) {
@@ -14,8 +15,6 @@ const Desk = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
       setStartPositon({
         x: response.x,
         y: response.y - 40,
-        defaultX: (response.left + response.right) / 2,
-        defaultY: (response.top + response.bottom) / 2,
       });
       setSize({ width: response.width, height: response.height });
     }
@@ -29,6 +28,8 @@ const Desk = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
     y: startPositon.y,
     width: size.width,
     height: size.height,
+    defaultX: innerWidth / 2 - 250,
+    defaultY: innerHeight / 2 - 335,
   };
 
   const [position, mouseDown] = useDrag(startingPosition);

@@ -30,6 +30,8 @@ const SignWindow = ({
     y: startPositon.y,
     width: size.width,
     height: size.height,
+    defaultX: 50,
+    defaultY: 50,
   };
   const [position, mouseDown] = useDrag(startingPosition);
   return (
