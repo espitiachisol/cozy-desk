@@ -56,9 +56,6 @@ const MainBody = ({
           <p>Desk </p>
         </div>
       </div>
-      <div>
-        <img src="/images/test-02.png" className="test" alt="test" />
-      </div>
     </div>
   );
 };

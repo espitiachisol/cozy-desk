@@ -2,41 +2,35 @@ import React, { useState, useCallback, useRef } from "react";
 import useDrag from "../hooks/useDrag";
 import WindowHeader from "../windowHeader/WindowHeader";
 import "./Music.css";
+
 const songs = [
   {
-    title: "Study With Me",
-    subtitle: "Soft Piano Music for Reading",
-    src: "/music/01.mp3",
-    img: "/images/CD-a.png",
-    icon: "/images/CD-p.png",
-  },
-  {
     title: "Forest",
-    subtitle: "Light Music",
+    subtitle: "Soft Piano Music for Reading",
     src: "/music/02.mp3",
     img: "/images/CD-a.png",
-    icon: "/images/CD-p.png",
+    icon: "/images/tape-icon-01.png",
   },
   {
     title: "Piano",
     subtitle: "Yiruma's Greatest Hits",
     src: "/music/03.mp3",
     img: "/images/CD-a.png",
-    icon: "/images/CD-p.png",
+    icon: "/images/tape-icon-02.png",
   },
   {
     title: "Rock Songs",
     subtitle: "Best Rock Hits of the 2000's",
     src: "/music/04.mp3",
     img: "/images/CD-a.png",
-    icon: "/images/CD-p.png",
+    icon: "/images/tape-icon-02.png",
   },
   {
     title: "Classic Love Songs",
     subtitle: "Music that bring back to old days.",
     src: "/music/05.mp3",
     img: "/images/CD-a.png",
-    icon: "/images/CD-p.png",
+    icon: "/images/tape-icon-01.png",
   },
 ];
 
@@ -47,7 +41,9 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
   const [songIndex, setSongIndex] = useState(0);
   const [isplaying, setIsplaying] = useState(false);
   const [rotate, setRotate] = useState("");
-
+  const [progress, setProgress] = useState({ currentTime: 0, duration: 0 });
+  const [musicLists, setMusicLists] = useState(false);
+  console.log("omg");
   const curWindow = useCallback((node) => {
     if (node !== null) {
       const response = node.getBoundingClientRect();
@@ -113,23 +109,8 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
         showWindow={showWindow}
         label="Music"
       />
-      <div className="music-player-all">
-        {/* <div className="music-lists">
-          <div className="music-item">
-            <img src="/images/CD-p.png" alt="cd-icon" />
-            <p>ROMANCE</p>
-          </div>
-          <div className="music-item">
-            <img src="/images/CD-p.png" alt="cd-icon" />
-            <p>ROMANCE</p>
-          </div>
-          <div className="music-item">
-            <img src="/images/CD-p.png" alt="cd-icon" />
-            <p>ROMANCE</p>
-          </div>
-        </div> */}
-      </div>
-      <div className="tape-container">
+
+      <div className="tape-container-all">
         <div className={`tape ${rotate}`}>
           <svg viewBox="0 0 860 550">
             <path
@@ -141,14 +122,42 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
               d="M839.27,0H20.72A20.87,20.87,0,0,0,0,21V529a20.87,20.87,0,0,0,20.72,21H839.27A20.88,20.88,0,0,0,860,529V21A20.88,20.88,0,0,0,839.27,0ZM823.58,406.74H36.26V57.16A25,25,0,0,1,58.74,32.1L60,32c.37,0,.74,0,1.12,0h737.5c.43,0,.85,0,1.28,0a25,25,0,0,1,23.71,25.15Z"
             />
           </svg>
-          <div className=" tape-con">
+          <div
+            className="tape-con left"
+            style={{
+              clipPath: `circle(${
+                120 - (progress.currentTime * 100) / progress.duration
+              }px at center)`,
+            }}
+          >
             <img
               src={songs[songIndex].img}
               className="tape"
               alt={`${songs[songIndex].subtitle}`}
             />
-            <audio ref={control} src={songs[songIndex].src}></audio>
           </div>
+          <div
+            className="tape-con right"
+            style={{
+              clipPath: `circle(${
+                (progress.currentTime * 100) / progress.duration
+              }px at center)`,
+            }}
+          >
+            <img
+              src={songs[songIndex].img}
+              className="tape"
+              alt={`${songs[songIndex].subtitle}`}
+            />
+          </div>
+          <audio
+            ref={control}
+            src={songs[songIndex].src}
+            onTimeUpdate={(e) => {
+              const { currentTime, duration } = e.target;
+              setProgress({ currentTime: currentTime, duration: duration });
+            }}
+          ></audio>
           <svg viewBox="0 0 860 550" className="tape-up">
             <path
               class="c"
@@ -193,12 +202,70 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
                 <img src="/images/px-01.png" alt="CD" />
               </button>
             </div>
-            <div className="progress-con">
-              <div className="progress"></div>
+            <div
+              className="progress-con"
+              onClick={(e) => {
+                setProgress({
+                  ...progress,
+                  currentTime:
+                    (e.nativeEvent.offsetX / e.target.clientWidth) *
+                    progress.duration,
+                });
+                control.current.currentTime =
+                  (e.nativeEvent.offsetX / e.target.clientWidth) *
+                  progress.duration;
+              }}
+            >
+              <div
+                className="progress"
+                style={{
+                  width: `${(progress.currentTime * 100) / progress.duration}%`,
+                }}
+              ></div>
               <div className="progress-time-label">
                 <p> 00:00:00</p>
                 <p>01:12:12</p>
               </div>
+            </div>
+          </div>
+          <div className="music-lists-all">
+            <div className="music-lists-btn-con">
+              <button
+                onClick={() => {
+                  setMusicLists(!musicLists);
+                }}
+              >
+                Music list <span>&#9660;</span>
+              </button>
+            </div>
+            {/* <div className="music-lists">
+              <div className="music-item">
+                <img src="/images/CD-p.png" alt="cd-icon" />
+                <p>ROMANCE</p>
+              </div>
+              <div className="music-item">
+                <img src="/images/CD-p.png" alt="cd-icon" />
+                <p>ROMANCE</p>
+              </div>
+              <div className="music-item">
+                <img src="/images/CD-p.png" alt="cd-icon" />
+                <p>ROMANCE</p>
+              </div>
+            </div> */}
+            <div
+              className="music-lists"
+              style={{ height: `${musicLists ? 200 : 0}px` }}
+            >
+              {musicLists
+                ? songs.map((list) => {
+                    return (
+                      <div className="music-list">
+                        <img src={list.icon} alt={list.title} />
+                        <p>{list.title}</p>
+                      </div>
+                    );
+                  })
+                : null}
             </div>
           </div>
         </div>

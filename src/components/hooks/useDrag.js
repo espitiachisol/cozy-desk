@@ -4,7 +4,6 @@ const useDrag = (startingPosition) => {
   const { innerHeight, innerWidth } = window;
   const [x, setX] = useState(`${startingPosition.defaultX}px`);
   const [y, setY] = useState(`${startingPosition.defaultY}px`);
-
   const [xxyy, setxxyy] = useState({});
   let xx, yy;
   let startX = 0;
@@ -25,6 +24,7 @@ const useDrag = (startingPosition) => {
     document.removeEventListener("mouseup", stop);
   };
   const mouseDown = (e) => {
+    //設定變動的起始點,第一次的起始點會等於input進來的起始點,往後的起始點會是前一個滑鼠up後,物件的xy
     if (xxyy.xx === undefined && xxyy.yy === undefined) {
       xx = startingPosition.x;
       yy = startingPosition.y;

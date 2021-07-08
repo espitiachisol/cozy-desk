@@ -16,7 +16,7 @@ function App() {
 
   const [showWindow, setShowWindow] = useState({
     SignWindow: { display: false },
-    Desk: { display: false },
+    Desk: { display: true },
     Tomato: { display: false },
     Music: { display: true },
     Todo: { display: false },

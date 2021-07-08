@@ -1,9 +1,7 @@
 .music {
   width: 400px;
-  height: 100px;
-}
-.music-player-all {
-  width: 100%;
+  height: 300px;
+  background-color: transparent;
 }
 
 @keyframes rotate {
@@ -23,23 +21,7 @@
   }
 }
 
-/* /////////// */
-/* music-lists */
-/* /////////// */
-.music-lists {
-  padding: 10px;
-  display: flex;
-  justify-content: space-between;
-}
-.music-item {
-  width: 30%;
-  text-align: center;
-}
-.music-item img {
-  width: 60%;
-}
-
-/* ////////////////////////// */
+/* ////////////////////////// style*/
 .tape {
   width: 400px;
   height: 255.8px;
@@ -70,8 +52,12 @@
   height: 160px;
   position: absolute;
   top: 28px;
+}
+.tape-con.left {
   left: 35px;
-  clip-path: circle(100px at center);
+}
+.tape-con.right {
+  right: 36px;
 }
 .tape {
   width: 100%;
@@ -149,15 +135,15 @@
 }
 
 /* //////////tape-play///////////////// */
-.tape-container {
-  height: 400px;
+.tape-container-all {
   width: 400px;
   filter: drop-shadow(3px 3px 6px #50505067);
 }
 .tape-play {
   margin-top: -15px;
   background-color: rgb(234, 229, 225);
-  padding: 35px 20px 20px 20px;
+  padding-top: 15px;
+  padding-bottom: 15px;
   border-radius: 0 0 10px 10px;
 }
 /* /////////// */
@@ -170,6 +156,7 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
+  padding: 20px;
 }
 /* /////////// */
 /* play detail  */
@@ -210,14 +197,13 @@
 /* /////////// */
 .progress-con {
   width: 100%;
-  height: 12px;
+  height: 8px;
   margin: 10px 0;
   cursor: pointer;
-  background-color: beige;
+  background-color: rgb(242, 241, 240);
 }
 .progress {
   height: 100%;
-  width: 30%;
   background-color: rgb(60, 106, 102);
   transition: width 0.1s linear;
 }
@@ -228,3 +214,51 @@
   font-size: 10px;
   letter-spacing: 1px;
 }
+
+/* Music lists */
+.music-lists-btn-con {
+  margin: 0 auto;
+  width: 95%;
+  background-color: #4f4d4c;
+  text-align: center;
+}
+.music-lists-btn-con button {
+  color: rgb(234, 229, 225);
+  background-color: none;
+  border: none;
+  letter-spacing: 2px;
+  font-size: 14px;
+  height: 20px;
+}
+.music-lists-btn-con button span {
+  font-size: 10px;
+}
+
+.music-lists {
+  width: 95%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  overflow: auto;
+  background-color: rgb(242, 241, 240);
+}
+.music-list {
+  text-align: center;
+  width: 30%;
+  height: 30%;
+  margin: 20px 0;
+  cursor: pointer;
+}
+.music-list img {
+  width: 70%;
+}
+.music-list p {
+  display: block;
+  font-size: 12px;
+  color: #4f4d4c;
+}
+
+/* /////////// */
+/* music-lists */
+/* /////////// */
