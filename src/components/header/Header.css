@@ -5,12 +5,15 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: ghostwhite;
-  border: 1px solid gainsboro;
+
+  background-color: rgb(27, 101, 149);
+  border: 1px solid rgb(27, 101, 149);
+  color: white;
 }
 .header {
   display: block;
   position: fixed;
+  border: none;
   top: 0;
   left: 0;
   width: 100%;

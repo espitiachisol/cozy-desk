@@ -38,6 +38,7 @@ const Sign = ({
           // Signed in
           const user = userCredential.user;
           console.log("---response--Sign-up", user);
+          setShowWindow({ ...showWindow, SignWindow: { display: false } });
           // ...
         })
         .catch((error) => {

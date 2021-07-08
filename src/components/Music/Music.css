@@ -1,4 +1,230 @@
 .music {
   width: 400px;
-  height: 200px;
+  height: 100px;
+}
+.music-player-all {
+  width: 100%;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes scale {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(0);
+  }
+}
+
+/* /////////// */
+/* music-lists */
+/* /////////// */
+.music-lists {
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+.music-item {
+  width: 30%;
+  text-align: center;
+}
+.music-item img {
+  width: 60%;
+}
+
+/* ////////////////////////// */
+.tape {
+  width: 400px;
+  height: 255.8px;
+  /* background-color: rgb(88, 85, 85); */
+  border-radius: 10px;
+  position: relative;
+  filter: drop-shadow(0px 0px 4px #00000067);
+}
+
+.a {
+  fill: #99aaa1;
+}
+.b {
+  fill: #4f4d4c;
+}
+.c {
+  fill: rgb(207, 203, 198);
+}
+.tape-up {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  filter: drop-shadow(0px 0px 3px #0000001e);
+}
+/* ///////////////tape playing!!!!/////////// */
+.tape-con {
+  width: 160px;
+  height: 160px;
+  position: absolute;
+  top: 28px;
+  left: 35px;
+  clip-path: circle(100px at center);
+}
+.tape {
+  width: 100%;
+  animation: rotate 3s linear infinite;
+  animation-play-state: paused;
+}
+.tape.play .tape-con .tape {
+  animation-play-state: running;
+}
+.tape-con img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tape-down {
+  position: absolute;
+  bottom: 0;
+  left: 60px;
+  border-radius: 10px 10px 0 0;
+  border-bottom: 56px solid rgb(207, 203, 198);
+  border-left: 25px solid transparent;
+  border-right: 25px solid transparent;
+  height: 0px;
+  width: 280px;
+}
+.tape-down-circle {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  position: absolute;
+  box-shadow: inset 0 0 5px #00000056;
+}
+.tape-down-circle.left {
+  left: -70px;
+}
+.tape-down-circle.right {
+  right: -70px;
+}
+.tape-down-circle-sm {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  position: absolute;
+  box-shadow: inset 0 0 5px #00000056;
+  background-color: rgb(92, 92, 92);
+  top: 25px;
+}
+.tape-down-circle-sm.right {
+  right: 0;
+}
+.tape-down-square {
+  width: 14px;
+  height: 14px;
+  border-radius: 5px;
+  position: absolute;
+  box-shadow: inset 0 0 5px #00000056;
+  background-color: rgb(121, 121, 121);
+  top: 15px;
+}
+.tape-down-square.left {
+  left: 35px;
+}
+.tape-down-square.right {
+  right: 35px;
+}
+.tape-down-label {
+  position: absolute;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  left: 78px;
+  top: 20px;
+  color: rgb(139, 139, 139);
+}
+
+/* //////////tape-play///////////////// */
+.tape-container {
+  height: 400px;
+  width: 400px;
+  filter: drop-shadow(3px 3px 6px #50505067);
+}
+.tape-play {
+  margin-top: -15px;
+  background-color: rgb(234, 229, 225);
+  padding: 35px 20px 20px 20px;
+  border-radius: 0 0 10px 10px;
+}
+/* /////////// */
+/* tape content  */
+/* /////////// */
+.tape-content {
+  color: #4f4d4c;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+/* /////////// */
+/* play detail  */
+/* /////////// */
+.tape-detail {
+  width: 50%;
+}
+.song-title {
+  font-size: 18px;
+  display: block;
+}
+.song-subtitle {
+  font-size: 12px;
+}
+/* /////////// */
+/* play icons  */
+/* /////////// */
+.play-icons {
+  width: 45%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.play-icon {
+  cursor: pointer;
+  width: 35px;
+  height: 35px;
+  padding: 4px;
+  border-radius: 5px;
+  background-color: transparent;
+  border: 1px solid rgb(167, 167, 167);
+}
+.play-icon img {
+  width: 100%;
+}
+/* /////////// */
+/* progress    */
+/* /////////// */
+.progress-con {
+  width: 100%;
+  height: 12px;
+  margin: 10px 0;
+  cursor: pointer;
+  background-color: beige;
+}
+.progress {
+  height: 100%;
+  width: 30%;
+  background-color: rgb(60, 106, 102);
+  transition: width 0.1s linear;
+}
+
+.progress-time-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  letter-spacing: 1px;
 }

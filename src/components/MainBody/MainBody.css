@@ -10,3 +10,21 @@
   width: 100%;
   cursor: pointer;
 }
+
+.main-body {
+  background-color: #fffef2;
+  background-image: url(http://www.transparenttextures.com/patterns/billie-holiday.png);
+  height: 100vh;
+  display: block;
+  position: fixed;
+  top: 36px;
+  left: 0;
+  width: 100%;
+}
+.test {
+  width: 400px;
+  position: absolute;
+  left: 100px;
+  top: 300px;
+  filter: drop-shadow(5px 5px 4px #50505060);
+}

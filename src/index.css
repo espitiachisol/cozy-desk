@@ -1,4 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Prata&family=Roboto+Slab:wght@300;400;600&display=swap");
 *,
 *::after,
 *::before {
@@ -7,27 +9,33 @@
   padding: 0;
 }
 body {
-  font-size: 20px;
-  font-family: "VT323", monospace;
+  font-size: 16px;
+  /* font-family: "VT323", monospace; */
+  font-family: "Roboto Slab", serif;
+  font-weight: 400;
   box-sizing: border-box;
 }
-
+h1,
+h2,
+h3 {
+  font-family: "Prata", serif;
+}
+.font-style-prata {
+  font-family: "Prata", serif;
+}
 p {
   display: inline-block;
   margin: 0;
 }
 button {
-  font-size: 20px;
-  font-family: "VT323", monospace;
+  font-size: 16px;
+  /* font-family: "VT323", monospace; */
+  font-family: "Prata", serif;
   color: white;
   background-color: rgb(83, 83, 83);
   border: 1px solid rgb(59, 59, 59);
 }
-div {
-  display: inline-block;
-  background-color: ghostwhite;
-  border: 1px solid gainsboro;
-}
+
 .window {
   position: absolute;
   display: inline-block;
@@ -39,14 +47,6 @@ div {
   padding: 6px;
 }
 
-.main-body {
-  height: 100vh;
-  display: block;
-  position: fixed;
-  top: 40px;
-  left: 0;
-  width: 100%;
-}
 .window-header {
   cursor: grab;
   display: flex;

@@ -19,7 +19,7 @@ const SignWindow = ({
       const response = node.getBoundingClientRect();
       setStartPositon({
         x: response.x,
-        y: response.y - 40,
+        y: response.y - 36,
       });
       setSize({ width: response.width, height: response.height });
     }
@@ -54,7 +54,6 @@ const SignWindow = ({
         <i
           className="close-window pointer"
           onClick={() => {
-            console.log(setShowWindow);
             setShowWindow({ ...showWindow, SignWindow: { display: false } });
           }}
         >

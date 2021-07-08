@@ -14,7 +14,7 @@ const useDrag = (startingPosition) => {
     let x = e.clientX - startX;
     let y = e.clientY - startY;
     x = Math.max(Math.min(x, innerWidth - startingPosition.width), 0);
-    y = Math.max(Math.min(y, innerHeight - 40 - startingPosition.height), 0);
+    y = Math.max(Math.min(y, innerHeight - 36 - startingPosition.height), 0);
     setX(`${x}px`);
     setY(`${y}px`);
     setxxyy({ xx: x, yy: y });

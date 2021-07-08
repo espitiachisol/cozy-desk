@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from "react";
+import WindowHeader from "../windowHeader/WindowHeader";
 import useDrag from "../hooks/useDrag";
 import "./Desk.css";
 
@@ -13,7 +14,7 @@ const Desk = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
 
       setStartPositon({
         x: response.x,
-        y: response.y - 40,
+        y: response.y - 36,
       });
       setSize({ width: response.width, height: response.height });
     }
@@ -25,7 +26,7 @@ const Desk = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
     width: size.width,
     height: size.height,
     defaultX: innerWidth / 2 - 250,
-    defaultY: innerHeight / 2 - 335,
+    defaultY: innerHeight / 2 - 300,
   };
 
   const [position, mouseDown] = useDrag(startingPosition);
@@ -45,28 +46,24 @@ const Desk = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
         }
       }}
     >
-      <div className="window-header" id="desk" onMouseDown={mouseDown}>
-        <i
-          className="close-window pointer"
-          onClick={() => {
-            setShowWindow({ ...showWindow, Desk: { display: false } });
-          }}
-        >
-          &times;
-        </i>
-        <div className="window-header-text">Desk</div>
-      </div>
+      <WindowHeader
+        mouseDown={mouseDown}
+        setShowWindow={setShowWindow}
+        showWindow={showWindow}
+        label="Desk"
+      />
+
       <div className="desk-welcome-img-con window-body">
         <img
           className="desk-welcome-img"
           src="/images/desk-s-low.jpg"
           alt="desk"
         />
-        <p className="welcome-text">
+        <h1 className="welcome-text">
           Welcome
           <br />
           CozyDesk
-        </p>
+        </h1>
       </div>
       <div className="apps-con">
         <div className="list-icon">

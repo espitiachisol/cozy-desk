@@ -15,7 +15,7 @@ const SignWindow = ({ userState, setUserstate, setShowWindow }) => {
       const response = node.getBoundingClientRect();
       setStartPositon({
         x: response.x,
-        y: response.y - 40,
+        y: response.y - 36,
       });
       setSize({ width: response.width, height: response.height });
     }
