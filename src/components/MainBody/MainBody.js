@@ -56,6 +56,13 @@ const MainBody = ({
           <p>Desk </p>
         </div>
       </div>
+      <div className="test">
+        <img
+          src="/images/tomato-09.png"
+          alt="tomato"
+          style={{ width: "350px" }}
+        />
+      </div>
     </div>
   );
 };

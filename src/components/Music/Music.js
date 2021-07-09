@@ -8,28 +8,28 @@ const songs = [
     title: "Forest",
     subtitle: "Soft Piano Music for Reading",
     src: "/music/02.mp3",
-    img: "/images/CD-a.png",
+    img: "/images/mixtape-11.png",
     icon: "/images/tape-icon-01.png",
   },
   {
     title: "Piano",
     subtitle: "Yiruma's Greatest Hits",
     src: "/music/03.mp3",
-    img: "/images/CD-a.png",
+    img: "/images/mixtape-11.png",
     icon: "/images/tape-icon-02.png",
   },
   {
     title: "Rock Songs",
     subtitle: "Best Rock Hits of the 2000's",
     src: "/music/04.mp3",
-    img: "/images/CD-a.png",
+    img: "/images/mixtape-11.png",
     icon: "/images/tape-icon-02.png",
   },
   {
     title: "Classic Love Songs",
     subtitle: "Music that bring back to old days.",
     src: "/music/05.mp3",
-    img: "/images/CD-a.png",
+    img: "/images/mixtape-11.png",
     icon: "/images/tape-icon-01.png",
   },
 ];
@@ -43,11 +43,10 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
   const [rotate, setRotate] = useState("");
   const [progress, setProgress] = useState({ currentTime: 0, duration: 0 });
   const [musicLists, setMusicLists] = useState(false);
-  console.log("omg");
+  console.log(progress);
   const curWindow = useCallback((node) => {
     if (node !== null) {
       const response = node.getBoundingClientRect();
-
       setStartPositon({
         x: response.x,
         y: response.y - 36,
@@ -67,14 +66,14 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
 
   const [position, mouseDown] = useDrag(startingPosition);
   const play = () => {
-    control.current.play();
     setIsplaying(true);
     setRotate("play");
+    control.current.play();
   };
   const stop = () => {
-    control.current.pause();
     setIsplaying(false);
     setRotate("");
+    control.current.pause();
   };
   const pre = () => {
     songIndex === 0
@@ -136,11 +135,12 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
               alt={`${songs[songIndex].subtitle}`}
             />
           </div>
+
           <div
             className="tape-con right"
             style={{
               clipPath: `circle(${
-                (progress.currentTime * 100) / progress.duration
+                20 + (progress.currentTime * 100) / progress.duration
               }px at center)`,
             }}
           >
@@ -150,6 +150,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
               alt={`${songs[songIndex].subtitle}`}
             />
           </div>
+
           <audio
             ref={control}
             src={songs[songIndex].src}
