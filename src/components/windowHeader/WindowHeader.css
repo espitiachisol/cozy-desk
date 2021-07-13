@@ -1,0 +1,37 @@
+.window-header {
+  cursor: grab;
+  text-align: center;
+  position: relative;
+  height: 30px;
+  padding: 4px;
+  border: 1px solid transparent;
+
+  font-family: "Prata", serif;
+}
+.close-window {
+  position: absolute;
+  left: 4px;
+  font-size: 12px;
+  padding: 2px 4px 0px 4px;
+  display: inline-block;
+  border: 1px solid transparent;
+  color: #c7c4c2;
+  border: 1px solid #c7c4c2;
+  transition: all 0.1s ease-in-out;
+}
+.window-header-text {
+  display: inline-block;
+  color: #c7c4c2;
+  transition: all 0.1s ease-in-out;
+}
+.window-header:hover .close-window {
+  border: 1px solid #4f4d4c;
+  color: #4f4d4c;
+}
+
+.window-header:hover .window-header-text {
+  color: #4f4d4c;
+}
+.window-header:hover {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}

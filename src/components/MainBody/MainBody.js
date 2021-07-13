@@ -1,6 +1,7 @@
 import React from "react";
 import Desk from "../desk/Desk";
 import Music from "../Music/Music";
+import Tomato from "../Tomato/Tomato";
 import SignWindow from "../member/SignWindow";
 import "./MainBody.css";
 const MainBody = ({
@@ -35,6 +36,14 @@ const MainBody = ({
       ) : null}
       {showWindow.Music.display ? (
         <Music
+          showWindow={showWindow}
+          setShowWindow={setShowWindow}
+          setZIndex={setZIndex}
+          zIndex={zIndex}
+        />
+      ) : null}
+      {showWindow.Tomato.display ? (
+        <Tomato
           showWindow={showWindow}
           setShowWindow={setShowWindow}
           setZIndex={setZIndex}

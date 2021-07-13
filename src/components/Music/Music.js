@@ -1,36 +1,40 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import useDrag from "../hooks/useDrag";
 import WindowHeader from "../windowHeader/WindowHeader";
 import "./Music.css";
 
 const songs = [
   {
-    title: "Forest",
+    id: "defaultSong01",
+    title: "Focus",
     subtitle: "Soft Piano Music for Reading",
     src: "/music/02.mp3",
-    img: "/images/mixtape-11.png",
-    icon: "/images/tape-icon-01.png",
+    img: "/images/mixtape-cover-1.png",
+    icon: "/images/tape-icons-1.png",
   },
   {
+    id: "defaultSong02",
     title: "Piano",
     subtitle: "Yiruma's Greatest Hits",
     src: "/music/03.mp3",
-    img: "/images/mixtape-11.png",
-    icon: "/images/tape-icon-02.png",
+    img: "/images/mixtape-cover-2.png",
+    icon: "/images/tape-icons-2.png",
   },
   {
+    id: "defaultSong03",
     title: "Rock Songs",
     subtitle: "Best Rock Hits of the 2000's",
     src: "/music/04.mp3",
-    img: "/images/mixtape-11.png",
-    icon: "/images/tape-icon-02.png",
+    img: "/images/mixtape-cover-3.png",
+    icon: "/images/tape-icons-3.png",
   },
   {
-    title: "Classic Love Songs",
+    id: "defaultSong04",
+    title: "Love Songs",
     subtitle: "Music that bring back to old days.",
     src: "/music/05.mp3",
-    img: "/images/mixtape-11.png",
-    icon: "/images/tape-icon-01.png",
+    img: "/images/mixtape-cover-4.png",
+    icon: "/images/tape-icons-4.png",
   },
 ];
 
@@ -41,9 +45,18 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
   const [songIndex, setSongIndex] = useState(0);
   const [isplaying, setIsplaying] = useState(false);
   const [rotate, setRotate] = useState("");
-  const [progress, setProgress] = useState({ currentTime: 0, duration: 0 });
+  const [tapeOnReel, setTapeOnReel] = useState(false);
+  const [progress, setProgress] = useState({ currentTime: 0, duration: 100 });
+  //如果duration設定為0,下面的運算(progress.currentTime * 100) / progress.duration} 會是NaN% 因為0/0= NaN 設定為100,0/100=0
   const [musicLists, setMusicLists] = useState(false);
-  console.log(progress);
+  useEffect(() => {
+    if (isplaying) {
+      setIsplaying(true);
+      setRotate("play");
+      control.current.play();
+    }
+  }, [songIndex, isplaying]);
+
   const curWindow = useCallback((node) => {
     if (node !== null) {
       const response = node.getBoundingClientRect();
@@ -106,18 +119,18 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
         mouseDown={mouseDown}
         setShowWindow={setShowWindow}
         showWindow={showWindow}
-        label="Music"
+        label="MIXTAPE"
       />
 
       <div className="tape-container-all">
         <div className={`tape ${rotate}`}>
           <svg viewBox="0 0 860 550">
             <path
-              class="a"
+              className="a"
               d="M799.87,32c-.43,0-.85,0-1.28,0H61.09c-.38,0-.75,0-1.12,0l-1.23.09A25.06,25.06,0,0,0,36.43,57.16V406.74H823.58V57.16A25,25,0,0,0,799.87,32ZM247.3,279c-26,0-47-21.34-47-47.68s21.05-47.67,47-47.67,47,21.35,47,47.67S273.27,279,247.3,279Zm363.19,0c-26,0-47-21.34-47-47.68s21-47.67,47-47.67,47,21.35,47,47.67S636.46,279,610.49,279Z"
             />
             <path
-              class="b"
+              className="b"
               d="M839.27,0H20.72A20.87,20.87,0,0,0,0,21V529a20.87,20.87,0,0,0,20.72,21H839.27A20.88,20.88,0,0,0,860,529V21A20.88,20.88,0,0,0,839.27,0ZM823.58,406.74H36.26V57.16A25,25,0,0,1,58.74,32.1L60,32c.37,0,.74,0,1.12,0h737.5c.43,0,.85,0,1.28,0a25,25,0,0,1,23.71,25.15Z"
             />
           </svg>
@@ -130,9 +143,9 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
             }}
           >
             <img
-              src={songs[songIndex].img}
+              src="/images/mixtape-11.png"
               className="tape"
-              alt={`${songs[songIndex].subtitle}`}
+              alt="tape on reel left"
             />
           </div>
 
@@ -145,9 +158,9 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
             }}
           >
             <img
-              src={songs[songIndex].img}
+              src="/images/mixtape-11.png"
               className="tape"
-              alt={`${songs[songIndex].subtitle}`}
+              alt="tape on reel right"
             />
           </div>
 
@@ -161,12 +174,31 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
           ></audio>
           <svg viewBox="0 0 860 550" className="tape-up">
             <path
-              class="c"
+              className="c"
               d="M610.49,169.71H247.3c-33.56,0-60.76,27.59-60.76,61.61s27.2,61.62,60.76,61.62H610.49c33.56,0,60.76-27.58,60.76-61.62S644.05,169.71,610.49,169.71ZM247.3,279c-26,0-47-21.34-47-47.68s21.05-47.67,47-47.67,47,21.35,47,47.67S273.27,279,247.3,279Zm281-16.93H331.66V199.4H528.34ZM610.49,279c-26,0-47-21.34-47-47.68s21-47.67,47-47.67,47,21.35,47,47.67S636.46,279,610.49,279Z"
             />
           </svg>
+
+          <div className="tape-cover">
+            <img
+              src={songs[songIndex].img}
+              alt="cover"
+              style={{ opacity: `${tapeOnReel ? "0.9" : "0.2"}` }}
+            />
+          </div>
+
           <div className="tape-down">
-            <p className="tape-down-label">COZY DESK</p>
+            <div className="tape-down-label">
+              <p>COZY DESK</p>
+              <button
+                onClick={() => {
+                  setTapeOnReel(!tapeOnReel);
+                }}
+              >
+                '' Click ''
+              </button>
+            </div>
+
             <div className="tape-down-circle left"></div>
             <div className="tape-down-circle-sm "></div>
             <div className="tape-down-square left"></div>
@@ -178,10 +210,10 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
         <div className="tape-play">
           <div className="tape-content">
             <div className="tape-detail">
-              <p class="song-title font-style-prata ">
+              <p className="song-title font-style-prata ">
                 {songs[songIndex].title}
               </p>
-              <p class="song-subtitle">{songs[songIndex].subtitle}</p>
+              <p className="song-subtitle">{songs[songIndex].subtitle}</p>
             </div>
             <div className="play-icons">
               <button className=" play-icon" onClick={pre}>
@@ -209,12 +241,10 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
                 setProgress({
                   ...progress,
                   currentTime:
-                    (e.nativeEvent.offsetX / e.target.clientWidth) *
-                    progress.duration,
+                    (e.nativeEvent.offsetX / 360) * progress.duration,
                 });
                 control.current.currentTime =
-                  (e.nativeEvent.offsetX / e.target.clientWidth) *
-                  progress.duration;
+                  (e.nativeEvent.offsetX / 360) * progress.duration;
               }}
             >
               <div
@@ -239,28 +269,20 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
                 Music list <span>&#9660;</span>
               </button>
             </div>
-            {/* <div className="music-lists">
-              <div className="music-item">
-                <img src="/images/CD-p.png" alt="cd-icon" />
-                <p>ROMANCE</p>
-              </div>
-              <div className="music-item">
-                <img src="/images/CD-p.png" alt="cd-icon" />
-                <p>ROMANCE</p>
-              </div>
-              <div className="music-item">
-                <img src="/images/CD-p.png" alt="cd-icon" />
-                <p>ROMANCE</p>
-              </div>
-            </div> */}
             <div
               className="music-lists"
               style={{ height: `${musicLists ? 200 : 0}px` }}
             >
               {musicLists
-                ? songs.map((list) => {
+                ? songs.map((list, index) => {
                     return (
-                      <div className="music-list">
+                      <div
+                        key={list.id}
+                        className="music-list"
+                        onClick={() => {
+                          setSongIndex(index);
+                        }}
+                      >
                         <img src={list.icon} alt={list.title} />
                         <p>{list.title}</p>
                       </div>

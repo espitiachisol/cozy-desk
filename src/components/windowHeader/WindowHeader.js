@@ -1,3 +1,4 @@
+import "./WindowHeader.css";
 const WindowHeader = ({ mouseDown, setShowWindow, showWindow, label }) => {
   const witchLabelToDisplay = () => {
     let result;
@@ -8,10 +9,16 @@ const WindowHeader = ({ mouseDown, setShowWindow, showWindow, label }) => {
           Desk: { display: false },
         });
         break;
-      case "Music":
+      case "MIXTAPE":
         result = setShowWindow({
           ...showWindow,
           Music: { display: false },
+        });
+        break;
+      case "Tomato":
+        result = setShowWindow({
+          ...showWindow,
+          Tomato: { display: false },
         });
         break;
       default:
@@ -21,14 +28,14 @@ const WindowHeader = ({ mouseDown, setShowWindow, showWindow, label }) => {
   };
   return (
     <div className="window-header" onMouseDown={mouseDown}>
-      <i
+      <p
         className="close-window pointer"
         onClick={() => {
           witchLabelToDisplay();
         }}
       >
-        &times;
-      </i>
+        X
+      </p>
       <div className="window-header-text">{label}</div>
     </div>
   );

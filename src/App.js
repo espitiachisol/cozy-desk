@@ -10,14 +10,15 @@ function App() {
     SignWindow: 1,
     Desk: 1,
     Music: 1,
+    Tomato: 1,
     cur: 2,
     curW: "",
   });
 
   const [showWindow, setShowWindow] = useState({
     SignWindow: { display: false },
-    Desk: { display: true },
-    Tomato: { display: false },
+    Desk: { display: false },
+    Tomato: { display: true },
     Music: { display: true },
     Todo: { display: false },
   });

@@ -1,0 +1,119 @@
+.tomato {
+  width: 320px;
+  min-height: 350px;
+  color: #4f4d4c;
+}
+.tomato-container-all {
+  filter: drop-shadow(3px 3px 6px #50505067);
+}
+.tomato-container {
+  width: 320px;
+  height: 320px;
+}
+
+.tomato-outline {
+  width: 320px;
+  height: 320px;
+  border-radius: 100%;
+  background-color: rgb(234, 229, 225);
+  border: 20px solid #4f4d4c;
+  position: relative;
+  box-shadow: 3px 3px 8px #00000067;
+}
+.tomato-outline::before {
+  box-shadow: inset 5px 5px 30px #00000067;
+  content: "";
+  width: 320px;
+  height: 320px;
+  border-radius: 100%;
+  top: -20px;
+  left: -20px;
+  margin: 0;
+  position: absolute;
+  border: 15px solid rgb(163, 108, 108);
+}
+.tomato-pieces {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: rgb(226, 210, 210);
+  background-image: linear-gradient(
+    90deg,
+    rgb(234, 229, 225) 50%,
+    transparent 50%
+  );
+  /* linear-gradient(180deg,transparent 50%,rgb(226, 210, 210) 50%),
+  linear-gradient(90deg, rgb(234, 229, 225) 50%, transparent 50%); */
+}
+.tomato-clock-label {
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.tomato-clock-hand {
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: rotate(180deg);
+}
+/*  */
+.tomato-time {
+  width: 100%;
+  height: 60px;
+  text-align: center;
+  margin-top: 10px;
+}
+.tomato-counter {
+  font-size: 40px;
+  display: inline-block;
+  letter-spacing: 5px;
+}
+.content-container {
+  background-color: rgb(234, 229, 225);
+  margin-top: -150px;
+  padding-top: 150px;
+  padding-bottom: 15px;
+  border-radius: 0 0 10px 10px;
+}
+/*  */
+.tomato-play-icon {
+  cursor: pointer;
+  width: 35px;
+  height: 35px;
+  padding: 4px;
+  border-radius: 5px;
+  background-color: transparent;
+  border: 1px solid rgb(167, 167, 167);
+}
+.tomato-play-icon img {
+  width: 100%;
+}
+/* toggle setting */
+.tomato-btn-con {
+  margin: 0 auto;
+  width: 95%;
+  background-color: #4f4d4c;
+  text-align: center;
+}
+.tomato-btn-con button {
+  color: rgb(234, 229, 225);
+  background-color: none;
+  border: none;
+  letter-spacing: 2px;
+  font-size: 14px;
+  height: 20px;
+}
+.tomato-btn-con button span {
+  font-size: 10px;
+}
+.tomato-setting-container {
+  height: 200px;
+  width: 95%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  background-color: rgb(242, 241, 240);
+}

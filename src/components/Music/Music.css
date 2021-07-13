@@ -1,6 +1,6 @@
 .music {
   width: 400px;
-  height: 300px;
+  height: 435px;
   background-color: transparent;
 }
 
@@ -127,13 +127,33 @@
 .tape-down-label {
   position: absolute;
   font-size: 12px;
-  font-weight: 400;
   letter-spacing: 1px;
   left: 78px;
-  top: 20px;
+  top: 10px;
   color: rgb(139, 139, 139);
 }
-
+.tape-down-label button {
+  color: rgb(139, 139, 139);
+  border: solid 1px rgb(139, 139, 139);
+  margin: 2px auto;
+  padding: 1px 4px;
+  display: block;
+  letter-spacing: 1px;
+  font-size: 12px;
+  background-color: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.tape-cover {
+  top: 0;
+  left: -0.5px;
+  position: absolute;
+  width: 100%;
+}
+.tape-cover img {
+  width: 100%;
+  transition: all 0.3s ease-in-out;
+}
 /* //////////tape-play///////////////// */
 .tape-container-all {
   width: 400px;
@@ -204,7 +224,7 @@
 }
 .progress {
   height: 100%;
-  background-color: rgb(60, 106, 102);
+  background-color: #99aaa1;
   transition: width 0.1s linear;
 }
 
