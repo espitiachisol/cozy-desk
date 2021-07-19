@@ -1,19 +1,19 @@
 .tomato {
-  width: 320px;
-  min-height: 350px;
+  width: 300px;
+  min-height: 450px;
   color: #4f4d4c;
 }
 .tomato-container-all {
   filter: drop-shadow(3px 3px 6px #50505067);
 }
 .tomato-container {
-  width: 320px;
-  height: 320px;
+  width: 300px;
+  height: 300px;
 }
 
 .tomato-outline {
-  width: 320px;
-  height: 320px;
+  width: 300px;
+  height: 300px;
   border-radius: 100%;
   background-color: rgb(234, 229, 225);
   border: 20px solid #4f4d4c;
@@ -23,8 +23,8 @@
 .tomato-outline::before {
   box-shadow: inset 5px 5px 30px #00000067;
   content: "";
-  width: 320px;
-  height: 320px;
+  width: 300px;
+  height: 300px;
   border-radius: 100%;
   top: -20px;
   left: -20px;
@@ -37,13 +37,13 @@
   height: 100%;
   border-radius: 50%;
   background-color: rgb(226, 210, 210);
+  /* 
   background-image: linear-gradient(
-    90deg,
-    rgb(234, 229, 225) 50%,
-    transparent 50%
-  );
-  /* linear-gradient(180deg,transparent 50%,rgb(226, 210, 210) 50%),
-  linear-gradient(90deg, rgb(234, 229, 225) 50%, transparent 50%); */
+      90deg,
+      transparent 50%,
+      rgb(234, 229, 225) 50%
+    ),
+    linear-gradient(90deg, rgb(234, 229, 225) 50%, transparent 50%); */
 }
 .tomato-clock-label {
   width: 100%;
@@ -56,20 +56,22 @@
   position: absolute;
   left: 0;
   top: 0;
-  transform: rotate(180deg);
+}
+.target-progress {
+  font-size: 14px;
+  color: rgb(234, 229, 225);
+  text-align: center;
+  background-color: rgba(79, 77, 76, 0.9);
+  width: 60px;
+  height: 24px;
+  padding: 2px 0;
+  letter-spacing: 3px;
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 /*  */
-.tomato-time {
-  width: 100%;
-  height: 60px;
-  text-align: center;
-  margin-top: 10px;
-}
-.tomato-counter {
-  font-size: 40px;
-  display: inline-block;
-  letter-spacing: 5px;
-}
 .content-container {
   background-color: rgb(234, 229, 225);
   margin-top: -150px;
@@ -77,23 +79,31 @@
   padding-bottom: 15px;
   border-radius: 0 0 10px 10px;
 }
+.tomato-time {
+  width: 100%;
+  height: 40px;
+  text-align: center;
+  margin: 10px 0;
+}
+.tomato-counter {
+  font-size: 40px;
+  letter-spacing: 5px;
+  display: inline-block;
+  font-family: "Courier Prime", monospace;
+}
 /*  */
 .tomato-play-icon {
-  cursor: pointer;
   width: 35px;
   height: 35px;
   padding: 4px;
-  border-radius: 5px;
-  background-color: transparent;
-  border: 1px solid rgb(167, 167, 167);
+  margin-left: 10px;
 }
 .tomato-play-icon img {
   width: 100%;
 }
 /* toggle setting */
 .tomato-btn-con {
-  margin: 0 auto;
-  width: 95%;
+  margin: 0 10px;
   background-color: #4f4d4c;
   text-align: center;
 }
@@ -109,11 +119,28 @@
   font-size: 10px;
 }
 .tomato-setting-container {
-  height: 200px;
-  width: 95%;
-  margin: 0 auto;
+  font-size: 14px;
+  margin: 0 10px;
+  background-color: rgb(242, 241, 240);
+}
+.tomato-setting {
+  padding: 10px;
+  height: 100%;
   display: flex;
   justify-content: space-between;
+  flex-direction: row;
   flex-wrap: wrap;
-  background-color: rgb(242, 241, 240);
+  align-content: space-between;
+  align-items: center;
+}
+.tomato-setting .dropdown-label {
+  width: 50%;
+}
+.tomato-setting .restart {
+  cursor: pointer;
+  width: 100%;
+}
+.tomato-setting .restart-warn {
+  margin-top: -4px;
+  font-size: 12px;
 }

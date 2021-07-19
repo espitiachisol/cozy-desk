@@ -237,8 +237,9 @@
 
 /* Music lists */
 .music-lists-btn-con {
-  margin: 0 auto;
-  width: 95%;
+  margin: 0 10px;
+  /* margin: 0 auto; */
+  /* width: 95%; */
   background-color: #4f4d4c;
   text-align: center;
 }
@@ -255,8 +256,9 @@
 }
 
 .music-lists {
-  width: 95%;
-  margin: 0 auto;
+  /* width: 95%;
+  margin: 0 auto; */
+  margin: 0 10px;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;

@@ -11,6 +11,7 @@ function App() {
     Desk: 1,
     Music: 1,
     Tomato: 1,
+    Todo: 1,
     cur: 2,
     curW: "",
   });
@@ -20,7 +21,7 @@ function App() {
     Desk: { display: false },
     Tomato: { display: true },
     Music: { display: true },
-    Todo: { display: false },
+    Todo: { display: true },
   });
   useEffect(() => {
     auth.onAuthStateChanged((user) => {

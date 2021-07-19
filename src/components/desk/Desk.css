@@ -25,7 +25,8 @@
   align-items: center;
 }
 .list-icon {
-  width: 40px;
+  width: 80px;
+  filter: drop-shadow(2px 2px 4px #50505067);
   text-align: center;
   cursor: pointer;
 }

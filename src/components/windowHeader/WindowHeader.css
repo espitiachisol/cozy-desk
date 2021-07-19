@@ -11,7 +11,7 @@
 .close-window {
   position: absolute;
   left: 4px;
-  font-size: 12px;
+  font-size: 10px;
   padding: 2px 4px 0px 4px;
   display: inline-block;
   border: 1px solid transparent;
@@ -20,6 +20,7 @@
   transition: all 0.1s ease-in-out;
 }
 .window-header-text {
+  font-size: 14px;
   display: inline-block;
   color: #c7c4c2;
   transition: all 0.1s ease-in-out;

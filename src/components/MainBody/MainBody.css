@@ -1,16 +1,21 @@
 .icon-con {
   z-index: -1;
-  width: 40px;
+  width: 80px;
   position: absolute;
   right: 20px;
   top: 20px;
-  text-align: center;
 }
 .desk-icon {
   width: 100%;
   cursor: pointer;
 }
-
+.each-icon {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.each-icon p {
+  display: inline-block;
+}
 .main-body {
   background-color: #fffef7;
   background-image: url(http://www.transparenttextures.com/patterns/billie-holiday.png);
@@ -24,7 +29,7 @@
 .test {
   width: 400px;
   position: absolute;
-  left: 100px;
-  top: 200px;
+  left: 50px;
+  top: 100px;
   filter: drop-shadow(0px 0px 4px #5050502f);
 }

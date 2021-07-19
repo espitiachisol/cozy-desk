@@ -36,7 +36,7 @@ const SignWindow = ({
   const [position, mouseDown] = useDrag(startingPosition);
   return (
     <div
-      className="window sign-window"
+      className="window sign"
       ref={curWindow}
       style={{ top: position.y, left: position.x, zIndex: zIndex.SignWindow }}
       onClick={() => {
@@ -50,7 +50,7 @@ const SignWindow = ({
         }
       }}
     >
-      <div className="window-header" id="sign" onMouseDown={mouseDown}>
+      <div className="window-header" onMouseDown={mouseDown}>
         <i
           className="close-window pointer"
           onClick={() => {
@@ -63,15 +63,30 @@ const SignWindow = ({
           {SignInShow ? <p>Log in</p> : <p>Sign up</p>}
         </div>
       </div>
-      <div className="window-body">
-        <Sign
-          userState={userState}
-          setUserstate={setUserstate}
-          SignInShow={SignInShow}
-          setShowWindow={setShowWindow}
-          showWindow={showWindow}
-          setSignInShow={setSignInShow}
-        />
+      <div className="sign-container-all">
+        <div className="sign-container">
+          <div className="sign-image-container">
+            <img src="/images/welcome.jpg" alt="welcome"></img>
+          </div>
+          <div className="sign-content">
+            <h2 className="sign-welcome-title">Welcome to CozyDesk</h2>
+            <div className="sign-welcome-note">
+              <p>with an account you can...</p>
+              <p>◦ create your own desktop</p>
+              <p>◦ save your todo list</p>
+              <p>◦ save your playlist</p>
+              <p>◦ save your setting</p>
+            </div>
+            <Sign
+              userState={userState}
+              setUserstate={setUserstate}
+              SignInShow={SignInShow}
+              setShowWindow={setShowWindow}
+              showWindow={showWindow}
+              setSignInShow={setSignInShow}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

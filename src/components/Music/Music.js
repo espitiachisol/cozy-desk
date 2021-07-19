@@ -119,7 +119,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
         mouseDown={mouseDown}
         setShowWindow={setShowWindow}
         showWindow={showWindow}
-        label="MIXTAPE"
+        label="Mixtape"
       />
 
       <div className="tape-container-all">

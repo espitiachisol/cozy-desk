@@ -88,7 +88,11 @@ const Desk = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
             }
           }}
         >
-          <img className="desk-icon" src="/images/icon-music.png" alt="music" />
+          <img
+            className="desk-icon"
+            src="/images/icon-mixtape.png"
+            alt="music"
+          />
           <p>Music</p>
         </div>
         <div className="list-icon">
