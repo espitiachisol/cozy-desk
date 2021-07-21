@@ -20,4 +20,7 @@
 }
 .header .item {
   margin-left: 20px;
+  color: rgb(242, 241, 240);
+  padding: 1px 10px;
+  border: 1px solid rgb(242, 241, 240);
 }

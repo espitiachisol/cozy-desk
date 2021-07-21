@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from "react";
 import Sign from "./Sign";
 import useDrag from "../hooks/useDrag";
+import WindowHeader from "../windowHeader/WindowHeader";
 import "./Sign.css";
 const SignWindow = ({
   userState,
@@ -13,7 +14,7 @@ const SignWindow = ({
   const [size, setSize] = useState({});
   const [startPositon, setStartPositon] = useState({});
   const [SignInShow, setSignInShow] = useState(true);
-
+  const { innerWidth } = window;
   const curWindow = useCallback((node) => {
     if (node !== null) {
       const response = node.getBoundingClientRect();
@@ -30,8 +31,8 @@ const SignWindow = ({
     y: startPositon.y,
     width: size.width,
     height: size.height,
-    defaultX: 50,
-    defaultY: 50,
+    defaultX: innerWidth / 2 - 350,
+    defaultY: 0,
   };
   const [position, mouseDown] = useDrag(startingPosition);
   return (
@@ -50,19 +51,12 @@ const SignWindow = ({
         }
       }}
     >
-      <div className="window-header" onMouseDown={mouseDown}>
-        <i
-          className="close-window pointer"
-          onClick={() => {
-            setShowWindow({ ...showWindow, SignWindow: { display: false } });
-          }}
-        >
-          &times;
-        </i>
-        <div className="window-header-text">
-          {SignInShow ? <p>Log in</p> : <p>Sign up</p>}
-        </div>
-      </div>
+      <WindowHeader
+        mouseDown={mouseDown}
+        setShowWindow={setShowWindow}
+        showWindow={showWindow}
+        label="CozyDesk"
+      />
       <div className="sign-container-all">
         <div className="sign-container">
           <div className="sign-image-container">

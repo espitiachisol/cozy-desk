@@ -212,6 +212,10 @@
 .play-icon img {
   width: 100%;
 }
+.play-icon.action-loop {
+  background-color: rgb(207, 203, 198);
+}
+
 /* /////////// */
 /* progress    */
 /* /////////// */
@@ -269,7 +273,7 @@
   text-align: center;
   width: 30%;
   height: 30%;
-  margin: 20px 0;
+  margin: 10px 0;
   cursor: pointer;
 }
 .music-list img {

@@ -17,11 +17,10 @@ function App() {
   });
 
   const [showWindow, setShowWindow] = useState({
-    SignWindow: { display: false },
-    Desk: { display: false },
-    Tomato: { display: true },
-    Music: { display: true },
-    Todo: { display: true },
+    SignWindow: { display: true },
+    Tomato: { display: false },
+    Music: { display: false },
+    Todo: { display: false },
   });
   useEffect(() => {
     auth.onAuthStateChanged((user) => {

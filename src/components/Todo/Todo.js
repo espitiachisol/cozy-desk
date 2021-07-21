@@ -27,8 +27,8 @@ const Todo = function ({ setShowWindow, showWindow, zIndex, setZIndex }) {
     y: startPositon.y,
     width: size.width,
     height: size.height,
-    defaultX: 700,
-    defaultY: 0,
+    defaultX: 20,
+    defaultY: 20,
   };
   const [position, mouseDown] = useDrag(startingPosition);
   const addTodo = (e) => {

@@ -38,6 +38,22 @@ const songs = [
   },
 ];
 
+const calcDisplayFullTime = (time) => {
+  if (time) {
+    let hour = Math.floor(time / 60 / 60);
+    let sec = Math.floor(time % 60);
+    let min = Math.floor(time / 60) - hour * 60;
+    return (
+      hour.toString().padStart(2, "0") +
+      ":" +
+      min.toString().padStart(2, "0") +
+      ":" +
+      sec.toString().padStart(2, "0")
+    );
+  } else {
+    return "00:00:00";
+  }
+};
 const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
   const control = useRef(null);
   const [size, setSize] = useState({});
@@ -45,8 +61,9 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
   const [songIndex, setSongIndex] = useState(0);
   const [isplaying, setIsplaying] = useState(false);
   const [rotate, setRotate] = useState("");
-  const [tapeOnReel, setTapeOnReel] = useState(false);
+  const [tapeOnReel, setTapeOnReel] = useState(true);
   const [progress, setProgress] = useState({ currentTime: 0, duration: 100 });
+  const [loopOneSong, setLoopOneSong] = useState(false);
   //如果duration設定為0,下面的運算(progress.currentTime * 100) / progress.duration} 會是NaN% 因為0/0= NaN 設定為100,0/100=0
   const [musicLists, setMusicLists] = useState(false);
   useEffect(() => {
@@ -73,8 +90,8 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
     y: startPositon.y,
     width: size.width,
     height: size.height,
-    defaultX: 700,
-    defaultY: 0,
+    defaultX: 550,
+    defaultY: 20,
   };
 
   const [position, mouseDown] = useDrag(startingPosition);
@@ -119,7 +136,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
         mouseDown={mouseDown}
         setShowWindow={setShowWindow}
         showWindow={showWindow}
-        label="Mixtape"
+        label="Music"
       />
 
       <div className="tape-container-all">
@@ -169,7 +186,18 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
             src={songs[songIndex].src}
             onTimeUpdate={(e) => {
               const { currentTime, duration } = e.target;
-              setProgress({ currentTime: currentTime, duration: duration });
+              if (currentTime === duration) {
+                //若有單曲循環的話
+                if (loopOneSong) {
+                  control.current.currentTime = 0;
+                  play();
+                } else {
+                  //沒有自動播放下一首
+                  next();
+                }
+              } else {
+                setProgress({ currentTime: currentTime, duration: duration });
+              }
             }}
           ></audio>
           <svg viewBox="0 0 860 550" className="tape-up">
@@ -228,10 +256,15 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
                   <img src="/images/px-02.png" alt="CD" />
                 </button>
               )}
-              <button className=" play-icon" onClick={next}>
+              <button className="play-icon" onClick={next}>
                 <img src="/images/px-04.png" alt="CD" />
               </button>
-              <button className="action-loop play-icon">
+              <button
+                className={`play-icon ${loopOneSong ? "action-loop" : ""}`}
+                onClick={() => {
+                  setLoopOneSong(!loopOneSong);
+                }}
+              >
                 <img src="/images/px-01.png" alt="CD" />
               </button>
             </div>
@@ -254,8 +287,8 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
                 }}
               ></div>
               <div className="progress-time-label">
-                <p> 00:00:00</p>
-                <p>01:12:12</p>
+                <p>{calcDisplayFullTime(progress.currentTime)}</p>
+                <p>{calcDisplayFullTime(progress.duration)}</p>
               </div>
             </div>
           </div>

@@ -18,15 +18,16 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
   const [targetSelected, setTargetSelected] = useState(setting.target[0]);
   const [workSelected, setWorkSelected] = useState(setting.work[0]);
   const [breakSelected, setBreakSelected] = useState(setting.break[0]);
+  const [currentSessionType, setCurrentSessionType] = useState("Session"); // 'Session' or 'Break'
   //timer
 
   const playsoundEffect = useRef(null);
   const [intervalId, setIntervalId] = useState(null);
   // const [deg, setDeg] = useState(0);
-  const [timeLabel, setTimeLabel] = useState("Work"); //"Work"/"Break"
+
   const [targetProgress, setTargetProgress] = useState(0);
 
-  const [timer, setTimer] = useState(0);
+  const [timer, setTimer] = useState(workSelected * 60);
   const [more, setMore] = useState(false);
   //for window drag
   const [size, setSize] = useState({});
@@ -46,8 +47,8 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
     y: startPositon.y,
     width: size.width,
     height: size.height,
-    defaultX: 700,
-    defaultY: 0,
+    defaultX: 970,
+    defaultY: 20,
   };
   const [position, mouseDown] = useDrag(startingPosition);
   // useEffect(() => {
@@ -80,7 +81,8 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
   useEffect(() => {
     setTimer(workSelected * 60);
   }, [workSelected]);
-
+  console.log(timer);
+  console.log(workSelected, breakSelected);
   const isStarted = intervalId !== null;
   const handleStartStop = () => {
     if (isStarted) {
@@ -88,41 +90,43 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
       setIntervalId(null);
     } else {
       const newIntervalId = setInterval(() => {
+        console.log("outside--------", currentSessionType);
         setTimer((pretimer) => {
           //假如(目前倒數時間-1)大於等於0,回傳(目前時間-1),如果否,回傳(目前時間)
-          let newpretimer = pretimer - 1;
-          if (newpretimer >= 0) {
-            return pretimer - 1;
-          } else {
-            if (timeLabel === "Work") {
-              console.log("work area");
-              setTimeLabel("Break");
-              setTimer(breakSelected * 60);
-              setTargetProgress(targetProgress + 1);
-            } else if (timeLabel === "Break") {
-              console.log("Break area");
-              setTimeLabel("Work");
-              setTimer(workSelected * 60);
-            }
-            playsoundEffect.current.play();
-            return pretimer;
+          const newtimer = pretimer - 1;
+          if (newtimer >= 0) {
+            return newtimer;
+          }
+          playsoundEffect.current.play();
+          console.log("outside--------", currentSessionType);
+          if (currentSessionType === "Session") {
+            setCurrentSessionType("Break");
+            console.log(breakSelected);
+
+            console.log("if timelabel=work --------", currentSessionType);
+            setTargetProgress(targetProgress + 1);
+            return breakSelected * 60;
+          } else if (currentSessionType === "Break") {
+            setCurrentSessionType("Session");
+            console.log(workSelected);
+            console.log("if timelabel=break --------", currentSessionType);
+            return workSelected * 60;
           }
         });
       }, 100);
-
       setIntervalId(newIntervalId);
     }
   };
-  console.log(timeLabel);
+  console.log(currentSessionType);
   const resetAll = () => {
+    playsoundEffect.current.load();
     clearInterval(intervalId);
     setIntervalId(null);
-    setTimeLabel("Work");
-    setTimer(25 * 60);
-    setWorkSelected(25);
-    setBreakSelected(5);
+    setCurrentSessionType("Session");
+    setTimer(2 * 60);
+    setWorkSelected(2);
+    setBreakSelected(1);
     setTargetProgress(0);
-    playsoundEffect.current.load();
   };
   // console.log(`/music/${timeLabel}.mp3`);
   // useEffect(() => {
@@ -160,7 +164,7 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
         mouseDown={mouseDown}
         setShowWindow={setShowWindow}
         showWindow={showWindow}
-        label="Tomato Timer"
+        label="Tomato"
       />
       <div className="tomato-container-all">
         <div className="tomato-container">
@@ -203,6 +207,7 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
                 alt="playStop-icon"
               />
             </button>
+            {/* <p>{tomatoTimeLabel}</p> */}
             {/* <button className="tomato-play-icon">
               <img src={`/images/px-06.png`} alt="playStop-icon" />
             </button> */}
@@ -237,12 +242,7 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
                   options={setting.break}
                   onSelectedChange={setBreakSelected}
                 />
-                <button
-                  className="restart"
-                  onClick={() => {
-                    resetAll();
-                  }}
-                >
+                <button className="restart" onClick={resetAll}>
                   RESETALL
                 </button>
                 <p className="restart-warn">
