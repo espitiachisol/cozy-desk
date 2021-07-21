@@ -23,7 +23,7 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
 
   const playsoundEffect = useRef(null);
   const [intervalId, setIntervalId] = useState(null);
-  // const [deg, setDeg] = useState(0);
+  const [deg, setDeg] = useState(0);
 
   const [targetProgress, setTargetProgress] = useState(0);
 
@@ -51,38 +51,37 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
     defaultY: 20,
   };
   const [position, mouseDown] = useDrag(startingPosition);
-  // useEffect(() => {
-  //   if (timeLabel === "Work") {
-  //     const calcDeg = () => {
-  //       // let thisDeg =
-  //       //   ((360 / targetSelected) * (workSelected * 60 - timer)) /
-  //       //   (workSelected * 60);
-  //       // let thisDeg =
-  //       //   (workSelected * 60 * targetSelected * (workSelected * 60 - timer)) /
-  //       //   360;
-  //       let thisDeg =
-  //         (360 * (workSelected * 60 - timer)) /
-  //         (workSelected * 60 * targetSelected);
-  //       console.log(thisDeg);
-  //       return thisDeg;
-  //     };
-  //     // let newTimer = timer - 1;
-  //     // if (newTimer >= 0) {
-  //     setDeg(calcDeg());
-  //     // } else {
-  //     //   setDeg((pre) => {
-  //     //     return pre + calcDeg();
-  //     //   });
-  //     // }
-  //   }
-  // }, [timer, timeLabel, targetSelected, workSelected]);
+  useEffect(() => {
+    if (timer === 0) {
+      playsoundEffect.current.play();
+      if (currentSessionType === "Session") {
+        setCurrentSessionType("Break");
+        setTargetProgress((pretargetProgress) => pretargetProgress + 1);
+        setTimer(breakSelected * 60);
+      } else if (currentSessionType === "Break") {
+        setCurrentSessionType("Session");
 
-  //設定開始播放後不能setting
+        setTimer(workSelected * 60);
+      }
+    }
+  }, [timer, currentSessionType, breakSelected, workSelected]);
+  useEffect(() => {
+    if (currentSessionType === "Session") {
+      const calcDeg = () => {
+        let thisDeg =
+          (360 * (workSelected * 60 - timer)) /
+          (workSelected * 60 * targetSelected);
+        console.log(thisDeg);
+        return thisDeg + targetProgress * (360 / targetSelected);
+      };
+      setDeg(calcDeg());
+    }
+  }, [timer, currentSessionType, targetSelected, workSelected, targetProgress]);
+
   useEffect(() => {
     setTimer(workSelected * 60);
   }, [workSelected]);
-  console.log(timer);
-  console.log(workSelected, breakSelected);
+
   const isStarted = intervalId !== null;
   const handleStartStop = () => {
     if (isStarted) {
@@ -90,29 +89,7 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
       setIntervalId(null);
     } else {
       const newIntervalId = setInterval(() => {
-        console.log("outside--------", currentSessionType);
-        setTimer((pretimer) => {
-          //假如(目前倒數時間-1)大於等於0,回傳(目前時間-1),如果否,回傳(目前時間)
-          const newtimer = pretimer - 1;
-          if (newtimer >= 0) {
-            return newtimer;
-          }
-          playsoundEffect.current.play();
-          console.log("outside--------", currentSessionType);
-          if (currentSessionType === "Session") {
-            setCurrentSessionType("Break");
-            console.log(breakSelected);
-
-            console.log("if timelabel=work --------", currentSessionType);
-            setTargetProgress(targetProgress + 1);
-            return breakSelected * 60;
-          } else if (currentSessionType === "Break") {
-            setCurrentSessionType("Session");
-            console.log(workSelected);
-            console.log("if timelabel=break --------", currentSessionType);
-            return workSelected * 60;
-          }
-        });
+        setTimer((pretimer) => pretimer - 1);
       }, 100);
       setIntervalId(newIntervalId);
     }
@@ -128,21 +105,6 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
     setBreakSelected(1);
     setTargetProgress(0);
   };
-  // console.log(`/music/${timeLabel}.mp3`);
-  // useEffect(() => {
-  // setDeg((pre) => {
-  //   return (
-  //     (((360 / targetSelected) * (workSelected * 60 - timer)) /
-  //       workSelected) *
-  //       60 +
-  //     pre
-  //   );
-  // });
-  // }, [deg]);
-
-  // useEffect(() => {
-  //   setDeg(calcDeg());
-  // }, [targetProgress]);
 
   return (
     <div
@@ -185,7 +147,7 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
               alt="clock-hand"
               className="tomato-clock-hand"
               style={{
-                transform: `rotate(${0}deg)`,
+                transform: `rotate(${deg}deg)`,
               }}
             />
             <div className="target-progress">{`${targetProgress}/${targetSelected}`}</div>
@@ -207,10 +169,6 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
                 alt="playStop-icon"
               />
             </button>
-            {/* <p>{tomatoTimeLabel}</p> */}
-            {/* <button className="tomato-play-icon">
-              <img src={`/images/px-06.png`} alt="playStop-icon" />
-            </button> */}
           </div>
           <div className="tomato-btn-con">
             <button
