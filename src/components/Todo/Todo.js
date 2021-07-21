@@ -3,7 +3,15 @@ import useDrag from "../hooks/useDrag";
 import WindowHeader from "../windowHeader/WindowHeader";
 import TodoList from "./TodoList";
 import "./Todo.css";
-const Todo = function ({ setShowWindow, showWindow, zIndex, setZIndex }) {
+import { firestore } from "../../firebaseConfig";
+const Todo = function ({
+  setShowWindow,
+  showWindow,
+  zIndex,
+  setZIndex,
+  userState,
+  setUserstate,
+}) {
   const [size, setSize] = useState({});
   const [startPositon, setStartPositon] = useState({});
   const [input, setInput] = useState("");
@@ -31,6 +39,25 @@ const Todo = function ({ setShowWindow, showWindow, zIndex, setZIndex }) {
     defaultY: 20,
   };
   const [position, mouseDown] = useDrag(startingPosition);
+  useEffect(() => {
+    if (userState) {
+      firestore
+        .collection("todoLists")
+        .doc(userState)
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            console.log("Document data:", doc.data());
+            setTodolistAll(doc.data().todolist);
+          } else {
+            console.log("No such document!");
+          }
+        })
+        .catch((error) => {
+          console.log("Error getting document:", error);
+        });
+    }
+  }, [userState]);
   const addTodo = (e) => {
     e.preventDefault();
     e.target.firstChild.value = "";
@@ -43,12 +70,44 @@ const Todo = function ({ setShowWindow, showWindow, zIndex, setZIndex }) {
         minute: "2-digit",
       }
     )}`;
+
     let data = { id: id, text: input, time: time, complete: false };
-    setTodolistAll([...todolistAll, data]);
+    if (userState) {
+      firestore
+        .collection("todoLists")
+        .doc(userState)
+        .set({ todolist: [...todolistAll, data] })
+        .then(() => {
+          setTodolistAll([...todolistAll, data]);
+          console.log("Document successfully written!");
+        })
+        .catch((error) => {
+          console.error("Error writing document: ", error);
+        });
+    } else {
+      //使用者沒有登入的狀況
+      setTodolistAll([...todolistAll, data]);
+    }
   };
   const deleteList = (listid) => {
     let deleteAListFromLists = todolistAll.filter((each) => each.id !== listid);
-    setTodolistAll(deleteAListFromLists);
+    if (userState) {
+      //刪除的話直接用寫入覆蓋原本的array
+      firestore
+        .collection("todoLists")
+        .doc(userState)
+        .set({ todolist: deleteAListFromLists })
+        .then(() => {
+          setTodolistAll(deleteAListFromLists);
+          console.log("Document successfully updte!!!");
+        })
+        .catch((error) => {
+          console.error("Error writing document: ", error);
+        });
+    } else {
+      //使用者沒有登入的狀況
+      setTodolistAll(deleteAListFromLists);
+    }
   };
   const checkComplete = (listid) => {
     console.log(listid);

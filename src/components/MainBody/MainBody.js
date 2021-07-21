@@ -42,6 +42,8 @@ const MainBody = ({
       ) : null}
       {showWindow.Todo.display ? (
         <Todo
+          userState={userState}
+          setUserstate={setUserstate}
           showWindow={showWindow}
           setShowWindow={setShowWindow}
           setZIndex={setZIndex}

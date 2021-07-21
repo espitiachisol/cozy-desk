@@ -16,15 +16,15 @@ const calcDisplayTime = (time) => {
 const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
   //data from user
   const [targetSelected, setTargetSelected] = useState(setting.target[0]);
-  const [workSelected, setWorkSelected] = useState(setting.work[0]);
+  const [workSelected, setWorkSelected] = useState(setting.session[1]);
   const [breakSelected, setBreakSelected] = useState(setting.break[0]);
   const [currentSessionType, setCurrentSessionType] = useState("Session"); // 'Session' or 'Break'
   //timer
 
-  const playsoundEffect = useRef(null);
+  const playSessionsoundEffect = useRef(null);
+  const playBreaksoundEffect = useRef(null);
   const [intervalId, setIntervalId] = useState(null);
   const [deg, setDeg] = useState(0);
-
   const [targetProgress, setTargetProgress] = useState(0);
 
   const [timer, setTimer] = useState(workSelected * 60);
@@ -53,14 +53,14 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
   const [position, mouseDown] = useDrag(startingPosition);
   useEffect(() => {
     if (timer === 0) {
-      playsoundEffect.current.play();
       if (currentSessionType === "Session") {
+        playBreaksoundEffect.current.play();
         setCurrentSessionType("Break");
         setTargetProgress((pretargetProgress) => pretargetProgress + 1);
         setTimer(breakSelected * 60);
       } else if (currentSessionType === "Break") {
+        playSessionsoundEffect.current.play();
         setCurrentSessionType("Session");
-
         setTimer(workSelected * 60);
       }
     }
@@ -71,7 +71,6 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
         let thisDeg =
           (360 * (workSelected * 60 - timer)) /
           (workSelected * 60 * targetSelected);
-        console.log(thisDeg);
         return thisDeg + targetProgress * (360 / targetSelected);
       };
       setDeg(calcDeg());
@@ -90,20 +89,22 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
     } else {
       const newIntervalId = setInterval(() => {
         setTimer((pretimer) => pretimer - 1);
-      }, 100);
+      }, 1000);
       setIntervalId(newIntervalId);
     }
   };
-  console.log(currentSessionType);
+
   const resetAll = () => {
-    playsoundEffect.current.load();
+    playSessionsoundEffect.current.load();
+    playBreaksoundEffect.current.load();
     clearInterval(intervalId);
     setIntervalId(null);
     setCurrentSessionType("Session");
-    setTimer(2 * 60);
-    setWorkSelected(2);
-    setBreakSelected(1);
+    setTimer(25 * 60);
+    setWorkSelected(25);
+    setBreakSelected(5);
     setTargetProgress(0);
+    setTargetSelected(8);
   };
 
   return (
@@ -161,7 +162,6 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
               className="tomato-play-icon"
               onClick={() => {
                 handleStartStop();
-                // calcDeg();
               }}
             >
               <img
@@ -189,16 +189,19 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
                 <Dropdown
                   options={setting.target}
                   onSelectedChange={setTargetSelected}
+                  Selected={targetSelected}
                 />
                 <p className="dropdown-label">Work duration</p>
                 <Dropdown
-                  options={setting.work}
+                  options={setting.session}
                   onSelectedChange={setWorkSelected}
+                  Selected={workSelected}
                 />
                 <p className="dropdown-label">Break duration</p>
                 <Dropdown
                   options={setting.break}
                   onSelectedChange={setBreakSelected}
+                  Selected={breakSelected}
                 />
                 <button className="restart" onClick={resetAll}>
                   RESETALL
@@ -209,12 +212,8 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
               </div>
             ) : null}
           </div>
-          <audio
-            ref={playsoundEffect}
-            // :!TODO帶增加不同聲音
-            // src={timeLabel === "Work" ? "/music/Work.mp3" : "/music/Break.mp3"}
-            src="/music/Work.mp3"
-          ></audio>
+          <audio ref={playBreaksoundEffect} src="/music/Break.mp3"></audio>
+          <audio ref={playSessionsoundEffect} src="/music/Work.mp3"></audio>
         </div>
       </div>
     </div>

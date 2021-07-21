@@ -25,8 +25,7 @@ function App() {
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
-        const uid = user.uid;
-        setUserstate(uid);
+        setUserstate(user.uid);
       } else {
         console.log("not sign in");
       }
