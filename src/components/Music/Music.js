@@ -122,7 +122,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
         setSongs([...defaultSongs]);
       }
     }
-  }, [songFromData, currentPlaylistType]);
+  }, [songFromData, currentPlaylistType, defaultSongs]);
   //假如使用者新增新的音樂清單，再向firestore要一次新的資料，將新的資料放入SongFromData
   useEffect(() => {
     if (userAddLists && userState) {
