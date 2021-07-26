@@ -185,12 +185,10 @@
   width: 50%;
 }
 .song-title {
-  font-size: 18px;
+  font-size: 14px;
   display: block;
 }
-.song-subtitle {
-  font-size: 12px;
-}
+
 /* /////////// */
 /* play icons  */
 /* /////////// */
@@ -240,10 +238,11 @@
 }
 
 /* Music lists */
-.music-lists-btn-con {
+.music-lists-all {
   margin: 0 10px;
-  /* margin: 0 auto; */
-  /* width: 95%; */
+  border: 1px solid rgb(207, 207, 207);
+}
+.music-lists-btn-con {
   background-color: #4f4d4c;
   text-align: center;
 }
@@ -258,31 +257,103 @@
 .music-lists-btn-con button span {
   font-size: 10px;
 }
-
+.toggle-playList-con {
+  display: flex;
+  height: 20px;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+.toggle-playList-con button {
+  width: 50%;
+  height: 20px;
+  border: none;
+  background-color: rgb(234, 229, 225);
+  border-radius: 0px;
+}
+.toggle-playList-con button:hover {
+  border-bottom: 1px solid rgb(207, 203, 198);
+}
+.toggle-playList-con button.active {
+  background-color: rgb(242, 241, 240);
+}
 .music-lists {
-  /* width: 95%;
-  margin: 0 auto; */
-  margin: 0 10px;
   display: flex;
   justify-content: space-between;
+  flex-direction: row;
   flex-wrap: wrap;
   overflow: auto;
   background-color: rgb(242, 241, 240);
+  /* background-image: url("../../../public/images/welcome.jpg"); */
 }
 .music-list {
   text-align: center;
   width: 30%;
-  height: 30%;
-  margin: 10px 0;
+  height: 40%;
+  margin: 15px 0 5px 0;
   cursor: pointer;
+  position: relative;
 }
 .music-list img {
   width: 70%;
+  height: 50%;
+  object-fit: contain;
 }
 .music-list p {
+  height: 32px;
   display: block;
   font-size: 12px;
   color: #4f4d4c;
+}
+.add-music {
+  padding: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+.add-music input[type="file"] {
+  color: #4f4d4c;
+
+  width: 60%;
+}
+.add-music input[type="file"]::file-selector-button {
+  font-size: 12px;
+  height: 20px;
+  cursor: pointer;
+  padding: 0 10px;
+  border-radius: 5px;
+  background-color: transparent;
+
+  border: 1px solid rgb(167, 167, 167);
+}
+.add-music button {
+  height: 20px;
+  font-size: 12px;
+  width: 30%;
+  cursor: pointer;
+  padding: 0 10px;
+  border-radius: 5px;
+  background-color: transparent;
+  border: 1px solid rgb(167, 167, 167);
+}
+.add-music img {
+  width: 10%;
+}
+.delete-playList {
+  position: absolute;
+  font-size: 10px;
+  background-color: rgb(234, 229, 225);
+  width: 14px;
+  border-radius: 14px;
+  color: rgb(167, 167, 167);
+  top: -10px;
+  left: 10px;
+}
+.delete-playList:hover {
+  background-color: #af7474;
+  color: rgb(234, 229, 225);
+}
+.delete-playList:active {
+  background-color: #a56b6b;
 }
 
 /* /////////// */

@@ -13,7 +13,7 @@ const TodoList = ({ lists, checkComplete, deleteList }) => {
               }}
             >
               {listdata.complete ? (
-                <img src="/images/icon-check.png" alt="icon-check" />
+                <img src="/images/icon_check.svg" alt="icon-check" />
               ) : null}
             </button>
             <div className="todo-list-text">
@@ -26,7 +26,7 @@ const TodoList = ({ lists, checkComplete, deleteList }) => {
                 deleteList(listdata.id);
               }}
             >
-              <img src="/images/icon-trash.png" alt="icon-trash" />
+              <img src="/images/icon_trash.svg" alt="icon-trash" />
             </button>
           </div>
         );

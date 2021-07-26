@@ -57,6 +57,9 @@ const Todo = function ({
           console.log("Error getting document:", error);
         });
     }
+    return () => {
+      setTodolistAll([]);
+    };
   }, [userState]);
   const addTodo = (e) => {
     e.preventDefault();
@@ -117,7 +120,21 @@ const Todo = function ({
       }
       return each;
     });
-    setTodolistAll(checkALisToComplete);
+    if (userState) {
+      firestore
+        .collection("todoLists")
+        .doc(userState)
+        .set({ todolist: checkALisToComplete })
+        .then(() => {
+          setTodolistAll(checkALisToComplete);
+          console.log("Document successfully updte!!!");
+        })
+        .catch((error) => {
+          console.error("Error writing document: ", error);
+        });
+    } else {
+      setTodolistAll(checkALisToComplete);
+    }
   };
   useEffect(() => {
     setTodolistTodo(todolistAll.filter((each) => !each.complete));
@@ -166,7 +183,7 @@ const Todo = function ({
               }}
             ></input>
             <button className="icon-plus">
-              <img src="/images/icon-plus.png" alt="icon-plus" />
+              <img src="/images/icon_plus.svg" alt="icon-plus" />
             </button>
           </form>
           <div className="display-todo-container">

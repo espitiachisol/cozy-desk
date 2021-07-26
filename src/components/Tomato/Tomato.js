@@ -4,6 +4,7 @@ import useDrag from "../hooks/useDrag";
 import WindowHeader from "../windowHeader/WindowHeader";
 import Dropdown from "../Dropdown/Dropdown";
 import { setting, target } from "./tomato-data";
+import { firestore } from "../../firebaseConfig";
 
 const calcDisplayTime = (time) => {
   let sec = Math.floor(time % 60);
@@ -13,10 +14,17 @@ const calcDisplayTime = (time) => {
   return `${min}:${sec}`;
 };
 
-const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
+const Tomato = ({
+  setShowWindow,
+  showWindow,
+  zIndex,
+  setZIndex,
+  userState,
+}) => {
   //data from user
   const [targetSelected, setTargetSelected] = useState(setting.target[0]);
-  const [workSelected, setWorkSelected] = useState(setting.session[1]);
+  // const [sessionSelected, setSessionSelected] = useState(setting.session[1]);
+  const [sessionSelected, setSessionSelected] = useState(setting.session[1]);
   const [breakSelected, setBreakSelected] = useState(setting.break[0]);
   const [currentSessionType, setCurrentSessionType] = useState("Session"); // 'Session' or 'Break'
   //timer
@@ -25,13 +33,14 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
   const playBreaksoundEffect = useRef(null);
   const [intervalId, setIntervalId] = useState(null);
   const [deg, setDeg] = useState(0);
-  const [targetProgress, setTargetProgress] = useState(0);
+  const [progress, setProgress] = useState(0);
 
-  const [timer, setTimer] = useState(workSelected * 60);
+  const [timeLeft, setTimeLeft] = useState(sessionSelected * 60);
   const [more, setMore] = useState(false);
   //for window drag
   const [size, setSize] = useState({});
   const [startPositon, setStartPositon] = useState({});
+
   const curWindow = useCallback((node) => {
     if (node !== null) {
       const response = node.getBoundingClientRect();
@@ -52,43 +61,93 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
   };
   const [position, mouseDown] = useDrag(startingPosition);
   useEffect(() => {
-    if (timer === 0) {
+    if (userState) {
+      firestore
+        .collection("tomatoClock")
+        .doc(userState)
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            console.log("Document data:", doc.data());
+            const returnData = doc.data();
+            setTargetSelected(returnData.target);
+            setBreakSelected(returnData.break);
+            setSessionSelected(returnData.session);
+            setCurrentSessionType(returnData.currentSessionType);
+            setProgress(returnData.progress);
+            setTimeLeft(returnData.timeLeft);
+          } else {
+            console.log("No such document!");
+          }
+        })
+        .catch((error) => {
+          console.log("Error getting document:", error);
+        });
+    }
+  }, [userState]);
+
+  useEffect(() => {
+    if (timeLeft === 0) {
       if (currentSessionType === "Session") {
+        console.log("play");
         playBreaksoundEffect.current.play();
         setCurrentSessionType("Break");
-        setTargetProgress((pretargetProgress) => pretargetProgress + 1);
-        setTimer(breakSelected * 60);
+        setProgress((preProgress) => preProgress + 1);
+        setTimeLeft(breakSelected * 60);
       } else if (currentSessionType === "Break") {
+        console.log("play");
         playSessionsoundEffect.current.play();
         setCurrentSessionType("Session");
-        setTimer(workSelected * 60);
+        setTimeLeft(sessionSelected * 60);
       }
     }
-  }, [timer, currentSessionType, breakSelected, workSelected]);
+  }, [timeLeft, currentSessionType, breakSelected, sessionSelected]);
   useEffect(() => {
     if (currentSessionType === "Session") {
       const calcDeg = () => {
         let thisDeg =
-          (360 * (workSelected * 60 - timer)) /
-          (workSelected * 60 * targetSelected);
-        return thisDeg + targetProgress * (360 / targetSelected);
+          (360 * (sessionSelected * 60 - timeLeft)) /
+          (sessionSelected * 60 * targetSelected);
+        return thisDeg + progress * (360 / targetSelected);
       };
       setDeg(calcDeg());
     }
-  }, [timer, currentSessionType, targetSelected, workSelected, targetProgress]);
+  }, [timeLeft, currentSessionType, targetSelected, sessionSelected, progress]);
 
   useEffect(() => {
-    setTimer(workSelected * 60);
-  }, [workSelected]);
+    setTimeLeft(sessionSelected * 60);
+  }, [sessionSelected]);
 
+  const saveData = () => {
+    if (userState) {
+      firestore
+        .collection("tomatoClock")
+        .doc(userState)
+        .set({
+          target: targetSelected,
+          session: sessionSelected,
+          break: breakSelected,
+          timeLeft: timeLeft,
+          progress: progress,
+          currentSessionType: currentSessionType,
+        })
+        .then(() => {
+          console.log("Document successfully updte!!!");
+        })
+        .catch((error) => {
+          console.error("Error writing document: ", error);
+        });
+    }
+  };
   const isStarted = intervalId !== null;
   const handleStartStop = () => {
+    saveData();
     if (isStarted) {
       clearInterval(intervalId);
       setIntervalId(null);
     } else {
       const newIntervalId = setInterval(() => {
-        setTimer((pretimer) => pretimer - 1);
+        setTimeLeft((pretimer) => pretimer - 1);
       }, 1000);
       setIntervalId(newIntervalId);
     }
@@ -100,11 +159,12 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
     clearInterval(intervalId);
     setIntervalId(null);
     setCurrentSessionType("Session");
-    setTimer(25 * 60);
-    setWorkSelected(25);
+    setTimeLeft(25 * 60);
+    setSessionSelected(25);
     setBreakSelected(5);
-    setTargetProgress(0);
+    setProgress(0);
     setTargetSelected(8);
+    //saveData();  TODO: restAll在儲存
   };
 
   return (
@@ -135,7 +195,7 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
             <div
               className="tomato-pieces"
               style={{
-                backgroundImage: target[targetSelected][targetProgress],
+                backgroundImage: target[targetSelected][progress],
               }}
             ></div>
             <img
@@ -151,12 +211,12 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
                 transform: `rotate(${deg}deg)`,
               }}
             />
-            <div className="target-progress">{`${targetProgress}/${targetSelected}`}</div>
+            <div className="target-progress">{`${progress}/${targetSelected}`}</div>
           </div>
         </div>
         <div className="content-container">
           <div className="tomato-time">
-            <h4 className="tomato-counter">{calcDisplayTime(timer)}</h4>
+            <h4 className="tomato-counter">{calcDisplayTime(timeLeft)}</h4>
 
             <button
               className="tomato-play-icon"
@@ -165,7 +225,7 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
               }}
             >
               <img
-                src={`/images/px-${isStarted ? "03" : "02"}.png`}
+                src={`/images/${isStarted ? "icon_stop" : "icon_play"}.svg`}
                 alt="playStop-icon"
               />
             </button>
@@ -194,8 +254,8 @@ const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
                 <p className="dropdown-label">Work duration</p>
                 <Dropdown
                   options={setting.session}
-                  onSelectedChange={setWorkSelected}
-                  Selected={workSelected}
+                  onSelectedChange={setSessionSelected}
+                  Selected={sessionSelected}
                 />
                 <p className="dropdown-label">Break duration</p>
                 <Dropdown
