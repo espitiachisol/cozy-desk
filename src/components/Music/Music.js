@@ -24,36 +24,7 @@ const calcDisplayFullTime = (time) => {
 const randomNum = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
-const defaultSongs = [
-  {
-    id: "defaultSong01",
-    title: "Focus-Soft Piano Music for Reading",
-    src: "/music/02.mp3",
-    img: "/images/mixtape-cover-1.png",
-    icon: "/images/tape-icons-1.png",
-  },
-  {
-    id: "defaultSong02",
-    title: "Piano-Yiruma's Greatest Hits",
-    src: "/music/03.mp3",
-    img: "/images/mixtape-cover-2.png",
-    icon: "/images/tape-icons-2.png",
-  },
-  {
-    id: "defaultSong03",
-    title: "Rock Songs-Best Rock Hits of the 2000's",
-    src: "/music/04.mp3",
-    img: "/images/mixtape-cover-3.png",
-    icon: "/images/tape-icons-3.png",
-  },
-  {
-    id: "defaultSong04",
-    title: "Love Songs-Music that bring back to old days.",
-    src: "/music/05.mp3",
-    img: "/images/mixtape-cover-4.png",
-    icon: "/images/tape-icons-4.png",
-  },
-];
+
 const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
   const control = useRef(null);
   const [size, setSize] = useState({});
@@ -65,11 +36,40 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
   //如果duration設定為0,下面的運算(progress.currentTime * 1) / progress.duration} 會是NaN% 因為0/0= NaN 設定為1,0/1=0
   const [progress, setProgress] = useState({ currentTime: 0, duration: 1 });
   const [loopOneSong, setLoopOneSong] = useState(false);
-
+  const [volume, setVolume] = useState(1);
   const [musicListsShow, setMusicListsShow] = useState(false);
-  const [songFromData, setSongFromData] = useState([]);
   const [userAddLists, setUserAddLists] = useState(false);
-
+  const [songFromData, setSongFromData] = useState([]);
+  const [defaultSongs, setDefaultSongs] = useState([
+    {
+      id: "defaultSong01",
+      title: "Focus-Soft Piano Music for Reading",
+      src: "/music/02.mp3",
+      img: "/images/mixtape-cover-1.png",
+      icon: "/images/tape-icons-1.png",
+    },
+    {
+      id: "defaultSong02",
+      title: "Piano-Yiruma's Greatest Hits",
+      src: "/music/03.mp3",
+      img: "/images/mixtape-cover-2.png",
+      icon: "/images/tape-icons-2.png",
+    },
+    {
+      id: "defaultSong03",
+      title: "Rock Songs-Best Rock Hits of the 2000's",
+      src: "/music/04.mp3",
+      img: "/images/mixtape-cover-3.png",
+      icon: "/images/tape-icons-3.png",
+    },
+    {
+      id: "defaultSong04",
+      title: "Love Songs-Music that bring back to old days.",
+      src: "/music/05.mp3",
+      img: "/images/mixtape-cover-4.png",
+      icon: "/images/tape-icons-4.png",
+    },
+  ]);
   const [songs, setSongs] = useState(defaultSongs);
   const [currentPlaylistType, setCurrentPlaylistType] = useState("default");
   // console.log(currentPlaylistType);
@@ -80,6 +80,10 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
       control.current.play();
     }
   }, [songIndex, isplaying]);
+  //volume被調整後設定audio音量
+  useEffect(() => {
+    control.current.volume = volume;
+  }, [volume]);
   //確定使用者是登入的狀態，若是登入的狀態向firestore要使用者的歌單，放入SongFromData裡
   useEffect(() => {
     if (userState) {
@@ -90,7 +94,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
         .then((doc) => {
           if (doc.exists) {
             //假如沒有data會出現  doc.data.mixtape is not iterable FIXME:
-            console.log("Document data:", doc.data());
+            // console.log("Document data:", doc.data());
             setSongFromData([...doc.data().mixtape]);
           } else {
             console.log("No such document!");
@@ -112,7 +116,11 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
         setSongs([...defaultSongs]);
       }
     } else {
-      console.log("songs is default songs");
+      if (currentPlaylistType === "user") {
+        setSongs([...defaultSongs]);
+      } else {
+        setSongs([...defaultSongs]);
+      }
     }
   }, [songFromData, currentPlaylistType]);
   //假如使用者新增新的音樂清單，再向firestore要一次新的資料，將新的資料放入SongFromData
@@ -163,6 +171,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
   const play = () => {
     setIsplaying(true);
     setRotate("play");
+
     control.current.play();
   };
   const stop = () => {
@@ -231,8 +240,36 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
         });
     });
   };
-  const deletePlayList = (e) => {
-    console.log(e);
+  const deletePlayList = (id) => {
+    //刪除storage資料
+    storage
+      .ref()
+      .child(id)
+      .delete()
+      .then(() => {
+        console.log("Document successfully delete from storage");
+        //更新firestore資料
+        let filteredArray = songFromData.filter((song) => song.id !== id);
+        console.log(filteredArray);
+        firestore
+          .collection("mixtape")
+          .doc(userState)
+          .set({
+            mixtape: [...filteredArray],
+          })
+          .then(() => {
+            //更新SongFromData
+            setUserAddLists(true);
+            filteredArray = [];
+            console.log("Document successfully  delete from firestore !!!");
+          })
+          .catch((error) => {
+            console.error("Error writing document: ", error);
+          });
+      })
+      .catch((error) => {
+        console.error("Error Deleting document from storage: ", error);
+      });
   };
   return (
     <div
@@ -361,20 +398,38 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
               </p>
             </div>
             <div className="play-icons">
+              <div className="volume-slider-con">
+                <img
+                  src={`/images/icon_${volume === 0 ? "mute" : "volume"}.svg`}
+                  alt="icon volume"
+                  className="icon-volume"
+                />
+                <input
+                  className="volume-slider"
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="5"
+                  value={volume * 100}
+                  onChange={(e) => {
+                    setVolume(parseInt(e.target.value, 10) * 0.01);
+                  }}
+                ></input>
+              </div>
               <button className=" play-icon" onClick={pre}>
-                <img src="/images/icon_pre.svg" alt="CD" />
+                <img src="/images/icon_pre.svg" alt="icon pre" />
               </button>
               {isplaying ? (
                 <button className="play-icon" onClick={stop}>
-                  <img src="/images/icon_stop.svg" alt="CD" />
+                  <img src="/images/icon_stop.svg" alt="icon stop" />
                 </button>
               ) : (
                 <button className="play-icon" onClick={play}>
-                  <img src="/images/icon_play.svg" alt="CD" />
+                  <img src="/images/icon_play.svg" alt="icon play" />
                 </button>
               )}
               <button className="play-icon" onClick={next}>
-                <img src="/images/icon_next.svg" alt="CD" />
+                <img src="/images/icon_next.svg" alt="icon next" />
               </button>
               <button
                 className={`play-icon ${loopOneSong ? "action-loop" : ""}`}
@@ -382,7 +437,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
                   setLoopOneSong(!loopOneSong);
                 }}
               >
-                <img src="/images/icon_loop.svg" alt="CD" />
+                <img src="/images/icon_loop.svg" alt="icon loop" />
               </button>
             </div>
             <div

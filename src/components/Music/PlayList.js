@@ -19,8 +19,8 @@ const PlayList = ({
             {currentPlaylistType === "user" ? (
               <div
                 className="delete-playList"
-                onClick={(e) => {
-                  deletePlayList(e);
+                onClick={() => {
+                  deletePlayList();
                 }}
               >
                 X

@@ -195,6 +195,7 @@
 .play-icons {
   width: 45%;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
 }
 
@@ -212,6 +213,27 @@
 }
 .play-icon.action-loop {
   background-color: rgb(207, 203, 198);
+}
+/* /////////// */
+/*volume-Slider   */
+/* /////////// */
+.volume-slider-con {
+  width: 100%;
+  display: flex;
+  margin-bottom: 5px;
+  justify-content: space-between;
+  align-items: center;
+}
+.volume-slider {
+  width: 80%;
+  height: 5px;
+  filter: grayscale(100%) opacity(50%);
+  cursor: pointer;
+}
+.icon-volume {
+  width: 25px;
+  height: 20px;
+  object-fit: cover;
 }
 
 /* /////////// */
