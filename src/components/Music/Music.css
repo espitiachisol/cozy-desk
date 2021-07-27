@@ -361,6 +361,7 @@
   width: 10%;
 }
 .delete-playList {
+  z-index: 10;
   position: absolute;
   font-size: 10px;
   background-color: rgb(234, 229, 225);

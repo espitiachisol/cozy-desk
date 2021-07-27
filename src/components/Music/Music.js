@@ -24,7 +24,36 @@ const calcDisplayFullTime = (time) => {
 const randomNum = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
-
+const cozydeskPlaylist = [
+  {
+    id: "defaultSong01",
+    title: "Focus-Soft Piano Music for Reading",
+    src: "/music/02.mp3",
+    img: "/images/mixtape-cover-1.png",
+    icon: "/images/tape-icons-1.png",
+  },
+  {
+    id: "defaultSong02",
+    title: "Piano-Yiruma's Greatest Hits",
+    src: "/music/03.mp3",
+    img: "/images/mixtape-cover-2.png",
+    icon: "/images/tape-icons-2.png",
+  },
+  {
+    id: "defaultSong03",
+    title: "Rock Songs-Best Rock Hits of the 2000's",
+    src: "/music/04.mp3",
+    img: "/images/mixtape-cover-3.png",
+    icon: "/images/tape-icons-3.png",
+  },
+  {
+    id: "defaultSong04",
+    title: "Love Songs-Music that bring back to old days.",
+    src: "/music/05.mp3",
+    img: "/images/mixtape-cover-4.png",
+    icon: "/images/tape-icons-4.png",
+  },
+];
 const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
   const control = useRef(null);
   const [size, setSize] = useState({});
@@ -40,38 +69,10 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
   const [musicListsShow, setMusicListsShow] = useState(false);
   const [userAddLists, setUserAddLists] = useState(false);
   const [songFromData, setSongFromData] = useState([]);
-  const [defaultSongs, setDefaultSongs] = useState([
-    {
-      id: "defaultSong01",
-      title: "Focus-Soft Piano Music for Reading",
-      src: "/music/02.mp3",
-      img: "/images/mixtape-cover-1.png",
-      icon: "/images/tape-icons-1.png",
-    },
-    {
-      id: "defaultSong02",
-      title: "Piano-Yiruma's Greatest Hits",
-      src: "/music/03.mp3",
-      img: "/images/mixtape-cover-2.png",
-      icon: "/images/tape-icons-2.png",
-    },
-    {
-      id: "defaultSong03",
-      title: "Rock Songs-Best Rock Hits of the 2000's",
-      src: "/music/04.mp3",
-      img: "/images/mixtape-cover-3.png",
-      icon: "/images/tape-icons-3.png",
-    },
-    {
-      id: "defaultSong04",
-      title: "Love Songs-Music that bring back to old days.",
-      src: "/music/05.mp3",
-      img: "/images/mixtape-cover-4.png",
-      icon: "/images/tape-icons-4.png",
-    },
-  ]);
+  const defaultSongs = cozydeskPlaylist;
   const [songs, setSongs] = useState(defaultSongs);
   const [currentPlaylistType, setCurrentPlaylistType] = useState("default");
+
   // console.log(currentPlaylistType);
   useEffect(() => {
     if (isplaying) {
@@ -106,23 +107,23 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
     }
   }, [userState]);
   //假如 SongFromData有更新，或是有內容，設定目前顯示的音樂
-  useEffect(() => {
-    if (songFromData.length > 0) {
-      console.log("setsongEfect");
-      //set display song ""defalut "" and song from firestore
-      if (currentPlaylistType === "user") {
-        setSongs([...songFromData]);
-      } else {
-        setSongs([...defaultSongs]);
-      }
-    } else {
-      if (currentPlaylistType === "user") {
-        setSongs([...defaultSongs]);
-      } else {
-        setSongs([...defaultSongs]);
-      }
-    }
-  }, [songFromData, currentPlaylistType, defaultSongs]);
+  // useEffect(() => {
+  //   if (songFromData.length > 0) {
+  //     console.log("setsongEfect");
+  //     //set display song ""defalut "" and song from firestore
+  //     //   if (currentPlaylistType === "user") {
+  //     //     setSongs([...songFromData]);
+  //     //   } else {
+  //     //     setSongs([...defaultSongs]);
+  //     //   }
+  //     // } else {
+  //     //   if (currentPlaylistType === "user") {
+  //     //     setSongs([...defaultSongs]);
+  //     //   } else {
+  //     //     setSongs([...defaultSongs]);
+  //     //   }
+  //   }
+  // }, [songFromData, currentPlaylistType, defaultSongs]);
   //假如使用者新增新的音樂清單，再向firestore要一次新的資料，將新的資料放入SongFromData
   useEffect(() => {
     if (userAddLists && userState) {
@@ -506,7 +507,10 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
                 }}
               >
                 <PlayList
-                  songs={songs}
+                  songs={
+                    currentPlaylistType === "user" ? songFromData : defaultSongs
+                  }
+                  setSongs={setSongs}
                   setSongIndex={setSongIndex}
                   currentPlaylistType={currentPlaylistType}
                   deletePlayList={deletePlayList}

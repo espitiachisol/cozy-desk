@@ -4,6 +4,7 @@ const PlayList = ({
   setSongIndex,
   currentPlaylistType,
   deletePlayList,
+  setSongs,
 }) => {
   return (
     <>
@@ -12,7 +13,12 @@ const PlayList = ({
           <div
             key={list.id}
             className="music-list"
+            // onDoubleClick={() => {
+            //   setSongs(songs);
+            //   setSongIndex(index);
+            // }}
             onClick={() => {
+              setSongs(songs);
               setSongIndex(index);
             }}
           >
@@ -20,7 +26,7 @@ const PlayList = ({
               <div
                 className="delete-playList"
                 onClick={() => {
-                  deletePlayList();
+                  deletePlayList(list.id);
                 }}
               >
                 X

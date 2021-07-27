@@ -19,8 +19,8 @@ function App() {
   const [showWindow, setShowWindow] = useState({
     SignWindow: { display: true },
     Tomato: { display: false },
-    Music: { display: true },
-    Todo: { display: false },
+    Music: { display: false },
+    Todo: { display: true },
   });
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
