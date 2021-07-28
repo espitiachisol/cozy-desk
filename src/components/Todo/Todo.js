@@ -6,15 +6,6 @@ import "./Todo.css";
 import { firestore } from "../../firebaseConfig";
 import InputRadio from "./InputRadio";
 const converPriorityToNumber = (item) => {
-  // if (item === "High") {
-  //   return 3;
-  // } else if (item === "Medium") {
-  //   return 2;
-  // } else if (item === "Low") {
-  //   return 1;
-  // } else {
-  //   return 0;
-  // }
   let result;
   switch (item) {
     case "High":
@@ -296,7 +287,7 @@ const Todo = function ({
       className="todo window"
       ref={curWindow}
       style={{ top: position.y, left: position.x, zIndex: zIndex.Todo }}
-      onClick={() => {
+      onMouseDown={() => {
         if (zIndex.curW !== "Todo") {
           setZIndex({
             ...zIndex,

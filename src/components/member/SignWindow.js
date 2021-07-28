@@ -40,7 +40,7 @@ const SignWindow = ({
       className="window sign"
       ref={curWindow}
       style={{ top: position.y, left: position.x, zIndex: zIndex.SignWindow }}
-      onClick={() => {
+      onMouseDown={() => {
         if (zIndex.curW !== "SignWindow") {
           setZIndex({
             ...zIndex,

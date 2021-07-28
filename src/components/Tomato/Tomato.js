@@ -172,7 +172,7 @@ const Tomato = ({
       className="tomato window"
       ref={curWindow}
       style={{ top: position.y, left: position.x, zIndex: zIndex.Tomato }}
-      onClick={() => {
+      onMouseDown={() => {
         if (zIndex.curW !== "Tomato") {
           setZIndex({
             ...zIndex,

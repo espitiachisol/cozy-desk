@@ -277,7 +277,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
       className="music window"
       ref={curWindow}
       style={{ top: position.y, left: position.x, zIndex: zIndex.Music }}
-      onClick={() => {
+      onMouseDown={() => {
         if (zIndex.curW !== "Music") {
           setZIndex({
             ...zIndex,
