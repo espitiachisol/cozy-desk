@@ -18,7 +18,7 @@ const Sign = ({
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          console.log("---response--Sign-in", user);
+          console.log("---response--logn-in", user.uid);
           if (SignInShow) {
             setUserstate(user.uid);
             setShowWindow({ ...showWindow, SignWindow: { display: false } });
@@ -37,7 +37,8 @@ const Sign = ({
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          console.log("---response--Sign-up", user);
+          console.log("---response--Sign-up", user.uid);
+          setUserstate(user.uid);
           setShowWindow({ ...showWindow, SignWindow: { display: false } });
           // ...
         })

@@ -26,6 +26,7 @@ const MainBody = ({
       ) : null}
       {showWindow.Music.display ? (
         <Music
+          userState={userState}
           showWindow={showWindow}
           setShowWindow={setShowWindow}
           setZIndex={setZIndex}
@@ -34,6 +35,7 @@ const MainBody = ({
       ) : null}
       {showWindow.Tomato.display ? (
         <Tomato
+          userState={userState}
           showWindow={showWindow}
           setShowWindow={setShowWindow}
           setZIndex={setZIndex}
@@ -42,6 +44,7 @@ const MainBody = ({
       ) : null}
       {showWindow.Todo.display ? (
         <Todo
+          userState={userState}
           showWindow={showWindow}
           setShowWindow={setShowWindow}
           setZIndex={setZIndex}

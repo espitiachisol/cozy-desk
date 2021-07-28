@@ -18,15 +18,14 @@ function App() {
 
   const [showWindow, setShowWindow] = useState({
     SignWindow: { display: true },
-    Tomato: { display: true },
+    Tomato: { display: false },
     Music: { display: false },
-    Todo: { display: false },
+    Todo: { display: true },
   });
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
-        const uid = user.uid;
-        setUserstate(uid);
+        setUserstate(user.uid);
       } else {
         console.log("not sign in");
       }

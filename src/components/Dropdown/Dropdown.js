@@ -1,6 +1,6 @@
 import React from "react";
 import "./Dropdown.css";
-const Dropdown = ({ options, onSelectedChange }) => {
+const Dropdown = ({ options, onSelectedChange, Selected }) => {
   const renderedOptions = options.map((option) => {
     return (
       <option key={option} className="option">
@@ -8,10 +8,11 @@ const Dropdown = ({ options, onSelectedChange }) => {
       </option>
     );
   });
-
+  let thisSelected = Selected;
   return (
     <div className="select">
       <select
+        value={thisSelected}
         onChange={(e) => {
           onSelectedChange(parseInt(e.target.value, 10));
         }}

@@ -2,41 +2,8 @@ import React, { useState, useCallback, useRef, useEffect } from "react";
 import useDrag from "../hooks/useDrag";
 import WindowHeader from "../windowHeader/WindowHeader";
 import "./Music.css";
-
-const songs = [
-  {
-    id: "defaultSong01",
-    title: "Focus",
-    subtitle: "Soft Piano Music for Reading",
-    src: "/music/02.mp3",
-    img: "/images/mixtape-cover-1.png",
-    icon: "/images/tape-icons-1.png",
-  },
-  {
-    id: "defaultSong02",
-    title: "Piano",
-    subtitle: "Yiruma's Greatest Hits",
-    src: "/music/03.mp3",
-    img: "/images/mixtape-cover-2.png",
-    icon: "/images/tape-icons-2.png",
-  },
-  {
-    id: "defaultSong03",
-    title: "Rock Songs",
-    subtitle: "Best Rock Hits of the 2000's",
-    src: "/music/04.mp3",
-    img: "/images/mixtape-cover-3.png",
-    icon: "/images/tape-icons-3.png",
-  },
-  {
-    id: "defaultSong04",
-    title: "Love Songs",
-    subtitle: "Music that bring back to old days.",
-    src: "/music/05.mp3",
-    img: "/images/mixtape-cover-4.png",
-    icon: "/images/tape-icons-4.png",
-  },
-];
+import { storage, firestore } from "../../firebaseConfig";
+import PlayList from "./PlayList";
 
 const calcDisplayFullTime = (time) => {
   if (time) {
@@ -54,7 +21,40 @@ const calcDisplayFullTime = (time) => {
     return "00:00:00";
   }
 };
-const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
+const randomNum = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+};
+const cozydeskPlaylist = [
+  {
+    id: "defaultSong01",
+    title: "Focus-Soft Piano Music for Reading",
+    src: "/music/02.mp3",
+    img: "/images/mixtape-cover-1.png",
+    icon: "/images/tape-icons-1.png",
+  },
+  {
+    id: "defaultSong02",
+    title: "Piano-Yiruma's Greatest Hits",
+    src: "/music/03.mp3",
+    img: "/images/mixtape-cover-2.png",
+    icon: "/images/tape-icons-2.png",
+  },
+  {
+    id: "defaultSong03",
+    title: "Rock Songs-Best Rock Hits of the 2000's",
+    src: "/music/04.mp3",
+    img: "/images/mixtape-cover-3.png",
+    icon: "/images/tape-icons-3.png",
+  },
+  {
+    id: "defaultSong04",
+    title: "Love Songs-Music that bring back to old days.",
+    src: "/music/05.mp3",
+    img: "/images/mixtape-cover-4.png",
+    icon: "/images/tape-icons-4.png",
+  },
+];
+const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
   const control = useRef(null);
   const [size, setSize] = useState({});
   const [startPositon, setStartPositon] = useState({});
@@ -62,10 +62,18 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
   const [isplaying, setIsplaying] = useState(false);
   const [rotate, setRotate] = useState("");
   const [tapeOnReel, setTapeOnReel] = useState(true);
-  const [progress, setProgress] = useState({ currentTime: 0, duration: 100 });
+  //如果duration設定為0,下面的運算(progress.currentTime * 1) / progress.duration} 會是NaN% 因為0/0= NaN 設定為1,0/1=0
+  const [progress, setProgress] = useState({ currentTime: 0, duration: 1 });
   const [loopOneSong, setLoopOneSong] = useState(false);
-  //如果duration設定為0,下面的運算(progress.currentTime * 100) / progress.duration} 會是NaN% 因為0/0= NaN 設定為100,0/100=0
-  const [musicLists, setMusicLists] = useState(false);
+  const [volume, setVolume] = useState(1);
+  const [musicListsShow, setMusicListsShow] = useState(false);
+  const [userAddLists, setUserAddLists] = useState(false);
+  const [songFromData, setSongFromData] = useState([]);
+  const defaultSongs = cozydeskPlaylist;
+  const [songs, setSongs] = useState(defaultSongs);
+  const [currentPlaylistType, setCurrentPlaylistType] = useState("default");
+
+  // console.log(currentPlaylistType);
   useEffect(() => {
     if (isplaying) {
       setIsplaying(true);
@@ -73,6 +81,72 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
       control.current.play();
     }
   }, [songIndex, isplaying]);
+  //volume被調整後設定audio音量
+  useEffect(() => {
+    control.current.volume = volume;
+  }, [volume]);
+  //確定使用者是登入的狀態，若是登入的狀態向firestore要使用者的歌單，放入SongFromData裡
+  useEffect(() => {
+    if (userState) {
+      firestore
+        .collection("mixtape")
+        .doc(userState)
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            //假如沒有data會出現  doc.data.mixtape is not iterable FIXME:
+            // console.log("Document data:", doc.data());
+            setSongFromData([...doc.data().mixtape]);
+          } else {
+            console.log("No such document!");
+          }
+        })
+        .catch((error) => {
+          console.log("Error getting document:", error);
+        });
+    }
+  }, [userState]);
+  //假如 SongFromData有更新，或是有內容，設定目前顯示的音樂
+  // useEffect(() => {
+  //   if (songFromData.length > 0) {
+  //     console.log("setsongEfect");
+  //     //set display song ""defalut "" and song from firestore
+  //     //   if (currentPlaylistType === "user") {
+  //     //     setSongs([...songFromData]);
+  //     //   } else {
+  //     //     setSongs([...defaultSongs]);
+  //     //   }
+  //     // } else {
+  //     //   if (currentPlaylistType === "user") {
+  //     //     setSongs([...defaultSongs]);
+  //     //   } else {
+  //     //     setSongs([...defaultSongs]);
+  //     //   }
+  //   }
+  // }, [songFromData, currentPlaylistType, defaultSongs]);
+  //假如使用者新增新的音樂清單，再向firestore要一次新的資料，將新的資料放入SongFromData
+  useEffect(() => {
+    if (userAddLists && userState) {
+      firestore
+        .collection("mixtape")
+        .doc(userState)
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            setSongFromData([...doc.data().mixtape]);
+            setUserAddLists(false);
+            console.log("setSongFromDataEffect");
+          } else {
+            console.log("No such document!");
+          }
+        })
+        .catch((error) => {
+          console.log("Error getting document:", error);
+        });
+    }
+  }, [userAddLists, userState]);
+  // console.log("song from data----", songFromData);
+  // console.log("songs----", songs);
 
   const curWindow = useCallback((node) => {
     if (node !== null) {
@@ -98,6 +172,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
   const play = () => {
     setIsplaying(true);
     setRotate("play");
+
     control.current.play();
   };
   const stop = () => {
@@ -115,7 +190,88 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
       ? setSongIndex(0)
       : setSongIndex(songIndex + 1);
   };
+  let array = [];
+  const uploadFiles = (e) => {
+    console.log(e);
+    //把當前上傳的資料放到雲端storage和firestore
+    e.preventDefault();
+    const files = e.target[0].files;
+    //多個檔案,loop 每個要上傳的檔案
+    Object.entries(files).forEach(([key, value]) => {
+      //存入storage
+      storage
+        .ref()
+        .child(`${userState}/${value.name}`)
+        .put(value)
+        .then((snapshot) => {
+          //取得storage
+          storage
+            .ref()
+            .child(`${userState}/${value.name}`)
+            .getDownloadURL()
+            .then((url) => {
+              let imgNum = randomNum(5, 9);
 
+              array.push({
+                id: `${userState}/${value.name}`,
+                title: value.name,
+                src: url,
+                img: `/images/mixtape-cover-${imgNum}.png`,
+                icon: `/images/tape-icons-${imgNum}.png`,
+              });
+              console.log("Uploaded a file!");
+
+              console.log([...array]);
+              //將取得的storage url 放入firestore
+              firestore
+                .collection("mixtape")
+                .doc(userState)
+                .set({
+                  mixtape: [...songFromData, ...array],
+                })
+                .then(() => {
+                  setUserAddLists(true);
+                  array = [];
+                  console.log("Document successfully updte!!!");
+                })
+                .catch((error) => {
+                  console.error("Error writing document: ", error);
+                });
+            });
+        });
+    });
+  };
+  const deletePlayList = (id) => {
+    //刪除storage資料
+    storage
+      .ref()
+      .child(id)
+      .delete()
+      .then(() => {
+        console.log("Document successfully delete from storage");
+        //更新firestore資料
+        let filteredArray = songFromData.filter((song) => song.id !== id);
+        console.log(filteredArray);
+        firestore
+          .collection("mixtape")
+          .doc(userState)
+          .set({
+            mixtape: [...filteredArray],
+          })
+          .then(() => {
+            //更新SongFromData
+            setUserAddLists(true);
+            filteredArray = [];
+            console.log("Document successfully  delete from firestore !!!");
+          })
+          .catch((error) => {
+            console.error("Error writing document: ", error);
+          });
+      })
+      .catch((error) => {
+        console.error("Error Deleting document from storage: ", error);
+      });
+  };
   return (
     <div
       className="music window"
@@ -160,7 +316,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
             }}
           >
             <img
-              src="/images/mixtape-11.png"
+              src="/images/mixtape-tape-on-reel.png"
               className="tape"
               alt="tape on reel left"
             />
@@ -175,7 +331,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
             }}
           >
             <img
-              src="/images/mixtape-11.png"
+              src="/images/mixtape-tape-on-reel.png"
               className="tape"
               alt="tape on reel right"
             />
@@ -241,23 +397,40 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
               <p className="song-title font-style-prata ">
                 {songs[songIndex].title}
               </p>
-              <p className="song-subtitle">{songs[songIndex].subtitle}</p>
             </div>
             <div className="play-icons">
+              <div className="volume-slider-con">
+                <img
+                  src={`/images/icon_${volume === 0 ? "mute" : "volume"}.svg`}
+                  alt="icon volume"
+                  className="icon-volume"
+                />
+                <input
+                  className="volume-slider"
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="5"
+                  value={volume * 100}
+                  onChange={(e) => {
+                    setVolume(parseInt(e.target.value, 10) * 0.01);
+                  }}
+                ></input>
+              </div>
               <button className=" play-icon" onClick={pre}>
-                <img src="/images/px-05.png" alt="CD" />
+                <img src="/images/icon_pre.svg" alt="icon pre" />
               </button>
               {isplaying ? (
                 <button className="play-icon" onClick={stop}>
-                  <img src="/images/px-03.png" alt="CD" />
+                  <img src="/images/icon_stop.svg" alt="icon stop" />
                 </button>
               ) : (
                 <button className="play-icon" onClick={play}>
-                  <img src="/images/px-02.png" alt="CD" />
+                  <img src="/images/icon_play.svg" alt="icon play" />
                 </button>
               )}
               <button className="play-icon" onClick={next}>
-                <img src="/images/px-04.png" alt="CD" />
+                <img src="/images/icon_next.svg" alt="icon next" />
               </button>
               <button
                 className={`play-icon ${loopOneSong ? "action-loop" : ""}`}
@@ -265,7 +438,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
                   setLoopOneSong(!loopOneSong);
                 }}
               >
-                <img src="/images/px-01.png" alt="CD" />
+                <img src="/images/icon_loop.svg" alt="icon loop" />
               </button>
             </div>
             <div
@@ -296,32 +469,67 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
             <div className="music-lists-btn-con">
               <button
                 onClick={() => {
-                  setMusicLists(!musicLists);
+                  setMusicListsShow(!musicListsShow);
                 }}
               >
-                Music list <span>&#9660;</span>
+                Playlist <span>&#9660;</span>
               </button>
             </div>
-            <div
-              className="music-lists"
-              style={{ height: `${musicLists ? 200 : 0}px` }}
-            >
-              {musicLists
-                ? songs.map((list, index) => {
-                    return (
-                      <div
-                        key={list.id}
-                        className="music-list"
-                        onClick={() => {
-                          setSongIndex(index);
-                        }}
-                      >
-                        <img src={list.icon} alt={list.title} />
-                        <p>{list.title}</p>
-                      </div>
-                    );
-                  })
-                : null}
+            {musicListsShow ? (
+              <div className="toggle-playList-con">
+                <button
+                  className={`${
+                    currentPlaylistType === "default" ? "active" : ""
+                  }`}
+                  onClick={() => {
+                    setCurrentPlaylistType("default");
+                  }}
+                >
+                  Mixtape
+                </button>
+                <button
+                  className={`${
+                    currentPlaylistType === "user" ? "active" : ""
+                  }`}
+                  onClick={() => {
+                    setCurrentPlaylistType("user");
+                  }}
+                >
+                  My Playlist
+                </button>
+              </div>
+            ) : null}
+            <div className="music-lists-container">
+              <div
+                className="music-lists"
+                style={{
+                  height: `${musicListsShow ? 220 : 0}px`,
+                }}
+              >
+                <PlayList
+                  songs={
+                    currentPlaylistType === "user" ? songFromData : defaultSongs
+                  }
+                  setSongs={setSongs}
+                  setSongIndex={setSongIndex}
+                  currentPlaylistType={currentPlaylistType}
+                  deletePlayList={deletePlayList}
+                />
+              </div>
+              {currentPlaylistType === "user" && musicListsShow ? (
+                <form
+                  method="post"
+                  encType="multipart/form-data"
+                  className="add-music"
+                  onSubmit={(e) => {
+                    uploadFiles(e);
+                  }}
+                >
+                  <input type="file" accept="audio/*" multiple></input>
+
+                  <button type="submit">Add songs</button>
+                </form>
+              ) : null}
             </div>
           </div>
         </div>
@@ -330,3 +538,8 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex }) => {
   );
 };
 export default Music;
+
+// var mountainImagesRef = storage.ref().child("images/welcome.jpg").put("../public/images/welcome.jpg").then((snapshot) => {
+//   console.log("Uploaded a raw string!");
+// });
+//TODO:阻擋沒登入的使用者按上傳檔案

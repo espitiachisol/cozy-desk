@@ -3,12 +3,51 @@ import useDrag from "../hooks/useDrag";
 import WindowHeader from "../windowHeader/WindowHeader";
 import TodoList from "./TodoList";
 import "./Todo.css";
-const Todo = function ({ setShowWindow, showWindow, zIndex, setZIndex }) {
+import { firestore } from "../../firebaseConfig";
+import InputRadio from "./InputRadio";
+const converPriorityToNumber = (item) => {
+  // if (item === "High") {
+  //   return 3;
+  // } else if (item === "Medium") {
+  //   return 2;
+  // } else if (item === "Low") {
+  //   return 1;
+  // } else {
+  //   return 0;
+  // }
+  let result;
+  switch (item) {
+    case "High":
+      result = 3;
+      break;
+    case "Medium":
+      result = 2;
+      break;
+    case "Low":
+      result = 1;
+      break;
+    default:
+      result = 0;
+  }
+  return result;
+};
+
+const Todo = function ({
+  setShowWindow,
+  showWindow,
+  zIndex,
+  setZIndex,
+  userState,
+  setUserstate,
+}) {
   const [size, setSize] = useState({});
   const [startPositon, setStartPositon] = useState({});
-  const [input, setInput] = useState("");
+  const [text, setText] = useState("");
+  const [deadLine, setDeadLine] = useState("");
+  const [priority, setPriority] = useState(null);
   const [listsToShow, setListsToShow] = useState("All");
   const [todolistAll, setTodolistAll] = useState([]);
+  const [todolistAllShow, setTodolistAllShow] = useState([]);
   const [todolistTodo, setTodolistTodo] = useState([]);
   const [todolistDone, setTodolistDone] = useState([]);
 
@@ -31,24 +70,87 @@ const Todo = function ({ setShowWindow, showWindow, zIndex, setZIndex }) {
     defaultY: 20,
   };
   const [position, mouseDown] = useDrag(startingPosition);
+  useEffect(() => {
+    if (userState) {
+      firestore
+        .collection("todoLists")
+        .doc(userState)
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            console.log("Document data:", doc.data());
+            setTodolistAll(doc.data().todolist);
+          } else {
+            console.log("No such document!");
+          }
+        })
+        .catch((error) => {
+          console.log("Error getting document:", error);
+        });
+    }
+    return () => {
+      setTodolistAll([]);
+    };
+  }, [userState]);
   const addTodo = (e) => {
     e.preventDefault();
-    e.target.firstChild.value = "";
+    console.log(e);
     let day = new Date();
     let id = "list" + day.getTime();
-    let time = `${day.toLocaleDateString("en")}  ${day.toLocaleTimeString(
-      "en",
-      {
-        hour: "2-digit",
-        minute: "2-digit",
-      }
-    )}`;
-    let data = { id: id, text: input, time: time, complete: false };
-    setTodolistAll([...todolistAll, data]);
+
+    let data = {
+      id: id,
+      text: text,
+      deadLine: deadLine,
+      priority: priority,
+      complete: false,
+    };
+    if (userState) {
+      firestore
+        .collection("todoLists")
+        .doc(userState)
+        .set({ todolist: [...todolistAll, data] })
+        .then(() => {
+          setTodolistAll([...todolistAll, data]);
+
+          console.log("Document successfully written!");
+        })
+        .catch((error) => {
+          console.error("Error writing document: ", error);
+        });
+    } else {
+      //使用者沒有登入的狀況
+      setTodolistAll([...todolistAll, data]);
+    }
+    //clear form
+    e.target[0].value = ""; //text
+    e.target[2].value = ""; //deadline
+    e.target[3].checked = false; //audio
+    e.target[4].checked = false; //audio
+    e.target[5].checked = false; //audio
+    setText("");
+    setPriority("");
+    setDeadLine("");
   };
   const deleteList = (listid) => {
     let deleteAListFromLists = todolistAll.filter((each) => each.id !== listid);
-    setTodolistAll(deleteAListFromLists);
+    if (userState) {
+      //刪除的話直接用寫入覆蓋原本的array
+      firestore
+        .collection("todoLists")
+        .doc(userState)
+        .set({ todolist: deleteAListFromLists })
+        .then(() => {
+          setTodolistAll(deleteAListFromLists);
+          console.log("Document successfully updte!!!");
+        })
+        .catch((error) => {
+          console.error("Error writing document: ", error);
+        });
+    } else {
+      //使用者沒有登入的狀況
+      setTodolistAll(deleteAListFromLists);
+    }
   };
   const checkComplete = (listid) => {
     console.log(listid);
@@ -58,12 +160,66 @@ const Todo = function ({ setShowWindow, showWindow, zIndex, setZIndex }) {
       }
       return each;
     });
-    setTodolistAll(checkALisToComplete);
+    if (userState) {
+      firestore
+        .collection("todoLists")
+        .doc(userState)
+        .set({ todolist: checkALisToComplete })
+        .then(() => {
+          setTodolistAll(checkALisToComplete);
+          console.log("Document successfully updte!!!");
+        })
+        .catch((error) => {
+          console.error("Error writing document: ", error);
+        });
+    } else {
+      //使用者沒有登入的狀況
+      setTodolistAll(checkALisToComplete);
+    }
+  };
+  const clearAll = () => {
+    if (userState) {
+      firestore
+        .collection("todoLists")
+        .doc(userState)
+        .delete()
+        .then(() => {
+          console.log("Document successfully deleted!");
+          setTodolistAll([]);
+        })
+        .catch((error) => {
+          console.error("Error removing document: ", error);
+        });
+    } else {
+      setTodolistAll([]);
+    }
+  };
+  const clearAllDone = () => {
+    let filteredAllDone = todolistAll.filter((each) => each.complete !== true);
+    if (userState) {
+      firestore
+        .collection("todoLists")
+        .doc(userState)
+        .set({ todolist: filteredAllDone })
+        .then(() => {
+          setTodolistAll(filteredAllDone);
+          console.log("Document successfully updte!!!");
+        })
+        .catch((error) => {
+          console.error("Error writing document: ", error);
+        });
+    } else {
+      //使用者沒有登入的狀況
+      setTodolistAll(filteredAllDone);
+    }
   };
   useEffect(() => {
-    setTodolistTodo(todolistAll.filter((each) => !each.complete));
-    setTodolistDone(todolistAll.filter((each) => each.complete));
+    setTodolistAllShow(todolistAll);
   }, [todolistAll]);
+  useEffect(() => {
+    setTodolistTodo(todolistAllShow.filter((each) => !each.complete));
+    setTodolistDone(todolistAllShow.filter((each) => each.complete));
+  }, [todolistAllShow]);
 
   const displayAll = () => {
     setListsToShow("All");
@@ -74,6 +230,67 @@ const Todo = function ({ setShowWindow, showWindow, zIndex, setZIndex }) {
   const displayDone = () => {
     setListsToShow("Done");
   };
+  const sortDeadline = (label) => {
+    const deadlineArray = [...todolistAll];
+    if (label === "Increase") {
+      deadlineArray.sort((listFir, listSec) => {
+        listFir = Number(listFir.deadLine.replaceAll("-", ""));
+        listSec = Number(listSec.deadLine.replaceAll("-", ""));
+        if (listFir < listSec) {
+          return -1;
+        }
+        if (listFir > listSec) {
+          return 1;
+        }
+        return 0;
+      });
+    } else if (label === "Decrease") {
+      deadlineArray.sort((listFir, listSec) => {
+        listFir = Number(listFir.deadLine.replaceAll("-", ""));
+        listSec = Number(listSec.deadLine.replaceAll("-", ""));
+        if (listFir > listSec) {
+          return -1;
+        }
+        if (listFir < listSec) {
+          return 1;
+        }
+        return 0;
+      });
+    }
+    setTodolistAllShow(deadlineArray);
+  };
+
+  const sortPriority = (label) => {
+    const priorityArray = [...todolistAll];
+    if (label === "Increase") {
+      priorityArray.sort((listFir, listSec) => {
+        listFir = converPriorityToNumber(listFir.priority);
+        listSec = converPriorityToNumber(listSec.priority);
+        if (listFir < listSec) {
+          return -1;
+        }
+        if (listFir > listSec) {
+          return 1;
+        }
+        return 0;
+      });
+    } else if (label === "Decrease") {
+      priorityArray.sort((listFir, listSec) => {
+        listFir = converPriorityToNumber(listFir.priority);
+        listSec = converPriorityToNumber(listSec.priority);
+        if (listFir > listSec) {
+          return -1;
+        }
+        if (listFir < listSec) {
+          return 1;
+        }
+        return 0;
+      });
+    }
+    console.log(priorityArray);
+    setTodolistAllShow(priorityArray);
+  };
+
   return (
     <div
       className="todo window"
@@ -99,16 +316,40 @@ const Todo = function ({ setShowWindow, showWindow, zIndex, setZIndex }) {
       <div className="todo-container-all">
         <div className="todo-container">
           <form className="add-form-container" onSubmit={addTodo}>
-            <input
+            {/* <input
               type="text"
-              className="add-form-input"
+              className="add-form-text"
               onChange={(e) => {
-                setInput(e.target.value);
+                setText(e.target.value);
               }}
-            ></input>
+            ></input> */}
+            <textarea
+              className="add-form-text"
+              style={{ resize: "none" }}
+              onChange={(e) => {
+                setText(e.target.value);
+              }}
+            ></textarea>
             <button className="icon-plus">
-              <img src="/images/icon-plus.png" alt="icon-plus" />
+              <img src="/images/icon_plus.svg" alt="icon-plus" />
             </button>
+            <div className="deadline-priority-con">
+              <div>
+                <p>Deadline</p>
+                <input
+                  type="date"
+                  className="add-form-deadline"
+                  onChange={(e) => {
+                    setDeadLine(e.target.value);
+                  }}
+                ></input>
+              </div>
+              <InputRadio
+                title="Priority"
+                setPriority={setPriority}
+                priority={priority}
+              />
+            </div>
           </form>
           <div className="display-todo-container">
             <div className="labels-container">
@@ -126,9 +367,10 @@ const Todo = function ({ setShowWindow, showWindow, zIndex, setZIndex }) {
             <div className="todo-content">
               {listsToShow === "All" ? (
                 <TodoList
-                  lists={todolistAll}
+                  lists={todolistAllShow}
                   checkComplete={checkComplete}
                   deleteList={deleteList}
+                  priority={priority}
                 />
               ) : null}
               {listsToShow === "Todo" ? (
@@ -136,6 +378,7 @@ const Todo = function ({ setShowWindow, showWindow, zIndex, setZIndex }) {
                   lists={todolistTodo}
                   checkComplete={checkComplete}
                   deleteList={deleteList}
+                  priority={priority}
                 />
               ) : null}
               {listsToShow === "Done" ? (
@@ -143,9 +386,56 @@ const Todo = function ({ setShowWindow, showWindow, zIndex, setZIndex }) {
                   lists={todolistDone}
                   checkComplete={checkComplete}
                   deleteList={deleteList}
+                  priority={priority}
                 />
               ) : null}
             </div>
+          </div>
+          <div className="todo-toolbar-con">
+            <div className="todo-toolbar-deadline">
+              <p>Deadline</p>
+              <img
+                src="/images/icon_increase.svg"
+                alt="icon increase"
+                className="todo-toolbar-img"
+                onClick={() => {
+                  sortDeadline("Increase");
+                }}
+              />
+              <img
+                src="/images/icon_decrease.svg"
+                alt="icon decrease"
+                className="todo-toolbar-img"
+                onClick={() => {
+                  sortDeadline("Decrease");
+                }}
+              />
+            </div>
+            <div className="todo-toolbar-priority">
+              <p>Priority</p>
+              <img
+                src="/images/icon_increase.svg"
+                alt="icon increase"
+                className="todo-toolbar-img"
+                onClick={() => {
+                  sortPriority("Increase");
+                }}
+              />
+              <img
+                src="/images/icon_decrease.svg"
+                alt="icon decrease"
+                className="todo-toolbar-img"
+                onClick={() => {
+                  sortPriority("Decrease");
+                }}
+              />
+            </div>
+            <button className="todo-toolbar-button" onClick={clearAllDone}>
+              Clear All Done
+            </button>
+            <button className="todo-toolbar-button" onClick={clearAll}>
+              Clear All{" "}
+            </button>
           </div>
           <div className="todo-progress-container">
             <p className="todo-progresse-text">
