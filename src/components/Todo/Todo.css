@@ -1,6 +1,6 @@
 .todo {
   width: 500px;
-  min-height: 450px;
+  min-height: 440px;
   color: #4f4d4c;
 }
 .todo-container-all {
@@ -8,7 +8,7 @@
 }
 .todo-container {
   width: 500px;
-  height: 450px;
+  height: 440px;
   border-radius: 10px;
   background-color: rgb(234, 229, 225);
   padding: 15px;
@@ -32,6 +32,7 @@
   background-color: rgb(242, 241, 240);
 }
 .deadline-priority-con {
+  margin-top: 10px;
   font-size: 12px;
   width: 100%;
   display: flex;
@@ -99,14 +100,14 @@ button.icon-plus {
 /* prgress bar */
 .todo-progress-container {
   width: 100%;
-  margin-top: 20px;
+  margin-top: 10px;
   height: 16px;
   background-color: #cfcbc6;
   position: relative;
 }
 .todo-progress {
   height: 100%;
-
+  transition: all 0.8s ease-in;
   background-color: rgb(27, 101, 149);
 }
 .todo-progresse-text {
@@ -208,12 +209,14 @@ button.icon-plus {
 }
 /* toolbar  */
 .todo-toolbar-con {
+  margin-top: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 .todo-toolbar-deadline,
 .todo-toolbar-priority {
+  font-size: 14px;
   width: 120px;
   display: flex;
   justify-content: space-between;
@@ -223,4 +226,18 @@ button.icon-plus {
 .todo-toolbar-img {
   width: 20px;
   height: 20px;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+}
+.todo-toolbar-img:hover {
+  filter: brightness(60%);
+  transform: scale(110%);
+}
+.todo-toolbar-img:active {
+  filter: brightness(70%);
+  transform: scale(100%);
+  transform: translateY(1px);
+}
+.todo-toolbar-button {
+  padding: 0 10px;
 }

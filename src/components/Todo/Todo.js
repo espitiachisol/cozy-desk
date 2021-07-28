@@ -5,6 +5,33 @@ import TodoList from "./TodoList";
 import "./Todo.css";
 import { firestore } from "../../firebaseConfig";
 import InputRadio from "./InputRadio";
+const converPriorityToNumber = (item) => {
+  // if (item === "High") {
+  //   return 3;
+  // } else if (item === "Medium") {
+  //   return 2;
+  // } else if (item === "Low") {
+  //   return 1;
+  // } else {
+  //   return 0;
+  // }
+  let result;
+  switch (item) {
+    case "High":
+      result = 3;
+      break;
+    case "Medium":
+      result = 2;
+      break;
+    case "Low":
+      result = 1;
+      break;
+    default:
+      result = 0;
+  }
+  return result;
+};
+
 const Todo = function ({
   setShowWindow,
   showWindow,
@@ -150,12 +177,50 @@ const Todo = function ({
       setTodolistAll(checkALisToComplete);
     }
   };
+  const clearAll = () => {
+    if (userState) {
+      firestore
+        .collection("todoLists")
+        .doc(userState)
+        .delete()
+        .then(() => {
+          console.log("Document successfully deleted!");
+          setTodolistAll([]);
+        })
+        .catch((error) => {
+          console.error("Error removing document: ", error);
+        });
+    } else {
+      setTodolistAll([]);
+    }
+  };
+  const clearAllDone = () => {
+    let filteredAllDone = todolistAll.filter((each) => each.complete !== true);
+    if (userState) {
+      firestore
+        .collection("todoLists")
+        .doc(userState)
+        .set({ todolist: filteredAllDone })
+        .then(() => {
+          setTodolistAll(filteredAllDone);
+          console.log("Document successfully updte!!!");
+        })
+        .catch((error) => {
+          console.error("Error writing document: ", error);
+        });
+    } else {
+      //使用者沒有登入的狀況
+      setTodolistAll(filteredAllDone);
+    }
+  };
   useEffect(() => {
     setTodolistAllShow(todolistAll);
-    setTodolistTodo(todolistAll.filter((each) => !each.complete));
-    setTodolistDone(todolistAll.filter((each) => each.complete));
   }, [todolistAll]);
-  console.log(todolistAllShow);
+  useEffect(() => {
+    setTodolistTodo(todolistAllShow.filter((each) => !each.complete));
+    setTodolistDone(todolistAllShow.filter((each) => each.complete));
+  }, [todolistAllShow]);
+
   const displayAll = () => {
     setListsToShow("All");
   };
@@ -195,6 +260,37 @@ const Todo = function ({
     setTodolistAllShow(deadlineArray);
   };
 
+  const sortPriority = (label) => {
+    const priorityArray = [...todolistAll];
+    if (label === "Increase") {
+      priorityArray.sort((listFir, listSec) => {
+        listFir = converPriorityToNumber(listFir.priority);
+        listSec = converPriorityToNumber(listSec.priority);
+        if (listFir < listSec) {
+          return -1;
+        }
+        if (listFir > listSec) {
+          return 1;
+        }
+        return 0;
+      });
+    } else if (label === "Decrease") {
+      priorityArray.sort((listFir, listSec) => {
+        listFir = converPriorityToNumber(listFir.priority);
+        listSec = converPriorityToNumber(listSec.priority);
+        if (listFir > listSec) {
+          return -1;
+        }
+        if (listFir < listSec) {
+          return 1;
+        }
+        return 0;
+      });
+    }
+    console.log(priorityArray);
+    setTodolistAllShow(priorityArray);
+  };
+
   return (
     <div
       className="todo window"
@@ -220,23 +316,20 @@ const Todo = function ({
       <div className="todo-container-all">
         <div className="todo-container">
           <form className="add-form-container" onSubmit={addTodo}>
-            <input
+            {/* <input
               type="text"
               className="add-form-text"
               onChange={(e) => {
                 setText(e.target.value);
               }}
-            ></input>
-            {/* <textarea
-              type="text"
-              rows="4"
-              cols="12"
-              className="add-form-input"
+            ></input> */}
+            <textarea
+              className="add-form-text"
               style={{ resize: "none" }}
               onChange={(e) => {
-                setInput(e.target.value);
+                setText(e.target.value);
               }}
-            ></textarea> */}
+            ></textarea>
             <button className="icon-plus">
               <img src="/images/icon_plus.svg" alt="icon-plus" />
             </button>
@@ -324,13 +417,25 @@ const Todo = function ({
                 src="/images/icon_increase.svg"
                 alt="icon increase"
                 className="todo-toolbar-img"
+                onClick={() => {
+                  sortPriority("Increase");
+                }}
               />
               <img
                 src="/images/icon_decrease.svg"
                 alt="icon decrease"
                 className="todo-toolbar-img"
+                onClick={() => {
+                  sortPriority("Decrease");
+                }}
               />
             </div>
+            <button className="todo-toolbar-button" onClick={clearAllDone}>
+              Clear All Done
+            </button>
+            <button className="todo-toolbar-button" onClick={clearAll}>
+              Clear All{" "}
+            </button>
           </div>
           <div className="todo-progress-container">
             <p className="todo-progresse-text">
