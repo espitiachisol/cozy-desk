@@ -44,3 +44,7 @@ firebase-hosting-merge.yml
 **/node_modules/*
 **/.firebase
 **/.firebaserc
+
+.mp3
+.png
+.svg
