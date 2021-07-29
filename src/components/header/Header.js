@@ -28,7 +28,22 @@ const Header = ({
     <div className="header">
       <div className="header-content">
         <div className="left-item">
-          <p>COZYDESK</p>
+          <p
+            className="logo"
+            onClick={() => {
+              setShowWindow({ ...showWindow, SignWindow: { display: true } });
+              if (zIndex.curW !== "SignWindow") {
+                setZIndex({
+                  ...zIndex,
+                  SignWindow: zIndex.cur,
+                  cur: zIndex.cur + 1,
+                  curW: "SignWindow",
+                });
+              }
+            }}
+          >
+            CozyDesk
+          </p>
 
           {auth.currentUser ? (
             <button onClick={userSignout} className="item pointer">

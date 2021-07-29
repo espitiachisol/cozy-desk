@@ -41,7 +41,7 @@ const WindowHeader = ({ mouseDown, setShowWindow, showWindow, label }) => {
       }}
     >
       <p
-        className="close-window pointer"
+        className="close-window  delete"
         onClick={() => {
           witchLabelToDisplay();
         }}

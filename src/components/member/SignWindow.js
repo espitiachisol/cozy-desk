@@ -20,7 +20,7 @@ const SignWindow = ({
       const response = node.getBoundingClientRect();
       setStartPositon({
         x: response.x,
-        y: response.y - 36,
+        y: response.y - 32,
       });
       setSize({ width: response.width, height: response.height });
     }
@@ -66,19 +66,21 @@ const SignWindow = ({
             <h2 className="sign-welcome-title">Welcome to CozyDesk</h2>
             <div className="sign-welcome-note">
               <p>with an account you can...</p>
-              <p>◦ create your own desktop</p>
-              <p>◦ save your todo list</p>
-              <p>◦ save your playlist</p>
-              <p>◦ save your setting</p>
+              <p>◦ Create your own desktop</p>
+              <p>◦ Save your todo list</p>
+              <p>◦ Create your own playlist</p>
+              <p>◦ Save your tomatotimer history</p>
             </div>
-            <Sign
-              userState={userState}
-              setUserstate={setUserstate}
-              SignInShow={SignInShow}
-              setShowWindow={setShowWindow}
-              showWindow={showWindow}
-              setSignInShow={setSignInShow}
-            />
+            {!userState ? (
+              <Sign
+                userState={userState}
+                setUserstate={setUserstate}
+                SignInShow={SignInShow}
+                setShowWindow={setShowWindow}
+                showWindow={showWindow}
+                setSignInShow={setSignInShow}
+              />
+            ) : null}
           </div>
         </div>
       </div>

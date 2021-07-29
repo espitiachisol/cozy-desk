@@ -17,7 +17,7 @@ const TodoList = ({ lists, checkComplete, deleteList, priority }) => {
               ) : null}
             </button>
             <div className="todo-list-text-con">
-              <p className="todo-list-text">{listdata.text}</p>
+              <p className="todo-list-text">{listdata.text} &nbsp;</p>
               <span className="todo-list-priority">
                 <div
                   className={`todo-list-priority-circle ${listdata.priority}`}

@@ -46,7 +46,7 @@ const Tomato = ({
       const response = node.getBoundingClientRect();
       setStartPositon({
         x: response.x,
-        y: response.y - 36,
+        y: response.y - 32,
       });
       setSize({ width: response.width, height: response.height });
     }
@@ -219,7 +219,7 @@ const Tomato = ({
             <h4 className="tomato-counter">{calcDisplayTime(timeLeft)}</h4>
 
             <button
-              className="tomato-play-icon"
+              className="tomato-play-icon button-style"
               onClick={() => {
                 handleStartStop();
               }}
@@ -263,7 +263,7 @@ const Tomato = ({
                   onSelectedChange={setBreakSelected}
                   Selected={breakSelected}
                 />
-                <button className="restart" onClick={resetAll}>
+                <button className="restart button-style" onClick={resetAll}>
                   RESETALL
                 </button>
                 <p className="restart-warn">
