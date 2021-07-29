@@ -78,7 +78,7 @@ const Sign = ({
           }}
         />
 
-        <button type="submit" className="sign-submit-btn">
+        <button type="submit" className="sign-submit-btn button-style">
           {SignInShow ? "Login in" : "Create account"}
         </button>
       </form>

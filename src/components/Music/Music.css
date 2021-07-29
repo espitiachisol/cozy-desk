@@ -1,6 +1,6 @@
 .music {
   width: 400px;
-  height: 435px;
+  min-height: 400px;
   background-color: transparent;
 }
 
@@ -163,7 +163,7 @@
   margin-top: -15px;
   background-color: rgb(234, 229, 225);
   padding-top: 15px;
-  padding-bottom: 15px;
+  padding-bottom: 10px;
   border-radius: 0 0 10px 10px;
 }
 /* /////////// */
@@ -176,7 +176,7 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  padding: 20px;
+  padding: 10px 20px;
 }
 /* /////////// */
 /* play detail  */
@@ -200,13 +200,9 @@
 }
 
 .play-icon {
-  cursor: pointer;
   width: 35px;
   height: 35px;
   padding: 4px;
-  border-radius: 5px;
-  background-color: transparent;
-  border: 1px solid rgb(167, 167, 167);
 }
 .play-icon img {
   width: 100%;
@@ -249,10 +245,11 @@
 .progress {
   height: 100%;
   background-color: #99aaa1;
-  transition: width 0.1s linear;
+  transition: all 0.2s linear;
 }
 
 .progress-time-label {
+  margin-top: 2px;
   display: flex;
   justify-content: space-between;
   font-size: 10px;
@@ -299,25 +296,43 @@
 .toggle-playList-con button.active {
   background-color: rgb(242, 241, 240);
 }
+
 .music-lists {
   display: flex;
   justify-content: space-between;
   flex-direction: row;
   flex-wrap: wrap;
   overflow: auto;
+  padding: 0 6px;
   background-color: rgb(242, 241, 240);
   /* background-image: url("../../../public/images/welcome.jpg"); */
 }
-.music-list {
+.music-list-con {
   text-align: center;
   width: 30%;
   height: 40%;
-  margin: 15px 0 5px 0;
+  margin: 15px 0 0 0;
   cursor: pointer;
   position: relative;
 }
+.music-list-no-songs-message {
+  color: rgb(167, 167, 167);
+  padding: 0 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+.user-no-songs-message,
+.guest-no-songs-message {
+  font-size: 14px;
+}
+.music-list-no-songs-message p:first-child {
+  font-weight: bold;
+}
 .music-list img {
-  width: 70%;
+  width: 65%;
   height: 50%;
   object-fit: contain;
 }
@@ -327,6 +342,15 @@
   font-size: 12px;
   color: #4f4d4c;
 }
+.delete-playList {
+  position: absolute;
+  background-color: rgb(234, 229, 225);
+  width: 14px;
+  color: rgb(167, 167, 167);
+  top: -12px;
+  left: 8px;
+}
+
 .add-music {
   padding: 6px;
   display: flex;
@@ -348,35 +372,12 @@
   border: 1px solid rgb(167, 167, 167);
 }
 .add-music button {
-  height: 20px;
   font-size: 12px;
   width: 30%;
-  cursor: pointer;
-  padding: 0 10px;
-  border-radius: 5px;
-  background-color: transparent;
-  border: 1px solid rgb(167, 167, 167);
 }
+
 .add-music img {
   width: 10%;
-}
-.delete-playList {
-  z-index: 10;
-  position: absolute;
-  font-size: 10px;
-  background-color: rgb(234, 229, 225);
-  width: 14px;
-  border-radius: 14px;
-  color: rgb(167, 167, 167);
-  top: -10px;
-  left: 10px;
-}
-.delete-playList:hover {
-  background-color: #af7474;
-  color: rgb(234, 229, 225);
-}
-.delete-playList:active {
-  background-color: #a56b6b;
 }
 
 /* /////////// */

@@ -2,7 +2,7 @@
   cursor: grab;
   text-align: center;
   position: relative;
-  height: 30px;
+  height: 25px;
   padding: 4px;
   border: 1px solid transparent;
 
@@ -11,28 +11,22 @@
 .close-window {
   position: absolute;
   left: 4px;
-  font-size: 10px;
-  padding: 2px 4px 0px 4px;
-  display: inline-block;
+  width: 18px;
+  height: 18px;
+  padding: 2px;
   border: 1px solid transparent;
-  color: #c7c4c2;
+
+  /* background-color: rgba(199, 196, 194, 0.5); */
   border: 1px solid #c7c4c2;
   transition: all 0.1s ease-in-out;
 }
 .window-header-text {
-  font-size: 14px;
+  font-size: 12px;
   display: inline-block;
   color: #c7c4c2;
   transition: all 0.1s ease-in-out;
 }
-.window-header:hover .close-window {
-  border: 1px solid #4f4d4c;
-  color: #4f4d4c;
-}
 
-.window-header:hover .window-header-text {
-  color: #4f4d4c;
-}
 .window-header:hover {
   border: 1px solid rgba(255, 255, 255, 0.5);
 }

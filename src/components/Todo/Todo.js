@@ -3,18 +3,10 @@ import useDrag from "../hooks/useDrag";
 import WindowHeader from "../windowHeader/WindowHeader";
 import TodoList from "./TodoList";
 import "./Todo.css";
+import Alert from "../Alert/Alert";
 import { firestore } from "../../firebaseConfig";
 import InputRadio from "./InputRadio";
 const converPriorityToNumber = (item) => {
-  // if (item === "High") {
-  //   return 3;
-  // } else if (item === "Medium") {
-  //   return 2;
-  // } else if (item === "Low") {
-  //   return 1;
-  // } else {
-  //   return 0;
-  // }
   let result;
   switch (item) {
     case "High":
@@ -50,13 +42,14 @@ const Todo = function ({
   const [todolistAllShow, setTodolistAllShow] = useState([]);
   const [todolistTodo, setTodolistTodo] = useState([]);
   const [todolistDone, setTodolistDone] = useState([]);
+  const [showAlert, setShowAlert] = useState(false);
 
   const curWindow = useCallback((node) => {
     if (node !== null) {
       const response = node.getBoundingClientRect();
       setStartPositon({
         x: response.x,
-        y: response.y - 36,
+        y: response.y - 32,
       });
       setSize({ width: response.width, height: response.height });
     }
@@ -193,6 +186,7 @@ const Todo = function ({
     } else {
       setTodolistAll([]);
     }
+    setShowAlert(false);
   };
   const clearAllDone = () => {
     let filteredAllDone = todolistAll.filter((each) => each.complete !== true);
@@ -296,7 +290,7 @@ const Todo = function ({
       className="todo window"
       ref={curWindow}
       style={{ top: position.y, left: position.x, zIndex: zIndex.Todo }}
-      onClick={() => {
+      onMouseDown={() => {
         if (zIndex.curW !== "Todo") {
           setZIndex({
             ...zIndex,
@@ -316,13 +310,6 @@ const Todo = function ({
       <div className="todo-container-all">
         <div className="todo-container">
           <form className="add-form-container" onSubmit={addTodo}>
-            {/* <input
-              type="text"
-              className="add-form-text"
-              onChange={(e) => {
-                setText(e.target.value);
-              }}
-            ></input> */}
             <textarea
               className="add-form-text"
               style={{ resize: "none" }}
@@ -330,7 +317,7 @@ const Todo = function ({
                 setText(e.target.value);
               }}
             ></textarea>
-            <button className="icon-plus">
+            <button className="icon-plus button-style">
               <img src="/images/icon_plus.svg" alt="icon-plus" />
             </button>
             <div className="deadline-priority-con">
@@ -353,13 +340,28 @@ const Todo = function ({
           </form>
           <div className="display-todo-container">
             <div className="labels-container">
-              <div className="label-all todo-label" onClick={displayAll}>
+              <div
+                className={`label-all todo-label ${
+                  listsToShow === "All" ? "lift" : ""
+                }`}
+                onClick={displayAll}
+              >
                 ALL({todolistAll.length})
               </div>
-              <div className="label-todo todo-label" onClick={displayTodo}>
+              <div
+                className={`label-todo todo-label ${
+                  listsToShow === "Todo" ? "lift" : ""
+                }`}
+                onClick={displayTodo}
+              >
                 TODO({todolistTodo.length})
               </div>
-              <div className="label-done todo-label" onClick={displayDone}>
+              <div
+                className={`label-done todo-label ${
+                  listsToShow === "Done" ? "lift" : ""
+                }`}
+                onClick={displayDone}
+              >
                 DONE({todolistDone.length})
               </div>
             </div>
@@ -430,11 +432,19 @@ const Todo = function ({
                 }}
               />
             </div>
-            <button className="todo-toolbar-button" onClick={clearAllDone}>
+            <button
+              className="todo-toolbar-button button-style"
+              onClick={clearAllDone}
+            >
               Clear All Done
             </button>
-            <button className="todo-toolbar-button" onClick={clearAll}>
-              Clear All{" "}
+            <button
+              className="todo-toolbar-button button-style"
+              onClick={() => {
+                setShowAlert(true);
+              }}
+            >
+              Clear All
             </button>
           </div>
           <div className="todo-progress-container">
@@ -454,6 +464,16 @@ const Todo = function ({
               }}
             ></div>
           </div>
+          {showAlert ? (
+            <Alert
+              setShowAlert={setShowAlert}
+              confirm={clearAll}
+              message={{
+                title: "Are you sure ?",
+                text: "All lists will be deleted.",
+              }}
+            />
+          ) : null}
         </div>
       </div>
     </div>

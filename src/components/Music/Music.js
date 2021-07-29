@@ -27,31 +27,45 @@ const randomNum = (min, max) => {
 const cozydeskPlaylist = [
   {
     id: "defaultSong01",
-    title: "Focus-Soft Piano Music for Reading",
-    src: "/music/02.mp3",
-    img: "/images/mixtape-cover-1.png",
-    icon: "/images/tape-icons-1.png",
+    title: "Winter Written by Alexander Nakarada.mp3",
+    src: "/music/Winter Written by Alexander Nakarada.mp3",
+    img: "/images/mixtape-cover-default1.png",
+    icon: "/images/tape-icons-default1.png",
   },
   {
     id: "defaultSong02",
-    title: "Piano-Yiruma's Greatest Hits",
-    src: "/music/03.mp3",
-    img: "/images/mixtape-cover-2.png",
-    icon: "/images/tape-icons-2.png",
+    title: "Burt's Requiem by Alexander Nakarada.mp3",
+    src: "/music/Burt's Requiem by Alexander Nakarada.mp3",
+    img: "/images/mixtape-cover-default2.png",
+    icon: "/images/tape-icons-default2.png",
   },
   {
     id: "defaultSong03",
-    title: "Rock Songs-Best Rock Hits of the 2000's",
-    src: "/music/04.mp3",
-    img: "/images/mixtape-cover-3.png",
-    icon: "/images/tape-icons-3.png",
+    title: "Lucky Break Written by Bryan Teoh. Nicklas Waroff on sax.mp3",
+    src: "/music/Lucky Break Written by Bryan Teoh. Nicklas Waroff on sax.mp3",
+    img: "/images/mixtape-cover-default6.png",
+    icon: "/images/tape-icons-default6.png",
   },
   {
     id: "defaultSong04",
-    title: "Love Songs-Music that bring back to old days.",
-    src: "/music/05.mp3",
-    img: "/images/mixtape-cover-4.png",
-    icon: "/images/tape-icons-4.png",
+    title: "Nostalgic Piano Written by Rafael Krux.mp3",
+    src: "/music/Nostalgic Piano Written by Rafael Krux.mp3",
+    img: "/images/mixtape-cover-default5.png",
+    icon: "/images/tape-icons-default5.png",
+  },
+  {
+    id: "defaultSong05",
+    title: "Relaxing Ballad Written by Alexander Nakarada.mp3",
+    src: "/music/Relaxing Ballad Written by Alexander Nakarada.mp3",
+    img: "/images/mixtape-cover-default4.png",
+    icon: "/images/tape-icons-default4.png",
+  },
+  {
+    id: "defaultSong06",
+    title: "Jokull Written by Alexander Nakarada.mp3",
+    src: "/music/Jokull Written by Alexander Nakarada.mp3",
+    img: "/images/mixtape-cover-default3.png",
+    icon: "/images/tape-icons-default3.png",
   },
 ];
 const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
@@ -75,12 +89,12 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
 
   // console.log(currentPlaylistType);
   useEffect(() => {
-    if (isplaying) {
+    if (isplaying && songs) {
       setIsplaying(true);
       setRotate("play");
       control.current.play();
     }
-  }, [songIndex, isplaying]);
+  }, [songIndex, isplaying, songs]);
   //volume被調整後設定audio音量
   useEffect(() => {
     control.current.volume = volume;
@@ -94,8 +108,6 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
         .get()
         .then((doc) => {
           if (doc.exists) {
-            //假如沒有data會出現  doc.data.mixtape is not iterable FIXME:
-            // console.log("Document data:", doc.data());
             setSongFromData([...doc.data().mixtape]);
           } else {
             console.log("No such document!");
@@ -105,25 +117,11 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
           console.log("Error getting document:", error);
         });
     }
+    return () => {
+      setSongFromData([]);
+    };
   }, [userState]);
-  //假如 SongFromData有更新，或是有內容，設定目前顯示的音樂
-  // useEffect(() => {
-  //   if (songFromData.length > 0) {
-  //     console.log("setsongEfect");
-  //     //set display song ""defalut "" and song from firestore
-  //     //   if (currentPlaylistType === "user") {
-  //     //     setSongs([...songFromData]);
-  //     //   } else {
-  //     //     setSongs([...defaultSongs]);
-  //     //   }
-  //     // } else {
-  //     //   if (currentPlaylistType === "user") {
-  //     //     setSongs([...defaultSongs]);
-  //     //   } else {
-  //     //     setSongs([...defaultSongs]);
-  //     //   }
-  //   }
-  // }, [songFromData, currentPlaylistType, defaultSongs]);
+
   //假如使用者新增新的音樂清單，再向firestore要一次新的資料，將新的資料放入SongFromData
   useEffect(() => {
     if (userAddLists && userState) {
@@ -135,6 +133,8 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
           if (doc.exists) {
             setSongFromData([...doc.data().mixtape]);
             setUserAddLists(false);
+            //試試
+
             console.log("setSongFromDataEffect");
           } else {
             console.log("No such document!");
@@ -147,13 +147,18 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
   }, [userAddLists, userState]);
   // console.log("song from data----", songFromData);
   // console.log("songs----", songs);
+  // useEffect(() => {
+  //   if (currentPlaylistType === "user") {
+  //     setSongs(songFromData);
+  //   }
+  // }, [songFromData, currentPlaylistType]);
 
   const curWindow = useCallback((node) => {
     if (node !== null) {
       const response = node.getBoundingClientRect();
       setStartPositon({
         x: response.x,
-        y: response.y - 36,
+        y: response.y - 32,
       });
       setSize({ width: response.width, height: response.height });
     }
@@ -170,6 +175,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
 
   const [position, mouseDown] = useDrag(startingPosition);
   const play = () => {
+    // control.current.load();
     setIsplaying(true);
     setRotate("play");
 
@@ -186,12 +192,19 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
       : setSongIndex(songIndex - 1);
   };
   const next = () => {
-    songIndex === songs.length - 1
-      ? setSongIndex(0)
-      : setSongIndex(songIndex + 1);
+    console.log(songIndex, songs.length);
+    //當歌單只有一首歌的時候setSongIndex(0)會沒有改變所以上面的useEffect不會被觸法
+    if (songs.length === 1) {
+      play();
+    } else {
+      songIndex === songs.length - 1
+        ? setSongIndex(0)
+        : setSongIndex(songIndex + 1);
+    }
   };
-  let array = [];
+
   const uploadFiles = (e) => {
+    let array = [];
     console.log(e);
     //把當前上傳的資料放到雲端storage和firestore
     e.preventDefault();
@@ -221,7 +234,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
               });
               console.log("Uploaded a file!");
 
-              console.log([...array]);
+              console.log(array);
               //將取得的storage url 放入firestore
               firestore
                 .collection("mixtape")
@@ -231,7 +244,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
                 })
                 .then(() => {
                   setUserAddLists(true);
-                  array = [];
+                  // array = [];
                   console.log("Document successfully updte!!!");
                 })
                 .catch((error) => {
@@ -241,6 +254,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
         });
     });
   };
+
   const deletePlayList = (id) => {
     //刪除storage資料
     storage
@@ -249,35 +263,37 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
       .delete()
       .then(() => {
         console.log("Document successfully delete from storage");
-        //更新firestore資料
-        let filteredArray = songFromData.filter((song) => song.id !== id);
-        console.log(filteredArray);
-        firestore
-          .collection("mixtape")
-          .doc(userState)
-          .set({
-            mixtape: [...filteredArray],
-          })
-          .then(() => {
-            //更新SongFromData
-            setUserAddLists(true);
-            filteredArray = [];
-            console.log("Document successfully  delete from firestore !!!");
-          })
-          .catch((error) => {
-            console.error("Error writing document: ", error);
-          });
       })
       .catch((error) => {
         console.error("Error Deleting document from storage: ", error);
       });
+    //更新firestore資料
+    let filteredArray = songFromData.filter((song) => song.id !== id);
+    console.log(filteredArray);
+    firestore
+      .collection("mixtape")
+      .doc(userState)
+      .set({
+        mixtape: [...filteredArray],
+      })
+      .then(() => {
+        //更新SongFromData
+        setUserAddLists(true);
+        filteredArray = [];
+
+        console.log("Document successfully  delete from firestore !!!");
+      })
+      .catch((error) => {
+        console.error("Error writing document: ", error);
+      });
   };
+
   return (
     <div
       className="music window"
       ref={curWindow}
       style={{ top: position.y, left: position.x, zIndex: zIndex.Music }}
-      onClick={() => {
+      onMouseDown={() => {
         if (zIndex.curW !== "Music") {
           setZIndex({
             ...zIndex,
@@ -340,12 +356,16 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
           <audio
             ref={control}
             src={songs[songIndex].src}
+            onCanPlay={(e) => {
+              const { currentTime, duration } = e.target;
+              setProgress({ currentTime: currentTime, duration: duration });
+            }}
             onTimeUpdate={(e) => {
               const { currentTime, duration } = e.target;
               if (currentTime === duration) {
                 //若有單曲循環的話
                 if (loopOneSong) {
-                  control.current.currentTime = 0;
+                  control.current.load();
                   play();
                 } else {
                   //沒有自動播放下一首
@@ -417,23 +437,25 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
                   }}
                 ></input>
               </div>
-              <button className=" play-icon" onClick={pre}>
+              <button className=" play-icon button-style" onClick={pre}>
                 <img src="/images/icon_pre.svg" alt="icon pre" />
               </button>
               {isplaying ? (
-                <button className="play-icon" onClick={stop}>
+                <button className="play-icon button-style" onClick={stop}>
                   <img src="/images/icon_stop.svg" alt="icon stop" />
                 </button>
               ) : (
-                <button className="play-icon" onClick={play}>
+                <button className="play-icon button-style" onClick={play}>
                   <img src="/images/icon_play.svg" alt="icon play" />
                 </button>
               )}
-              <button className="play-icon" onClick={next}>
+              <button className="play-icon button-style" onClick={next}>
                 <img src="/images/icon_next.svg" alt="icon next" />
               </button>
               <button
-                className={`play-icon ${loopOneSong ? "action-loop" : ""}`}
+                className={`play-icon button-style ${
+                  loopOneSong ? "action-loop" : ""
+                }`}
                 onClick={() => {
                   setLoopOneSong(!loopOneSong);
                 }}
@@ -449,8 +471,11 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
                   currentTime:
                     (e.nativeEvent.offsetX / 360) * progress.duration,
                 });
-                control.current.currentTime =
-                  (e.nativeEvent.offsetX / 360) * progress.duration;
+
+                if (progress.duration) {
+                  control.current.currentTime =
+                    (e.nativeEvent.offsetX / 360) * progress.duration;
+                }
               }}
             >
               <div
@@ -503,7 +528,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
               <div
                 className="music-lists"
                 style={{
-                  height: `${musicListsShow ? 220 : 0}px`,
+                  height: `${musicListsShow ? 200 : 0}px`,
                 }}
               >
                 <PlayList
@@ -514,6 +539,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
                   setSongIndex={setSongIndex}
                   currentPlaylistType={currentPlaylistType}
                   deletePlayList={deletePlayList}
+                  userState={userState}
                 />
               </div>
               {currentPlaylistType === "user" && musicListsShow ? (
@@ -522,12 +548,25 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
                   encType="multipart/form-data"
                   className="add-music"
                   onSubmit={(e) => {
-                    uploadFiles(e);
+                    if (userState) {
+                      uploadFiles(e);
+                    }
                   }}
                 >
-                  <input type="file" accept="audio/*" multiple></input>
+                  <input
+                    type="file"
+                    accept="audio/*"
+                    multiple
+                    disabled={userState ? false : true}
+                  ></input>
 
-                  <button type="submit">Add songs</button>
+                  <button
+                    type="submit"
+                    className="button-style"
+                    disabled={userState ? false : true}
+                  >
+                    Add songs
+                  </button>
                 </form>
               ) : null}
             </div>

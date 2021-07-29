@@ -1,12 +1,5 @@
 import "./WindowHeader.css";
-const WindowHeader = ({
-  mouseDown,
-  setShowWindow,
-  showWindow,
-  label,
-  // setZIndex,
-  // zIndex,
-}) => {
+const WindowHeader = ({ mouseDown, setShowWindow, showWindow, label }) => {
   const witchLabelToDisplay = () => {
     let result;
     switch (label) {
@@ -40,53 +33,15 @@ const WindowHeader = ({
     return result;
   };
 
-  // const witchZindex = () => {
-  //   switch (zIndex.curW) {
-  //     case "Todo":
-  //       if (zIndex.curW !== "Todo") {
-  //         setZIndex({
-  //           ...zIndex,
-  //           Todo: zIndex.cur,
-  //           cur: zIndex.cur + 1,
-  //           curW: "Todo",
-  //         });
-  //       }
-  //       break;
-  //     case "Music":
-  //       console.log(zIndex.curW);
-  //       if (zIndex.curW !== "Music") {
-  //         setZIndex({
-  //           ...zIndex,
-  //           Music: zIndex.cur,
-  //           cur: zIndex.cur + 1,
-  //           curW: "Music",
-  //         });
-  //       }
-
-  //       break;
-  //     case "Tomato":
-  //       if (zIndex.curW !== "Tomato") {
-  //         setZIndex({
-  //           ...zIndex,
-  //           Tomato: zIndex.cur,
-  //           cur: zIndex.cur + 1,
-  //           curW: "Tomato",
-  //         });
-  //       }
-  //       break;
-  //     default:
-  //   }
-  // };
   return (
     <div
       className="window-header"
       onMouseDown={(e) => {
-        // witchZindex();
         mouseDown(e);
       }}
     >
       <p
-        className="close-window pointer"
+        className="close-window  delete"
         onClick={() => {
           witchLabelToDisplay();
         }}
