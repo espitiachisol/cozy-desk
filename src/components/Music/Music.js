@@ -132,9 +132,8 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
         .then((doc) => {
           if (doc.exists) {
             setSongFromData([...doc.data().mixtape]);
+            // console.log([...doc.data().mixtape]);
             setUserAddLists(false);
-            //試試
-
             console.log("setSongFromDataEffect");
           } else {
             console.log("No such document!");
@@ -145,13 +144,6 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
         });
     }
   }, [userAddLists, userState]);
-  // console.log("song from data----", songFromData);
-  // console.log("songs----", songs);
-  // useEffect(() => {
-  //   if (currentPlaylistType === "user") {
-  //     setSongs(songFromData);
-  //   }
-  // }, [songFromData, currentPlaylistType]);
 
   const curWindow = useCallback((node) => {
     if (node !== null) {
@@ -232,9 +224,8 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
                 img: `/images/mixtape-cover-${imgNum}.png`,
                 icon: `/images/tape-icons-${imgNum}.png`,
               });
-              console.log("Uploaded a file!");
-
-              console.log(array);
+              // console.log("Uploaded a file!");
+              // console.log(array);
               //將取得的storage url 放入firestore
               firestore
                 .collection("mixtape")
@@ -269,6 +260,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
       });
     //更新firestore資料
     let filteredArray = songFromData.filter((song) => song.id !== id);
+
     console.log(filteredArray);
     firestore
       .collection("mixtape")
@@ -280,13 +272,24 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
         //更新SongFromData
         setUserAddLists(true);
         filteredArray = [];
-
         console.log("Document successfully  delete from firestore !!!");
       })
       .catch((error) => {
         console.error("Error writing document: ", error);
       });
   };
+  // 刪除檔案時songFromData會更新，假如目前在播放的清單是user自建清單，會重新設定播放中的清單
+  useEffect(() => {
+    //假如目前播放的音樂"不是"default音樂
+    if (!songs[0].id.includes("default")) {
+      if (songFromData.length > 0) {
+        console.log("3", songFromData);
+        setSongs(songFromData);
+      } else {
+        setSongs(defaultSongs);
+      }
+    }
+  }, [songFromData, defaultSongs, songs]);
 
   return (
     <div
