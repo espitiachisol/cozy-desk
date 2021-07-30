@@ -24,8 +24,9 @@ yarn-debug.log*
 yarn-error.log*
 
 firebaseConfig.js
-01.mp3
-02.mp3
-03.mp3
-04.mp3
-05.mp3
+.firebaserc
+firebase.json
+
+/.firebase
+/.github
+
