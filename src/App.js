@@ -20,7 +20,7 @@ function App() {
     SignWindow: { display: true },
     Tomato: { display: false },
     Music: { display: false },
-    Todo: { display: true },
+    Todo: { display: false },
   });
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
