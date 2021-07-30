@@ -84,6 +84,7 @@
   height: 40px;
   text-align: center;
   margin: 10px 0;
+  position: relative;
 }
 .tomato-counter {
   font-size: 40px;
@@ -91,6 +92,16 @@
   display: inline-block;
   font-family: "Courier Prime", monospace;
 }
+.tomato-time .delete-time {
+  position: absolute;
+  top: 0px;
+  left: 30px;
+  font-size: 26px;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgb(167, 167, 167);
+}
+
 /*  */
 .tomato-play-icon {
   width: 35px;
@@ -138,8 +149,4 @@
 }
 .tomato-setting .restart {
   width: 100%;
-}
-.tomato-setting .restart-warn {
-  margin-top: -4px;
-  font-size: 12px;
 }

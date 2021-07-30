@@ -5,6 +5,7 @@ import WindowHeader from "../windowHeader/WindowHeader";
 import Dropdown from "../Dropdown/Dropdown";
 import { setting, target } from "./tomato-data";
 import { firestore } from "../../firebaseConfig";
+import Alert from "../Alert/Alert";
 
 const calcDisplayTime = (time) => {
   let sec = Math.floor(time % 60);
@@ -12,6 +13,12 @@ const calcDisplayTime = (time) => {
   let min = Math.floor(time / 60);
   min = min < 10 ? "0" + min : min;
   return `${min}:${sec}`;
+};
+const calcDeg = (sessionSelected, targetSelected, timeLeft, progress) => {
+  let thisDeg =
+    (360 * (sessionSelected * 60 - timeLeft)) /
+    (sessionSelected * 60 * targetSelected);
+  return thisDeg + progress * (360 / targetSelected);
 };
 
 const Tomato = ({
@@ -40,6 +47,8 @@ const Tomato = ({
   //for window drag
   const [size, setSize] = useState({});
   const [startPositon, setStartPositon] = useState({});
+  //
+  const [showAlert, setShowAlert] = useState(false);
 
   const curWindow = useCallback((node) => {
     if (node !== null) {
@@ -76,6 +85,7 @@ const Tomato = ({
             setCurrentSessionType(returnData.currentSessionType);
             setProgress(returnData.progress);
             setTimeLeft(returnData.timeLeft);
+            setDeg(returnData.deg);
           } else {
             console.log("No such document!");
           }
@@ -84,6 +94,9 @@ const Tomato = ({
           console.log("Error getting document:", error);
         });
     }
+    return () => {
+      setIntervalId(null);
+    };
   }, [userState]);
 
   useEffect(() => {
@@ -104,20 +117,20 @@ const Tomato = ({
   }, [timeLeft, currentSessionType, breakSelected, sessionSelected]);
   useEffect(() => {
     if (currentSessionType === "Session") {
-      const calcDeg = () => {
-        let thisDeg =
-          (360 * (sessionSelected * 60 - timeLeft)) /
-          (sessionSelected * 60 * targetSelected);
-        return thisDeg + progress * (360 / targetSelected);
-      };
-      setDeg(calcDeg());
+      setDeg(calcDeg(sessionSelected, targetSelected, timeLeft, progress));
     }
   }, [timeLeft, currentSessionType, targetSelected, sessionSelected, progress]);
 
   useEffect(() => {
-    setTimeLeft(sessionSelected * 60);
-  }, [sessionSelected]);
-
+    if (currentSessionType === "Session") {
+      setTimeLeft(sessionSelected * 60);
+    }
+  }, [sessionSelected, currentSessionType]);
+  useEffect(() => {
+    if (currentSessionType === "Break") {
+      setTimeLeft(breakSelected * 60);
+    }
+  }, [breakSelected, currentSessionType]);
   const saveData = () => {
     if (userState) {
       firestore
@@ -130,6 +143,7 @@ const Tomato = ({
           timeLeft: timeLeft,
           progress: progress,
           currentSessionType: currentSessionType,
+          deg: deg,
         })
         .then(() => {
           console.log("Document successfully updte!!!");
@@ -148,11 +162,18 @@ const Tomato = ({
     } else {
       const newIntervalId = setInterval(() => {
         setTimeLeft((pretimer) => pretimer - 1);
-      }, 1000);
+      }, 100);
       setIntervalId(newIntervalId);
     }
   };
-
+  const clearCurTime = () => {
+    if (currentSessionType === "Session") {
+      setTimeLeft(sessionSelected * 60);
+    }
+    if (currentSessionType === "Break") {
+      setTimeLeft(breakSelected * 60);
+    }
+  };
   const resetAll = () => {
     playSessionsoundEffect.current.load();
     playBreaksoundEffect.current.load();
@@ -164,7 +185,8 @@ const Tomato = ({
     setBreakSelected(5);
     setProgress(0);
     setTargetSelected(8);
-    //saveData();  TODO: restAll在儲存
+    setDeg(0);
+    setShowAlert(false);
   };
 
   return (
@@ -229,6 +251,14 @@ const Tomato = ({
                 alt="playStop-icon"
               />
             </button>
+            <button
+              className="tomato-play-icon button-style"
+              onClick={() => {
+                clearCurTime();
+              }}
+            >
+              <img src={`/images/icon_reset.svg`} alt="playStop-icon" />
+            </button>
           </div>
           <div className="tomato-btn-con">
             <button
@@ -263,18 +293,30 @@ const Tomato = ({
                   onSelectedChange={setBreakSelected}
                   Selected={breakSelected}
                 />
-                <button className="restart button-style" onClick={resetAll}>
+                <button
+                  className="restart button-style"
+                  onClick={() => {
+                    setShowAlert(true);
+                  }}
+                >
                   RESETALL
                 </button>
-                <p className="restart-warn">
-                  Be careful!Reset will lose all your progress!
-                </p>
               </div>
             ) : null}
           </div>
           <audio ref={playBreaksoundEffect} src="/music/Break.mp3"></audio>
           <audio ref={playSessionsoundEffect} src="/music/Work.mp3"></audio>
         </div>
+        {showAlert ? (
+          <Alert
+            setShowAlert={setShowAlert}
+            confirm={resetAll}
+            message={{
+              title: "Are you sure ?",
+              text: "Reset all will lose all your progress.",
+            }}
+          />
+        ) : null}
       </div>
     </div>
   );
