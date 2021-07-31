@@ -1,6 +1,6 @@
 .todo {
   width: 500px;
-  min-height: 440px;
+  min-height: 430px;
   color: #4f4d4c;
 }
 .todo-container-all {
@@ -8,7 +8,7 @@
 }
 .todo-container {
   width: 500px;
-  height: 440px;
+  height: 430px;
   border-radius: 10px;
   background-color: rgb(234, 229, 225);
   padding: 15px;

@@ -171,7 +171,7 @@ const Tomato = ({
     } else {
       const newIntervalId = setInterval(() => {
         setTimeLeft((pretimer) => pretimer - 1);
-      }, 100);
+      }, 1000);
       setIntervalId(newIntervalId);
     }
   };
@@ -281,7 +281,7 @@ const Tomato = ({
           </div>
           <div
             className="tomato-setting-container"
-            style={{ height: `${more ? "150px" : "0px"}` }}
+            style={{ height: `${more ? "120px" : "0px"}` }}
           >
             {more ? (
               <div className="tomato-setting">
