@@ -31,8 +31,8 @@ const SignWindow = ({
     y: startPositon.y,
     width: size.width,
     height: size.height,
-    defaultX: innerWidth / 2 - 350,
-    defaultY: 0,
+    defaultX: parseInt(showWindow.SignWindow.x, 10) || innerWidth / 2 - 350,
+    defaultY: parseInt(showWindow.SignWindow.y, 10) || 0,
   };
   const [position, mouseDown] = useDrag(startingPosition);
   return (
@@ -55,6 +55,7 @@ const SignWindow = ({
         mouseDown={mouseDown}
         setShowWindow={setShowWindow}
         showWindow={showWindow}
+        position={position}
         label="CozyDesk"
       />
       <div className="sign-container-all">

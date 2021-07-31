@@ -55,7 +55,14 @@ const MainBody = ({
         <div
           className="each-icon"
           onClick={() => {
-            setShowWindow({ ...showWindow, Tomato: { display: true } });
+            setShowWindow({
+              ...showWindow,
+              Tomato: {
+                display: true,
+                x: showWindow.Tomato.x,
+                y: showWindow.Tomato.y,
+              },
+            });
             if (zIndex.curW !== "Tomato") {
               setZIndex({
                 ...zIndex,
@@ -76,7 +83,14 @@ const MainBody = ({
         <div
           className="each-icon"
           onClick={() => {
-            setShowWindow({ ...showWindow, Music: { display: true } });
+            setShowWindow({
+              ...showWindow,
+              Music: {
+                display: true,
+                x: showWindow.Music.x,
+                y: showWindow.Music.y,
+              },
+            });
             if (zIndex.curW !== "Music") {
               setZIndex({
                 ...zIndex,
@@ -97,7 +111,14 @@ const MainBody = ({
         <div
           className="each-icon"
           onClick={() => {
-            setShowWindow({ ...showWindow, Todo: { display: true } });
+            setShowWindow({
+              ...showWindow,
+              Todo: {
+                display: true,
+                x: showWindow.Todo.x,
+                y: showWindow.Todo.y,
+              },
+            });
             if (zIndex.curW !== "Todo") {
               setZIndex({
                 ...zIndex,

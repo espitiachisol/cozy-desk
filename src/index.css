@@ -105,3 +105,15 @@ button {
 .delete:active {
   background-color: #a56b6b;
 }
+/* animation */
+/* @keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateX(300px) scale(0.5);
+  }
+
+  100% {
+    opacity: 100;
+    transform: translateX(0px) scale(1);
+  }
+} */

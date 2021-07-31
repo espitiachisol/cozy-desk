@@ -2,6 +2,8 @@
   width: 400px;
   min-height: 400px;
   background-color: transparent;
+  /* animation: fadeIn 0.3s ease-in-out;
+  animation-fill-mode: both; */
 }
 
 @keyframes rotate {
@@ -359,13 +361,14 @@
 .add-music input[type="file"] {
   color: #4f4d4c;
 
-  width: 60%;
+  width: 50%;
 }
+
 .add-music input[type="file"]::file-selector-button {
   font-size: 12px;
   height: 20px;
   cursor: pointer;
-  padding: 0 10px;
+  padding: 0 6px;
   border-radius: 5px;
   background-color: transparent;
 

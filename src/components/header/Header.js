@@ -31,7 +31,14 @@ const Header = ({
           <p
             className="logo"
             onClick={() => {
-              setShowWindow({ ...showWindow, SignWindow: { display: true } });
+              setShowWindow({
+                ...showWindow,
+                SignWindow: {
+                  display: true,
+                  x: showWindow.SignWindow.x,
+                  y: showWindow.SignWindow.y,
+                },
+              });
               if (zIndex.curW !== "SignWindow") {
                 setZIndex({
                   ...zIndex,
@@ -53,7 +60,14 @@ const Header = ({
             <button
               className="item pointer"
               onClick={() => {
-                setShowWindow({ ...showWindow, SignWindow: { display: true } });
+                setShowWindow({
+                  ...showWindow,
+                  SignWindow: {
+                    display: true,
+                    x: showWindow.SignWindow.x,
+                    y: showWindow.SignWindow.y,
+                  },
+                });
                 if (zIndex.curW !== "SignWindow") {
                   setZIndex({
                     ...zIndex,

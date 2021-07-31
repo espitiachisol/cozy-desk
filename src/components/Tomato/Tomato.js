@@ -65,8 +65,8 @@ const Tomato = ({
     y: startPositon.y,
     width: size.width,
     height: size.height,
-    defaultX: 970,
-    defaultY: 20,
+    defaultX: parseInt(showWindow.Tomato.x, 10) || 20,
+    defaultY: parseInt(showWindow.Tomato.y, 10) || 0,
   };
   const [position, mouseDown] = useDrag(startingPosition);
   useEffect(() => {
@@ -93,6 +93,15 @@ const Tomato = ({
         .catch((error) => {
           console.log("Error getting document:", error);
         });
+    } else {
+      setIntervalId(null);
+      setCurrentSessionType("Session");
+      setTimeLeft(25 * 60);
+      setSessionSelected(25);
+      setBreakSelected(5);
+      setProgress(0);
+      setTargetSelected(8);
+      setDeg(0);
     }
     return () => {
       setIntervalId(null);
@@ -209,6 +218,7 @@ const Tomato = ({
         mouseDown={mouseDown}
         setShowWindow={setShowWindow}
         showWindow={showWindow}
+        position={position}
         label="Tomato"
       />
       <div className="tomato-container-all">

@@ -4,6 +4,7 @@ import WindowHeader from "../windowHeader/WindowHeader";
 import "./Music.css";
 import { storage, firestore } from "../../firebaseConfig";
 import PlayList from "./PlayList";
+import Loading from "../Loading/Loading";
 
 const calcDisplayFullTime = (time) => {
   if (time) {
@@ -70,6 +71,7 @@ const cozydeskPlaylist = [
 ];
 const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
   const control = useRef(null);
+
   const [size, setSize] = useState({});
   const [startPositon, setStartPositon] = useState({});
   const [songIndex, setSongIndex] = useState(0);
@@ -86,7 +88,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
   const defaultSongs = cozydeskPlaylist;
   const [songs, setSongs] = useState(defaultSongs);
   const [currentPlaylistType, setCurrentPlaylistType] = useState("default");
-
+  const [showLoading, setShowLoading] = useState(false);
   // console.log(currentPlaylistType);
   useEffect(() => {
     if (isplaying && songs) {
@@ -161,8 +163,8 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
     y: startPositon.y,
     width: size.width,
     height: size.height,
-    defaultX: 550,
-    defaultY: 20,
+    defaultX: parseInt(showWindow.Music.x, 10) || 20,
+    defaultY: parseInt(showWindow.Music.y, 10) || 0,
   };
 
   const [position, mouseDown] = useDrag(startingPosition);
@@ -197,6 +199,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
 
   const uploadFiles = (e) => {
     let array = [];
+    setShowLoading(true);
     console.log(e);
     //把當前上傳的資料放到雲端storage和firestore
     e.preventDefault();
@@ -235,6 +238,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
                 })
                 .then(() => {
                   setUserAddLists(true);
+                  setShowLoading(false);
                   // array = [];
                   console.log("Document successfully updte!!!");
                 })
@@ -290,7 +294,6 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
       }
     }
   }, [songFromData, defaultSongs, songs]);
-
   return (
     <div
       className="music window"
@@ -311,6 +314,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
         mouseDown={mouseDown}
         setShowWindow={setShowWindow}
         showWindow={showWindow}
+        position={position}
         label="Music"
       />
 
@@ -562,6 +566,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
                     multiple
                     disabled={userState ? false : true}
                   ></input>
+                  {showLoading ? <Loading /> : null}
 
                   <button
                     type="submit"

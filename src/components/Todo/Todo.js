@@ -59,8 +59,8 @@ const Todo = function ({
     y: startPositon.y,
     width: size.width,
     height: size.height,
-    defaultX: 20,
-    defaultY: 20,
+    defaultX: parseInt(showWindow.Todo.x, 10) || 20,
+    defaultY: parseInt(showWindow.Todo.y, 10) || 0,
   };
   const [position, mouseDown] = useDrag(startingPosition);
   useEffect(() => {
@@ -305,6 +305,7 @@ const Todo = function ({
         mouseDown={mouseDown}
         setShowWindow={setShowWindow}
         showWindow={showWindow}
+        position={position}
         label="Todo"
       />
       <div className="todo-container-all">
