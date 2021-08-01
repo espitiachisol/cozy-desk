@@ -298,14 +298,19 @@
 .toggle-playList-con button.active {
   background-color: rgb(242, 241, 240);
 }
-
+/* .music-lists-container {
+} */
 .music-lists {
-  display: flex;
+  /* display: flex; */
+  overflow: auto;
+  min-height: 80px;
+  max-height: 100px;
+
   justify-content: space-between;
   flex-direction: row;
   flex-wrap: wrap;
-  overflow: auto;
-  padding: 0 6px;
+
+  padding: 6px;
   background-color: rgb(242, 241, 240);
   /* background-image: url("../../../public/images/welcome.jpg"); */
 }
@@ -313,7 +318,7 @@
   text-align: center;
   width: 30%;
   height: 40%;
-  margin: 15px 0 0 0;
+  margin: 12px 0 0 0;
   cursor: pointer;
   position: relative;
 }
@@ -323,7 +328,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
+
   width: 100%;
 }
 .user-no-songs-message,
@@ -339,10 +344,11 @@
   object-fit: contain;
 }
 .music-list p {
-  height: 32px;
+  height: 30px;
   display: block;
   font-size: 12px;
   color: #4f4d4c;
+  line-height: 1.2;
 }
 .delete-playList {
   position: absolute;
@@ -355,6 +361,7 @@
 
 .add-music {
   padding: 6px;
+
   display: flex;
   justify-content: space-between;
 }

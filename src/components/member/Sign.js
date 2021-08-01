@@ -21,7 +21,14 @@ const Sign = ({
           console.log("---response--logn-in", user.uid);
           if (SignInShow) {
             setUserstate(user.uid);
-            setShowWindow({ ...showWindow, SignWindow: { display: false } });
+            setShowWindow({
+              ...showWindow,
+              SignWindow: {
+                display: false,
+                x: showWindow.SignWindow.x,
+                y: showWindow.SignWindow.y,
+              },
+            });
           }
           // ...
         })
@@ -39,7 +46,14 @@ const Sign = ({
           const user = userCredential.user;
           console.log("---response--Sign-up", user.uid);
           setUserstate(user.uid);
-          setShowWindow({ ...showWindow, SignWindow: { display: false } });
+          setShowWindow({
+            ...showWindow,
+            SignWindow: {
+              display: false,
+              x: showWindow.SignWindow.x,
+              y: showWindow.SignWindow.y,
+            },
+          });
           // ...
         })
         .catch((error) => {
@@ -92,7 +106,6 @@ const Sign = ({
                 setSignInShow(!SignInShow);
               }}
             >
-              {" "}
               Signup
             </button>
           </p>

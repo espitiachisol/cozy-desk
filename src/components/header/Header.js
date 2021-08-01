@@ -18,6 +18,24 @@ const Header = ({
       .then(() => {
         console.log("Sign-out successful.");
         setUserstate("");
+        // setShowWindow({
+        //   SignWindow: {
+        //     display: true,
+        //     x: "",
+        //     y: "",
+        //   },
+        //   Tomato: {
+        //     display: false,
+        //     x: "",
+        //     y: "",
+        //   },
+        //   Music: {
+        //     display: false,
+        //     x: "",
+        //     y: "",
+        //   },
+        //   Todo: { display: false, x: "", y: "" },
+        // });
       })
       .catch((error) => {
         console.log("An error happened.");

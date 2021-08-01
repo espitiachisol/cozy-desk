@@ -334,7 +334,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
             className="tape-con left"
             style={{
               clipPath: `circle(${
-                120 - (progress.currentTime * 100) / progress.duration
+                125 - (progress.currentTime * 100) / progress.duration
               }px at center)`,
             }}
           >
@@ -349,7 +349,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
             className="tape-con right"
             style={{
               clipPath: `circle(${
-                20 + (progress.currentTime * 100) / progress.duration
+                25 + (progress.currentTime * 100) / progress.duration
               }px at center)`,
             }}
           >
@@ -531,11 +531,16 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
                 </button>
               </div>
             ) : null}
-            <div className="music-lists-container">
+            <div
+              className="music-lists-container"
+              style={{
+                maxHeight: `${musicListsShow ? 200 : 0}px`,
+              }}
+            >
               <div
                 className="music-lists"
                 style={{
-                  height: `${musicListsShow ? 200 : 0}px`,
+                  display: `${musicListsShow ? "flex" : "none"}`,
                 }}
               >
                 <PlayList
