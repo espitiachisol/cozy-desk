@@ -4,7 +4,17 @@ import { auth, firestore } from "./firebaseConfig";
 
 import React, { useState, useEffect } from "react";
 import "./App.css";
+import axios from "axios";
+import config from "./config";
 
+const options = {
+  method: "GET",
+  url: "https://quotes15.p.rapidapi.com/quotes/random/",
+  headers: {
+    "x-rapidapi-key": `${config.Quote_API_KEY}`,
+    "x-rapidapi-host": "quotes15.p.rapidapi.com",
+  },
+};
 function App() {
   const [userState, setUserstate] = useState("");
   const [zIndex, setZIndex] = useState({
@@ -47,7 +57,18 @@ function App() {
       }
     });
   }, []);
-
+  const [quote, setQuote] = useState({});
+  useEffect(() => {
+    const getQuote = async () => {
+      const { data } = await axios.request(options);
+      if (data?.content.length > 250) {
+        getQuote();
+      } else {
+        setQuote({ content: data.content, author: data.originator.name });
+      }
+    };
+    getQuote();
+  }, []);
   useEffect(() => {
     if (userState) {
       if (
@@ -87,6 +108,7 @@ function App() {
         showWindow={showWindow}
         setZIndex={setZIndex}
         zIndex={zIndex}
+        quote={quote}
       />
     </>
   );

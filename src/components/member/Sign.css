@@ -5,13 +5,14 @@
 }
 .sign .sign-title {
   border-bottom: 1px solid gainsboro;
+  margin-bottom: 5px;
 }
 .sign-form {
-  height: 100px;
+  height: 140px;
   display: flex;
   width: 100%;
-  flex-direction: column;
-  justify-content: space-around;
+  flex-direction: row;
+  justify-content: space-between;
   flex-wrap: wrap;
 }
 
@@ -27,7 +28,6 @@
   /* border: 1px solid rgb(167, 167, 167); */
   border: 1px solid transparent;
   background-color: rgb(242, 241, 240);
-  margin-bottom: 5px;
 }
 .sign-submit-btn {
   height: 25px;
@@ -35,6 +35,17 @@
 }
 .sign-switch-con p {
   font-size: 14px;
+}
+.sign-welcome-note {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.sign-welcome-note p {
+  width: 100%;
+}
+.sign-welcome-note p:first-child {
+  width: 100%;
 }
 .sign-switch-con button {
   text-decoration: underline;
@@ -47,13 +58,17 @@
   filter: drop-shadow(3px 3px 6px #50505067);
 }
 .sign-container {
-  height: 420px;
   display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 420px;
   background-color: rgb(234, 229, 225);
   border-radius: 10px;
 }
 .sign-image-container {
   width: 65%;
+  height: 100%;
+  position: relative;
 }
 .sign-image-container img {
   border-radius: 10px 0 0 10px;
@@ -66,6 +81,7 @@
   flex-direction: column;
   justify-content: space-around;
   width: 35%;
+  height: 100%;
   padding: 20px;
 }
 .sign-welcome-title {
@@ -76,4 +92,29 @@
 .sign-welcome-note {
   padding: 10px;
   font-size: 12px;
+}
+/* @mediaonlymaxwidth: 800px */
+@media only screen and (max-width: 700px) {
+  .sign-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    min-height: 650px;
+    width: 95%;
+    margin: 0 auto;
+  }
+  .sign-image-container {
+    width: 100%;
+    height: 50%;
+  }
+  .sign-image-container img {
+    border-radius: 10px 10px 0 0;
+  }
+  .sign-content {
+    width: 100%;
+    height: 50%;
+  }
+
+  .sign-form {
+    height: 140px;
+  }
 }

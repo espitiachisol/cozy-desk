@@ -15,23 +15,25 @@
   width: 300px;
   height: 300px;
   border-radius: 100%;
-  background-color: rgb(234, 229, 225);
-  border: 20px solid #4f4d4c;
+  border-width: 15px;
+  border-style: solid;
   position: relative;
   box-shadow: 3px 3px 8px #00000067;
+  transition: all 0.8s ease;
 }
-.tomato-outline::before {
-  box-shadow: inset 5px 5px 30px #00000067;
-  content: "";
-  width: 300px;
-  height: 300px;
+.tomato-outline-color {
+  width: 275px;
+  height: 275px;
   border-radius: 100%;
-  top: -20px;
-  left: -20px;
+  top: -2.5px;
+  left: -2.5px;
   margin: 0;
   position: absolute;
-  border: 15px solid rgb(163, 108, 108);
+  background-color: rgb(234, 229, 225);
+  border: 5px solid #4f4d4c;
+  box-shadow: inset 5px 5px 30px #000000c2;
 }
+
 .tomato-pieces {
   width: 100%;
   height: 100%;
@@ -57,14 +59,21 @@
   left: 0;
   top: 0;
 }
+.cur-session {
+  font-size: 34px;
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: "Great Vibes", cursive;
+}
 .target-progress {
-  font-size: 14px;
+  font-size: 12px;
   color: rgb(234, 229, 225);
   text-align: center;
   background-color: rgba(79, 77, 76, 0.9);
-  width: 60px;
-  height: 24px;
-  padding: 2px 0;
+
+  padding: 2px 6px;
   letter-spacing: 3px;
   position: absolute;
   top: 60%;

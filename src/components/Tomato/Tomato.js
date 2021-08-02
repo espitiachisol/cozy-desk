@@ -223,27 +223,41 @@ const Tomato = ({
       />
       <div className="tomato-container-all">
         <div className="tomato-container">
-          <div className="tomato-outline">
-            <div
-              className="tomato-pieces"
-              style={{
-                backgroundImage: target[targetSelected][progress],
-              }}
-            ></div>
-            <img
-              src={`/images/clock_${targetSelected}.png`}
-              alt="clock-label"
-              className="tomato-clock-label"
-            />
-            <img
-              src="/images/clock_hand.png"
-              alt="clock-hand"
-              className="tomato-clock-hand"
-              style={{
-                transform: `rotate(${deg}deg)`,
-              }}
-            />
-            <div className="target-progress">{`${progress}/${targetSelected}`}</div>
+          <div
+            className="tomato-outline"
+            style={{
+              borderColor: `${
+                currentSessionType === "Session"
+                  ? "rgb(163, 108, 108)"
+                  : "rgb(60, 106, 102)"
+              }`,
+            }}
+          >
+            <div className="tomato-outline-color">
+              <div
+                className="tomato-pieces"
+                style={{
+                  backgroundImage: target[targetSelected][progress],
+                }}
+              ></div>
+              <img
+                src={`/images/clock_${targetSelected}.png`}
+                alt="clock-label"
+                className="tomato-clock-label"
+              />
+              <div className="cur-session">
+                {currentSessionType === "Session" ? "Focus" : "Break"}
+              </div>
+              <img
+                src="/images/clock_hand.png"
+                alt="clock-hand"
+                className="tomato-clock-hand"
+                style={{
+                  transform: `rotate(${deg}deg)`,
+                }}
+              />
+              <div className="target-progress">{`${progress}/${targetSelected}`}</div>
+            </div>
           </div>
         </div>
         <div className="content-container">
@@ -291,13 +305,13 @@ const Tomato = ({
                   onSelectedChange={setTargetSelected}
                   Selected={targetSelected}
                 />
-                <p className="dropdown-label">Work duration</p>
+                <p className="dropdown-label">Session length</p>
                 <Dropdown
                   options={setting.session}
                   onSelectedChange={setSessionSelected}
                   Selected={sessionSelected}
                 />
-                <p className="dropdown-label">Break duration</p>
+                <p className="dropdown-label">Break length</p>
                 <Dropdown
                   options={setting.break}
                   onSelectedChange={setBreakSelected}

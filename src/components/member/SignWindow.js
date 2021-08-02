@@ -3,6 +3,8 @@ import Sign from "./Sign";
 import useDrag from "../hooks/useDrag";
 import WindowHeader from "../windowHeader/WindowHeader";
 import "./Sign.css";
+import Quote from "../Quote/Quote";
+
 const SignWindow = ({
   userState,
   setUserstate,
@@ -10,11 +12,13 @@ const SignWindow = ({
   showWindow,
   zIndex,
   setZIndex,
+  quote,
 }) => {
   const [size, setSize] = useState({});
   const [startPositon, setStartPositon] = useState({});
   const [SignInShow, setSignInShow] = useState(true);
   const { innerWidth } = window;
+
   const curWindow = useCallback((node) => {
     if (node !== null) {
       const response = node.getBoundingClientRect();
@@ -62,6 +66,7 @@ const SignWindow = ({
         <div className="sign-container">
           <div className="sign-image-container">
             <img src="/images/welcome.jpg" alt="welcome"></img>
+            {quote?.content ? <Quote quote={quote} /> : null}
           </div>
           <div className="sign-content">
             <h2 className="sign-welcome-title">Welcome to CozyDesk</h2>

@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Prata&family=Roboto+Slab:wght@300;400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
 *,
 *::after,
 *::before {
@@ -38,6 +39,13 @@ button {
 
 .window {
   position: absolute;
+}
+/* @mediaonlymaxwidth: 800px */
+@media only screen and (max-width: 900px) {
+  .window {
+    margin: 0 auto;
+    position: static;
+  }
 }
 
 /* .window-body {

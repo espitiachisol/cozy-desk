@@ -95,34 +95,34 @@ const Sign = ({
         <button type="submit" className="sign-submit-btn button-style">
           {SignInShow ? "Login in" : "Create account"}
         </button>
+        <div className="sign-switch-con">
+          {SignInShow ? (
+            <p>
+              doesn't have an account&nbsp;
+              <button
+                className="pointer"
+                onClick={() => {
+                  setSignInShow(!SignInShow);
+                }}
+              >
+                Signup
+              </button>
+            </p>
+          ) : (
+            <p>
+              already have an acoount&nbsp;
+              <button
+                className="pointer"
+                onClick={() => {
+                  setSignInShow(!SignInShow);
+                }}
+              >
+                Singin
+              </button>
+            </p>
+          )}
+        </div>
       </form>
-      <div className="sign-switch-con">
-        {SignInShow ? (
-          <p>
-            doesn't have an account&nbsp;
-            <button
-              className="pointer"
-              onClick={() => {
-                setSignInShow(!SignInShow);
-              }}
-            >
-              Signup
-            </button>
-          </p>
-        ) : (
-          <p>
-            already have an acoount&nbsp;
-            <button
-              className="pointer"
-              onClick={() => {
-                setSignInShow(!SignInShow);
-              }}
-            >
-              Singin
-            </button>
-          </p>
-        )}
-      </div>
     </>
   );
 };

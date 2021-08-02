@@ -1,0 +1,63 @@
+/* quote */
+.quote-con-all {
+  width: 80%;
+  position: absolute;
+  left: 50%;
+  bottom: 10%;
+  transform: translateX(-50%);
+  transition: all 1s ease;
+}
+.quote-con {
+  min-height: 80px;
+
+  padding: 10px 20px;
+  background-color: rgb(60, 106, 102);
+  color: rgb(242, 241, 240);
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.quote-content {
+  display: block;
+  font-size: 18px;
+  font-family: "Prata", serif;
+}
+.quote-author {
+  display: block;
+  text-align: right;
+}
+.quote-symbol {
+  color: rgb(242, 241, 240);
+  font-family: "Prata", serif;
+  font-size: 40px;
+  height: 30px;
+  width: 25px;
+  text-align: center;
+
+  border-bottom: 15px solid rgb(27, 101, 149);
+}
+.quote-title {
+  padding: 0 12px;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: "Prata", serif;
+  display: inline-block;
+  height: 20px;
+  background-color: rgb(254, 217, 150);
+  position: absolute;
+  top: 0px;
+  right: -20px;
+  transform: rotate(30deg);
+}
+.quote-symbol.up {
+  position: absolute;
+  top: -20px;
+  left: -10px;
+  transform: rotate(-10deg);
+}
+
+.quote-symbol.down {
+  position: absolute;
+  bottom: -10px;
+  right: -10px;
+  transform: rotate(10deg);
+}

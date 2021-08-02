@@ -17,8 +17,14 @@
   left: 0;
   width: 100%;
 }
+.left-item {
+  width: 290px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 .header .item {
-  margin-left: 20px;
+  width: 70%;
   color: rgb(242, 241, 240);
   padding: 1px 10px;
   border: 1px solid rgb(242, 241, 240);

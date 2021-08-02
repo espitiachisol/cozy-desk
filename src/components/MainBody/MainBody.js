@@ -11,6 +11,7 @@ const MainBody = ({
   showWindow,
   zIndex,
   setZIndex,
+  quote,
 }) => {
   return (
     <div className="main-body">
@@ -22,6 +23,7 @@ const MainBody = ({
           setShowWindow={setShowWindow}
           setZIndex={setZIndex}
           zIndex={zIndex}
+          quote={quote}
         />
       ) : null}
       {showWindow.Music.display ? (
@@ -137,6 +139,7 @@ const MainBody = ({
           <p>Todo</p>
         </div>
       </div>
+
       {/* <div className="test">
         <img src="/images/test.png" alt="tomato" style={{ width: "800px" }} />
       </div> */}
