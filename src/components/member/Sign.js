@@ -6,6 +6,7 @@ const Sign = ({
   setShowWindow,
   showWindow,
   setSignInShow,
+  setNotification,
 }) => {
   const [userMail, setUserMail] = useState("");
   const [userPassword, setUserPassword] = useState("");
@@ -18,25 +19,31 @@ const Sign = ({
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          console.log("---response--logn-in", user.uid);
+          // console.log("---response--logn-in", user.uid);
           if (SignInShow) {
             setUserstate(user.uid);
             setShowWindow({
-              ...showWindow,
+              Tomato: { display: false, x: "", y: "" },
+              Music: { display: false, x: "", y: "" },
+              Todo: { display: false, x: "", y: "" },
               SignWindow: {
-                display: false,
+                display: true,
                 x: showWindow.SignWindow.x,
                 y: showWindow.SignWindow.y,
               },
             });
+            setNotification({
+              title: "Notification",
+              content: "Logn in successfully",
+            });
           }
-          // ...
         })
         .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log("---response-error", errorCode, errorMessage);
-          // ..
+          setNotification({
+            title: error?.code,
+            content: error?.message,
+          });
+          // console.log("---response-error", errorCode, errorMessage);
         });
     } else {
       auth
@@ -44,22 +51,29 @@ const Sign = ({
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          console.log("---response--Sign-up", user.uid);
+          // console.log("---response--Sign-up", user.uid);
           setUserstate(user.uid);
           setShowWindow({
-            ...showWindow,
+            Tomato: { display: false, x: "", y: "" },
+            Music: { display: false, x: "", y: "" },
+            Todo: { display: false, x: "", y: "" },
             SignWindow: {
-              display: false,
+              display: true,
               x: showWindow.SignWindow.x,
               y: showWindow.SignWindow.y,
             },
           });
-          // ...
+          setNotification({
+            title: "Notification",
+            content: "Sign up successfully",
+          });
         })
         .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log("---response-error", errorCode, errorMessage);
+          setNotification({
+            title: error?.code,
+            content: error?.message,
+          });
+          // console.log("---response-error", errorCode, errorMessage);
           // ..
         });
     }

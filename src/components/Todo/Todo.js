@@ -30,7 +30,7 @@ const Todo = function ({
   zIndex,
   setZIndex,
   userState,
-  setUserstate,
+  setNotification,
 }) {
   const [size, setSize] = useState({});
   const [startPositon, setStartPositon] = useState({});
@@ -71,23 +71,31 @@ const Todo = function ({
         .get()
         .then((doc) => {
           if (doc.exists) {
-            console.log("Document data:", doc.data());
+            // console.log("Document data:", doc.data());
             setTodolistAll(doc.data().todolist);
           } else {
-            console.log("No such document!");
+            // console.log("No such document!");
+            setNotification({
+              title: "Notification",
+              content: "No such document!",
+            });
           }
         })
         .catch((error) => {
-          console.log("Error getting document:", error);
+          setNotification({
+            title: error?.code,
+            content: error?.message,
+          });
+          // console.log("Error getting document:", error);
         });
     }
     return () => {
       setTodolistAll([]);
     };
-  }, [userState]);
+  }, [userState, setNotification]);
   const addTodo = (e) => {
     e.preventDefault();
-    console.log(e);
+    // console.log(e);
     let day = new Date();
     let id = "list" + day.getTime();
 
@@ -96,6 +104,7 @@ const Todo = function ({
       text: text,
       deadLine: deadLine,
       priority: priority,
+      addTime: day.toLocaleDateString("zh"),
       complete: false,
     };
     if (userState) {
@@ -106,10 +115,14 @@ const Todo = function ({
         .then(() => {
           setTodolistAll([...todolistAll, data]);
 
-          console.log("Document successfully written!");
+          // console.log("Document successfully written!");
         })
         .catch((error) => {
-          console.error("Error writing document: ", error);
+          setNotification({
+            title: error?.code,
+            content: error?.message,
+          });
+          // console.error("Error writing document: ", error);
         });
     } else {
       //使用者沒有登入的狀況
@@ -135,10 +148,14 @@ const Todo = function ({
         .set({ todolist: deleteAListFromLists })
         .then(() => {
           setTodolistAll(deleteAListFromLists);
-          console.log("Document successfully updte!!!");
+          // console.log("Document successfully updte!!!");
         })
         .catch((error) => {
-          console.error("Error writing document: ", error);
+          setNotification({
+            title: error?.code,
+            content: error?.message,
+          });
+          // console.error("Error writing document: ", error);
         });
     } else {
       //使用者沒有登入的狀況
@@ -146,7 +163,7 @@ const Todo = function ({
     }
   };
   const checkComplete = (listid) => {
-    console.log(listid);
+    // console.log(listid);
     let checkALisToComplete = todolistAll.map((each) => {
       if (each.id === listid) {
         each.complete = !each.complete;
@@ -160,9 +177,13 @@ const Todo = function ({
         .set({ todolist: checkALisToComplete })
         .then(() => {
           setTodolistAll(checkALisToComplete);
-          console.log("Document successfully updte!!!");
+          // console.log("Document successfully updte!!!");
         })
         .catch((error) => {
+          setNotification({
+            title: error?.code,
+            content: error?.message,
+          });
           console.error("Error writing document: ", error);
         });
     } else {
@@ -177,10 +198,14 @@ const Todo = function ({
         .doc(userState)
         .delete()
         .then(() => {
-          console.log("Document successfully deleted!");
+          // console.log("Document successfully deleted!");
           setTodolistAll([]);
         })
         .catch((error) => {
+          setNotification({
+            title: error?.code,
+            content: error?.message,
+          });
           console.error("Error removing document: ", error);
         });
     } else {
@@ -197,10 +222,14 @@ const Todo = function ({
         .set({ todolist: filteredAllDone })
         .then(() => {
           setTodolistAll(filteredAllDone);
-          console.log("Document successfully updte!!!");
+          // console.log("Document successfully updte!!!");
         })
         .catch((error) => {
-          console.error("Error writing document: ", error);
+          setNotification({
+            title: error?.code,
+            content: error?.message,
+          });
+          // console.error("Error writing document: ", error);
         });
     } else {
       //使用者沒有登入的狀況
@@ -281,7 +310,7 @@ const Todo = function ({
         return 0;
       });
     }
-    console.log(priorityArray);
+    // console.log(priorityArray);
     setTodolistAllShow(priorityArray);
   };
 

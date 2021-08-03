@@ -263,7 +263,7 @@
   margin: 0 10px;
   border: 1px solid rgb(207, 207, 207);
 }
-.music-lists-btn-con {
+/* .music-lists-btn-con {
   background-color: #4f4d4c;
   text-align: center;
 }
@@ -277,7 +277,7 @@
 }
 .music-lists-btn-con button span {
   font-size: 10px;
-}
+} */
 .toggle-playList-con {
   display: flex;
   height: 20px;

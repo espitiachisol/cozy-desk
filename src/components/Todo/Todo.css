@@ -162,7 +162,8 @@ button.icon-plus {
   width: 100%;
   border-bottom: 1px solid rgb(167, 167, 167);
 }
-.todo-list-text-time {
+.todo-list-deadline-time,
+.todo-list-create-time {
   font-size: 12px;
   text-align: end;
   border-bottom: none;
@@ -170,7 +171,7 @@ button.icon-plus {
 }
 .todo-list-priority {
   /* margin-top: 2px; */
-  width: 40%;
+  width: 20%;
   display: inline-block;
 }
 .todo-list-priority-circle {

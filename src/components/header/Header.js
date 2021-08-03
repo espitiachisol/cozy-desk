@@ -5,40 +5,35 @@ import { auth } from "../../firebaseConfig";
 import "./Header.css";
 
 const Header = ({
-  userState,
   setUserstate,
   setShowWindow,
   showWindow,
   zIndex,
   setZIndex,
+  setNotification,
 }) => {
   const userSignout = () => {
     auth
       .signOut()
       .then(() => {
-        console.log("Sign-out successful.");
+        // console.log("Sign-out successful.");
         setUserstate("");
-        // setShowWindow({
-        //   SignWindow: {
-        //     display: true,
-        //     x: "",
-        //     y: "",
-        //   },
-        //   Tomato: {
-        //     display: false,
-        //     x: "",
-        //     y: "",
-        //   },
-        //   Music: {
-        //     display: false,
-        //     x: "",
-        //     y: "",
-        //   },
-        //   Todo: { display: false, x: "", y: "" },
-        // });
+        setShowWindow({
+          SignWindow: { display: true, x: "", y: "" },
+          Tomato: { display: false, x: "", y: "" },
+          Music: { display: false, x: "", y: "" },
+          Todo: { display: false, x: "", y: "" },
+        });
+        setNotification({
+          title: "Notification",
+          content: "Sign out successfully",
+        });
       })
       .catch((error) => {
-        console.log("An error happened.");
+        setNotification({
+          title: error?.code,
+          content: error?.message,
+        });
       });
   };
 
@@ -67,13 +62,18 @@ const Header = ({
               }
             }}
           >
+            <img
+              src="/icon_favicon.svg"
+              alt="CozyDesk Logo"
+              className="logo-icon"
+            />{" "}
             CozyDesk
           </p>
 
           {auth.currentUser ? (
             <button onClick={userSignout} className="item pointer">
-              {auth.currentUser.email.length > 10
-                ? auth.currentUser.email.slice(0, 10).padEnd(13, ".") +
+              {auth.currentUser.email.length > 8
+                ? auth.currentUser.email.slice(0, 8).padEnd(11, ".") +
                   auth.currentUser.email.slice(
                     auth.currentUser.email.length - 3,
                     auth.currentUser.email.length

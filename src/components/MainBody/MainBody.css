@@ -1,5 +1,4 @@
 .icon-con {
-  z-index: -1;
   width: 80px;
   height: 300px;
   display: flex;
@@ -30,7 +29,7 @@
 }
 .main-body {
   background-color: #fffef7;
-  background-image: url(http://www.transparenttextures.com/patterns/billie-holiday.png);
+  /* background-image: url(http://www.transparenttextures.com/patterns/billie-holiday.png); */
   height: 100vh;
   display: block;
   position: fixed;
@@ -38,6 +37,7 @@
   left: 0;
   width: 100%;
 }
+
 .test {
   width: 400px;
   position: absolute;

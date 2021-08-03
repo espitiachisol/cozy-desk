@@ -15,7 +15,7 @@ const Day = () => {
     const timeId = setInterval(() => {
       const day = new Date();
       setdate(
-        `${day.toLocaleDateString("en")}  ${day.toLocaleTimeString("en", {
+        `${day.toLocaleDateString("zh")}  ${day.toLocaleTimeString("en", {
           hour: "2-digit",
           minute: "2-digit",
         })}`

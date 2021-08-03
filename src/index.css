@@ -15,6 +15,7 @@ body {
   font-family: "Roboto Slab", serif;
   font-weight: 400;
   box-sizing: border-box;
+  color: rgb(59, 59, 59);
 }
 h1,
 h2,
@@ -39,6 +40,7 @@ button {
 
 .window {
   position: absolute;
+  animation: fadeIn 0.2s ease;
 }
 /* @mediaonlymaxwidth: 800px */
 @media only screen and (max-width: 900px) {
@@ -113,15 +115,14 @@ button {
 .delete:active {
   background-color: #a56b6b;
 }
+
 /* animation */
-/* @keyframes fadeIn {
+@keyframes fadeIn {
   0% {
     opacity: 0;
-    transform: translateX(300px) scale(0.5);
   }
 
   100% {
     opacity: 100;
-    transform: translateX(0px) scale(1);
   }
-} */
+}

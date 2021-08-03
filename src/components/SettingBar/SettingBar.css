@@ -1,0 +1,21 @@
+.more-con {
+  background-color: #4f4d4c;
+  text-align: center;
+}
+.more-con button {
+  color: rgb(234, 229, 225);
+  background-color: none;
+  border: none;
+  letter-spacing: 2px;
+  font-size: 14px;
+  height: 20px;
+}
+.more-con button div {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid rgb(234, 229, 225);
+  transition: all 0.3s ease;
+}

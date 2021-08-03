@@ -5,6 +5,7 @@ import "./Music.css";
 import { storage, firestore } from "../../firebaseConfig";
 import PlayList from "./PlayList";
 import Loading from "../Loading/Loading";
+import SettingBar from "../SettingBar/SettingBar";
 
 const calcDisplayFullTime = (time) => {
   if (time) {
@@ -69,7 +70,14 @@ const cozydeskPlaylist = [
     icon: "/images/tape-icons-default3.png",
   },
 ];
-const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
+const Music = ({
+  setShowWindow,
+  showWindow,
+  zIndex,
+  setZIndex,
+  userState,
+  setNotification,
+}) => {
   const control = useRef(null);
 
   const [size, setSize] = useState({});
@@ -112,17 +120,25 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
           if (doc.exists) {
             setSongFromData([...doc.data().mixtape]);
           } else {
-            console.log("No such document!");
+            // console.log("No such document!");
+            setNotification({
+              title: "Notification",
+              content: "No such document!",
+            });
           }
         })
         .catch((error) => {
-          console.log("Error getting document:", error);
+          setNotification({
+            title: error?.code,
+            content: error?.message,
+          });
+          // console.log("Error getting document:", error);
         });
     }
     return () => {
       setSongFromData([]);
     };
-  }, [userState]);
+  }, [userState, setNotification]);
 
   //假如使用者新增新的音樂清單，再向firestore要一次新的資料，將新的資料放入SongFromData
   useEffect(() => {
@@ -136,16 +152,25 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
             setSongFromData([...doc.data().mixtape]);
             // console.log([...doc.data().mixtape]);
             setUserAddLists(false);
-            console.log("setSongFromDataEffect");
+            // console.log("setSongFromDataEffect");
           } else {
-            console.log("No such document!");
+            setNotification({
+              title: "Notification",
+              content: "No such document!",
+            });
+
+            // console.log("No such document!");
           }
         })
         .catch((error) => {
-          console.log("Error getting document:", error);
+          setNotification({
+            title: error?.code,
+            content: error?.message,
+          });
+          // console.log("Error getting document:", error);
         });
     }
-  }, [userAddLists, userState]);
+  }, [userAddLists, userState, setNotification]);
 
   const curWindow = useCallback((node) => {
     if (node !== null) {
@@ -186,7 +211,6 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
       : setSongIndex(songIndex - 1);
   };
   const next = () => {
-    console.log(songIndex, songs.length);
     //當歌單只有一首歌的時候setSongIndex(0)會沒有改變所以上面的useEffect不會被觸法
     if (songs.length === 1) {
       play();
@@ -200,7 +224,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
   const uploadFiles = (e) => {
     let array = [];
     setShowLoading(true);
-    console.log(e);
+    // console.log(e);
     //把當前上傳的資料放到雲端storage和firestore
     e.preventDefault();
     const files = e.target[0].files;
@@ -240,10 +264,13 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
                   setUserAddLists(true);
                   setShowLoading(false);
                   // array = [];
-                  console.log("Document successfully updte!!!");
+                  // console.log("Document successfully updte!!!");
                 })
                 .catch((error) => {
-                  console.error("Error writing document: ", error);
+                  setNotification({
+                    title: error?.code,
+                    content: error?.message,
+                  });
                 });
             });
         });
@@ -257,15 +284,19 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
       .child(id)
       .delete()
       .then(() => {
-        console.log("Document successfully delete from storage");
+        // console.log("Document successfully delete from storage");
       })
       .catch((error) => {
+        setNotification({
+          title: error?.code,
+          content: error?.message,
+        });
         console.error("Error Deleting document from storage: ", error);
       });
     //更新firestore資料
     let filteredArray = songFromData.filter((song) => song.id !== id);
 
-    console.log(filteredArray);
+    // console.log(filteredArray);
     firestore
       .collection("mixtape")
       .doc(userState)
@@ -276,9 +307,13 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
         //更新SongFromData
         setUserAddLists(true);
         filteredArray = [];
-        console.log("Document successfully  delete from firestore !!!");
+        // console.log("Document successfully  delete from firestore !!!");
       })
       .catch((error) => {
+        setNotification({
+          title: error?.code,
+          content: error?.message,
+        });
         console.error("Error writing document: ", error);
       });
   };
@@ -287,7 +322,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
     //假如目前播放的音樂"不是"default音樂
     if (!songs[0].id.includes("default")) {
       if (songFromData.length > 0) {
-        console.log("3", songFromData);
+        // console.log("3", songFromData);
         setSongs(songFromData);
       } else {
         setSongs(defaultSongs);
@@ -498,15 +533,8 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
             </div>
           </div>
           <div className="music-lists-all">
-            <div className="music-lists-btn-con">
-              <button
-                onClick={() => {
-                  setMusicListsShow(!musicListsShow);
-                }}
-              >
-                Playlist <span>&#9660;</span>
-              </button>
-            </div>
+            <SettingBar setMore={setMusicListsShow} more={musicListsShow} />
+
             {musicListsShow ? (
               <div className="toggle-playList-con">
                 <button

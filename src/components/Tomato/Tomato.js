@@ -6,6 +6,7 @@ import Dropdown from "../Dropdown/Dropdown";
 import { setting, target } from "./tomato-data";
 import { firestore } from "../../firebaseConfig";
 import Alert from "../Alert/Alert";
+import SettingBar from "../SettingBar/SettingBar";
 
 const calcDisplayTime = (time) => {
   let sec = Math.floor(time % 60);
@@ -27,10 +28,10 @@ const Tomato = ({
   zIndex,
   setZIndex,
   userState,
+  setNotification,
 }) => {
   //data from user
   const [targetSelected, setTargetSelected] = useState(setting.target[0]);
-  // const [sessionSelected, setSessionSelected] = useState(setting.session[1]);
   const [sessionSelected, setSessionSelected] = useState(setting.session[1]);
   const [breakSelected, setBreakSelected] = useState(setting.break[0]);
   const [currentSessionType, setCurrentSessionType] = useState("Session"); // 'Session' or 'Break'
@@ -49,7 +50,10 @@ const Tomato = ({
   const [startPositon, setStartPositon] = useState({});
   //
   const [showAlert, setShowAlert] = useState(false);
-
+  const [changeLengthAttention, setChangeLengthAttention] = useState({
+    session: false,
+    break: false,
+  });
   const curWindow = useCallback((node) => {
     if (node !== null) {
       const response = node.getBoundingClientRect();
@@ -77,7 +81,7 @@ const Tomato = ({
         .get()
         .then((doc) => {
           if (doc.exists) {
-            console.log("Document data:", doc.data());
+            // console.log("Document data:", doc.data());
             const returnData = doc.data();
             setTargetSelected(returnData.target);
             setBreakSelected(returnData.break);
@@ -87,11 +91,19 @@ const Tomato = ({
             setTimeLeft(returnData.timeLeft);
             setDeg(returnData.deg);
           } else {
-            console.log("No such document!");
+            // console.log("No such document!");
+            setNotification({
+              title: "Notification",
+              content: "No such document!",
+            });
           }
         })
         .catch((error) => {
-          console.log("Error getting document:", error);
+          setNotification({
+            title: error?.code,
+            content: error?.message,
+          });
+          // console.log("Error getting document:", error);
         });
     } else {
       setIntervalId(null);
@@ -106,18 +118,18 @@ const Tomato = ({
     return () => {
       setIntervalId(null);
     };
-  }, [userState]);
+  }, [userState, setNotification]);
 
   useEffect(() => {
     if (timeLeft === 0) {
       if (currentSessionType === "Session") {
-        console.log("play");
+        // console.log("play");
         playBreaksoundEffect.current.play();
         setCurrentSessionType("Break");
         setProgress((preProgress) => preProgress + 1);
         setTimeLeft(breakSelected * 60);
       } else if (currentSessionType === "Break") {
-        console.log("play");
+        // console.log("play");
         playSessionsoundEffect.current.play();
         setCurrentSessionType("Session");
         setTimeLeft(sessionSelected * 60);
@@ -140,6 +152,7 @@ const Tomato = ({
       setTimeLeft(breakSelected * 60);
     }
   }, [breakSelected, currentSessionType]);
+
   const saveData = () => {
     if (userState) {
       firestore
@@ -155,13 +168,17 @@ const Tomato = ({
           deg: deg,
         })
         .then(() => {
-          console.log("Document successfully updte!!!");
+          // console.log("Document successfully updte!!!");
         })
         .catch((error) => {
-          console.error("Error writing document: ", error);
+          setNotification({
+            title: error?.code,
+            content: error?.message,
+          });
         });
     }
   };
+
   const isStarted = intervalId !== null;
   const handleStartStop = () => {
     saveData();
@@ -171,7 +188,7 @@ const Tomato = ({
     } else {
       const newIntervalId = setInterval(() => {
         setTimeLeft((pretimer) => pretimer - 1);
-      }, 1000);
+      }, 100);
       setIntervalId(newIntervalId);
     }
   };
@@ -181,6 +198,31 @@ const Tomato = ({
     }
     if (currentSessionType === "Break") {
       setTimeLeft(breakSelected * 60);
+    }
+  };
+  useEffect(() => {
+    setChangeLengthAttention({
+      break: false,
+      session: false,
+    });
+  }, [sessionSelected, breakSelected, currentSessionType, more]);
+
+  const witchAttentionToShow = (e) => {
+    if (e.target.options.length === 9) {
+      if (currentSessionType === "Session") {
+        setChangeLengthAttention({
+          ...changeLengthAttention,
+          session: true,
+        });
+      }
+    }
+    if (e.target.options.length === 4) {
+      if (currentSessionType === "Break") {
+        setChangeLengthAttention({
+          ...changeLengthAttention,
+          break: true,
+        });
+      }
     }
   };
   const resetAll = () => {
@@ -246,8 +288,13 @@ const Tomato = ({
                 className="tomato-clock-label"
               />
               <div className="cur-session">
-                {currentSessionType === "Session" ? "Focus" : "Break"}
+                {targetSelected === progress ? (
+                  <p>Congratulations!</p>
+                ) : (
+                  <p>{currentSessionType === "Session" ? "Focus" : "Break"}</p>
+                )}
               </div>
+
               <img
                 src="/images/clock_hand.png"
                 alt="clock-hand"
@@ -284,49 +331,62 @@ const Tomato = ({
               <img src={`/images/icon_reset.svg`} alt="playStop-icon" />
             </button>
           </div>
-          <div className="tomato-btn-con">
-            <button
-              onClick={() => {
-                setMore(!more);
-              }}
+          <div style={{ margin: " 0 10px" }}>
+            <SettingBar setMore={setMore} more={more} />
+            <div
+              className="tomato-setting-container"
+              style={{ minHeight: `${more ? "120px" : "0px"}` }}
             >
-              Setting <span>&#9660;</span>
-            </button>
-          </div>
-          <div
-            className="tomato-setting-container"
-            style={{ height: `${more ? "120px" : "0px"}` }}
-          >
-            {more ? (
-              <div className="tomato-setting">
-                <p className="dropdown-label">Target</p>
-                <Dropdown
-                  options={setting.target}
-                  onSelectedChange={setTargetSelected}
-                  Selected={targetSelected}
-                />
-                <p className="dropdown-label">Session length</p>
-                <Dropdown
-                  options={setting.session}
-                  onSelectedChange={setSessionSelected}
-                  Selected={sessionSelected}
-                />
-                <p className="dropdown-label">Break length</p>
-                <Dropdown
-                  options={setting.break}
-                  onSelectedChange={setBreakSelected}
-                  Selected={breakSelected}
-                />
-                <button
-                  className="restart button-style"
-                  onClick={() => {
-                    setShowAlert(true);
-                  }}
-                >
-                  RESETALL
-                </button>
-              </div>
-            ) : null}
+              {more ? (
+                <div className="tomato-setting">
+                  <p className="dropdown-label">Target</p>
+                  <Dropdown
+                    options={setting.target}
+                    onSelectedChange={setTargetSelected}
+                    Selected={targetSelected}
+                  />
+
+                  <p className="dropdown-label">Session length</p>
+                  <Dropdown
+                    options={setting.session}
+                    onSelectedChange={setSessionSelected}
+                    Selected={sessionSelected}
+                    witchAttentionToShow={witchAttentionToShow}
+                  />
+                  {changeLengthAttention.session ? (
+                    <p className="change-length-attention">
+                      <span>Attention!</span> You are currently in the focus
+                      time. If you change the session length, your current time
+                      will be reset. You can either reset it or wait till the
+                      break time.
+                    </p>
+                  ) : null}
+                  <p className="dropdown-label">Break length</p>
+                  <Dropdown
+                    options={setting.break}
+                    onSelectedChange={setBreakSelected}
+                    Selected={breakSelected}
+                    witchAttentionToShow={witchAttentionToShow}
+                  />
+                  {changeLengthAttention.break ? (
+                    <p className="change-length-attention">
+                      <span>Attention!</span> You are currently in the break
+                      time. If you change the break length, your current time
+                      will be reset. You can either reset it or wait till the
+                      focus time.
+                    </p>
+                  ) : null}
+                  <button
+                    className="restart button-style"
+                    onClick={() => {
+                      setShowAlert(true);
+                    }}
+                  >
+                    RESETALL
+                  </button>
+                </div>
+              ) : null}
+            </div>
           </div>
           <audio ref={playBreaksoundEffect} src="/music/Break.mp3"></audio>
           <audio ref={playSessionsoundEffect} src="/music/Work.mp3"></audio>

@@ -24,8 +24,11 @@ const TodoList = ({ lists, checkComplete, deleteList, priority }) => {
                 ></div>
                 <p className="todo-list-priority-label">{listdata.priority}</p>
               </span>
-              <p className="todo-list-text-time">
+              <p className="todo-list-deadline-time">
                 {listdata.deadLine ? `Deadline - ${listdata.deadLine}` : ""}
+              </p>
+              <p className="todo-list-create-time">
+                {listdata.addTime ? `Added on ${listdata.addTime}` : ""}
               </p>
             </div>
             <button

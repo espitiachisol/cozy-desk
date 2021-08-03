@@ -17,6 +17,7 @@ const options = {
 };
 function App() {
   const [userState, setUserstate] = useState("");
+  const [notification, setNotification] = useState({ title: "", content: "" });
   const [zIndex, setZIndex] = useState({
     SignWindow: 1,
     Desk: 1,
@@ -46,16 +47,39 @@ function App() {
               // console.log("Document data:", doc.data().showWindow);
               setShowWindow(doc.data().showWindow);
             } else {
-              console.log("No such document!");
+              // console.log("No such document!");
+              setNotification({
+                title: "Notification",
+                content: "No such document!",
+              });
             }
           })
           .catch((error) => {
-            console.log("Error getting document:", error);
+            setNotification({
+              title: error?.code,
+              content: error?.message,
+            });
+            // console.log("Error getting document:", error);
           });
       } else {
-        console.log("not sign in");
+        // console.log("not sign in");
+        setShowWindow({
+          SignWindow: { display: true, x: "", y: "" },
+          Tomato: { display: false, x: "", y: "" },
+          Music: { display: false, x: "", y: "" },
+          Todo: { display: false, x: "", y: "" },
+        });
       }
     });
+    //測試 FIXME: not sure!
+    return () => {
+      setShowWindow({
+        SignWindow: { display: true, x: "", y: "" },
+        Tomato: { display: false, x: "", y: "" },
+        Music: { display: false, x: "", y: "" },
+        Todo: { display: false, x: "", y: "" },
+      });
+    };
   }, []);
   const [quote, setQuote] = useState({});
   useEffect(() => {
@@ -82,10 +106,14 @@ function App() {
           .doc(userState)
           .set({ showWindow: showWindow })
           .then(() => {
-            console.log("Document successfully updte!!!");
+            // console.log("Document successfully updte!!!");
           })
           .catch((error) => {
-            console.error("Error writing document: ", error);
+            setNotification({
+              title: error?.code,
+              content: error?.message,
+            });
+            // console.error("Error writing document: ", error);
           });
       }
     }
@@ -100,6 +128,7 @@ function App() {
         showWindow={showWindow}
         setZIndex={setZIndex}
         zIndex={zIndex}
+        setNotification={setNotification}
       />
       <MainBody
         userState={userState}
@@ -109,6 +138,8 @@ function App() {
         setZIndex={setZIndex}
         zIndex={zIndex}
         quote={quote}
+        notification={notification}
+        setNotification={setNotification}
       />
     </>
   );

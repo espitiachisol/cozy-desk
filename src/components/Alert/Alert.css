@@ -14,6 +14,7 @@
   flex-direction: column;
   justify-content: space-between;
   border: 1px solid rgb(167, 167, 167);
+  animation: fadeIn 0.2s ease;
 }
 .alert-message {
   width: 100%;

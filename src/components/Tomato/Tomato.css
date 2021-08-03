@@ -1,6 +1,6 @@
 .tomato {
   width: 300px;
-  min-height: 400px;
+  min-height: 300px;
   color: #4f4d4c;
 }
 .tomato-container-all {
@@ -19,7 +19,7 @@
   border-style: solid;
   position: relative;
   box-shadow: 3px 3px 8px #00000067;
-  transition: all 0.8s ease;
+  animation: fadeIn 0.5s ease;
 }
 .tomato-outline-color {
   width: 275px;
@@ -67,6 +67,7 @@
   transform: translate(-50%, -50%);
   font-family: "Great Vibes", cursive;
 }
+
 .target-progress {
   font-size: 12px;
   color: rgb(234, 229, 225);
@@ -85,8 +86,9 @@
   background-color: rgb(234, 229, 225);
   margin-top: -150px;
   padding-top: 150px;
-  padding-bottom: 15px;
+  padding-bottom: 10px;
   border-radius: 0 0 10px 10px;
+  min-height: 240px;
 }
 .tomato-time {
   width: 100%;
@@ -121,41 +123,35 @@
 .tomato-play-icon img {
   width: 100%;
 }
-/* toggle setting */
-.tomato-btn-con {
-  margin: 0 10px;
-  background-color: #4f4d4c;
-  text-align: center;
-}
-.tomato-btn-con button {
-  color: rgb(234, 229, 225);
-  background-color: none;
-  border: none;
-  letter-spacing: 2px;
-  font-size: 14px;
-  height: 20px;
-}
-.tomato-btn-con button span {
-  font-size: 10px;
-}
 .tomato-setting-container {
   font-size: 14px;
-  margin: 0 10px;
   background-color: rgb(242, 241, 240);
 }
 .tomato-setting {
   padding: 10px;
-  height: 100%;
+  min-height: 100px;
   display: flex;
   justify-content: space-between;
   flex-direction: row;
   flex-wrap: wrap;
-  align-content: space-between;
-  align-items: center;
 }
+.dropdown-label {
+  margin-bottom: 6px;
+}
+
 .tomato-setting .dropdown-label {
   width: 50%;
 }
 .tomato-setting .restart {
   width: 100%;
+}
+.change-length-attention {
+  width: 100%;
+  font-size: 10px;
+  color: rgb(167, 167, 167);
+  margin-bottom: 6px;
+}
+.change-length-attention span {
+  color: rgb(163, 108, 108);
+  font-weight: 900;
 }

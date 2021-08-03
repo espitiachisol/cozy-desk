@@ -3,6 +3,7 @@ import Music from "../Music/Music";
 import Tomato from "../Tomato/Tomato";
 import Todo from "../Todo/Todo";
 import SignWindow from "../member/SignWindow";
+import Notification from "../Notification/Notification";
 import "./MainBody.css";
 const MainBody = ({
   userState,
@@ -12,9 +13,16 @@ const MainBody = ({
   zIndex,
   setZIndex,
   quote,
+  setNotification,
+  notification,
 }) => {
   return (
-    <div className="main-body">
+    <div
+      className="main-body"
+      style={{
+        backgroundImage: " url('/images/bg-img.png')",
+      }}
+    >
       {showWindow.SignWindow.display ? (
         <SignWindow
           userState={userState}
@@ -24,6 +32,7 @@ const MainBody = ({
           setZIndex={setZIndex}
           zIndex={zIndex}
           quote={quote}
+          setNotification={setNotification}
         />
       ) : null}
       {showWindow.Music.display ? (
@@ -33,6 +42,7 @@ const MainBody = ({
           setShowWindow={setShowWindow}
           setZIndex={setZIndex}
           zIndex={zIndex}
+          setNotification={setNotification}
         />
       ) : null}
       {showWindow.Tomato.display ? (
@@ -42,6 +52,7 @@ const MainBody = ({
           setShowWindow={setShowWindow}
           setZIndex={setZIndex}
           zIndex={zIndex}
+          setNotification={setNotification}
         />
       ) : null}
       {showWindow.Todo.display ? (
@@ -51,6 +62,7 @@ const MainBody = ({
           setShowWindow={setShowWindow}
           setZIndex={setZIndex}
           zIndex={zIndex}
+          setNotification={setNotification}
         />
       ) : null}
       <div className="icon-con">
@@ -139,7 +151,12 @@ const MainBody = ({
           <p>Todo</p>
         </div>
       </div>
-
+      {notification.title ? (
+        <Notification
+          notification={notification}
+          setNotification={setNotification}
+        />
+      ) : null}
       {/* <div className="test">
         <img src="/images/test.png" alt="tomato" style={{ width: "800px" }} />
       </div> */}
