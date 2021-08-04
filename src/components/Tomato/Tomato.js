@@ -116,6 +116,7 @@ const Tomato = ({
       setDeg(0);
     }
     return () => {
+      clearInterval(intervalId);
       setIntervalId(null);
     };
   }, [userState, setNotification]);
@@ -188,10 +189,11 @@ const Tomato = ({
     } else {
       const newIntervalId = setInterval(() => {
         setTimeLeft((pretimer) => pretimer - 1);
-      }, 100);
+      }, 1000);
       setIntervalId(newIntervalId);
     }
   };
+
   const clearCurTime = () => {
     if (currentSessionType === "Session") {
       setTimeLeft(sessionSelected * 60);
