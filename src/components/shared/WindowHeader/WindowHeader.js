@@ -15,7 +15,7 @@ const WindowHeader = ({
           Todo: { display: false, x: position.x, y: position.y },
         });
         break;
-      case "Music":
+      case "Mixtape":
         result = setShowWindow({
           ...showWindow,
           Music: { display: false, x: position.x, y: position.y },
@@ -47,7 +47,7 @@ const WindowHeader = ({
           Todo: { display: true, x: position.x, y: position.y },
         });
         break;
-      case "Music":
+      case "Mixtape":
         result = setShowWindow({
           ...showWindow,
           Music: { display: true, x: position.x, y: position.y },

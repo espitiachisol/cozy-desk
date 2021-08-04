@@ -34,6 +34,17 @@ function App() {
     Music: { display: false, x: "", y: "" },
     Todo: { display: false, x: "", y: "" },
   });
+  //當使用者使用平板或是手機
+  useEffect(() => {
+    const { innerWidth } = window;
+    if (innerWidth < 900) {
+      setNotification({
+        title: "Notification",
+        content:
+          "For the better experience, Using devices with the screen sizes greater than 900px is suggested.",
+      });
+    }
+  }, []);
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
@@ -48,10 +59,6 @@ function App() {
               setShowWindow(doc.data().showWindow);
             } else {
               // console.log("No such document!");
-              setNotification({
-                title: "Notification",
-                content: "No such document!",
-              });
             }
           })
           .catch((error) => {

@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useEffect } from "react";
 import useDrag from "../hooks/useDrag";
-import WindowHeader from "../windowHeader/WindowHeader";
+import WindowHeader from "../shared/WindowHeader/WindowHeader";
 import TodoList from "./TodoList";
 import "./Todo.css";
-import Alert from "../Alert/Alert";
+import Alert from "../shared/Alert/Alert";
 import { firestore } from "../../firebaseConfig";
 import InputRadio from "./InputRadio";
 const converPriorityToNumber = (item) => {
@@ -75,10 +75,6 @@ const Todo = function ({
             setTodolistAll(doc.data().todolist);
           } else {
             // console.log("No such document!");
-            setNotification({
-              title: "Notification",
-              content: "No such document!",
-            });
           }
         })
         .catch((error) => {

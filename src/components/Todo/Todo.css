@@ -5,6 +5,7 @@
 }
 .todo-container-all {
   filter: drop-shadow(3px 3px 6px #50505067);
+  -webkit-filter: drop-shadow(3px 3px 6px #50505067);
 }
 .todo-container {
   width: 500px;

@@ -1,11 +1,11 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import useDrag from "../hooks/useDrag";
-import WindowHeader from "../windowHeader/WindowHeader";
+import WindowHeader from "../shared/WindowHeader/WindowHeader";
 import "./Music.css";
 import { storage, firestore } from "../../firebaseConfig";
 import PlayList from "./PlayList";
-import Loading from "../Loading/Loading";
-import SettingBar from "../SettingBar/SettingBar";
+import Loading from "../shared/Loading/Loading";
+import SettingBar from "../shared/SettingBar/SettingBar";
 
 const calcDisplayFullTime = (time) => {
   if (time) {
@@ -79,7 +79,7 @@ const Music = ({
   setNotification,
 }) => {
   const control = useRef(null);
-
+  const fileRef = useRef(null);
   const [size, setSize] = useState({});
   const [startPositon, setStartPositon] = useState({});
   const [songIndex, setSongIndex] = useState(0);
@@ -121,10 +121,6 @@ const Music = ({
             setSongFromData([...doc.data().mixtape]);
           } else {
             // console.log("No such document!");
-            setNotification({
-              title: "Notification",
-              content: "No such document!",
-            });
           }
         })
         .catch((error) => {
@@ -154,11 +150,6 @@ const Music = ({
             setUserAddLists(false);
             // console.log("setSongFromDataEffect");
           } else {
-            setNotification({
-              title: "Notification",
-              content: "No such document!",
-            });
-
             // console.log("No such document!");
           }
         })
@@ -223,48 +214,60 @@ const Music = ({
 
   const uploadFiles = (e) => {
     let array = [];
-    setShowLoading(true);
-    // console.log(e);
     //把當前上傳的資料放到雲端storage和firestore
     e.preventDefault();
     const files = e.target[0].files;
-    //多個檔案,loop 每個要上傳的檔案
-    Object.entries(files).forEach(([key, value]) => {
-      //存入storage
-      storage
-        .ref()
-        .child(`${userState}/${value.name}`)
-        .put(value)
-        .then((snapshot) => {
-          //取得storage
+    if (files.length + songFromData.length > 10) {
+      setNotification({
+        title: "Notification/The number of songs is limited to 10",
+        content: `You can only add "${10 - songFromData.length}" more songs. `,
+      });
+    } else if (files.length > 0) {
+      setShowLoading(true);
+      //多個檔案,loop 每個要上傳的檔案
+      Object.entries(files).forEach(([key, value]) => {
+        //存入storage
+        if (value.size < 10000000) {
           storage
             .ref()
             .child(`${userState}/${value.name}`)
-            .getDownloadURL()
-            .then((url) => {
-              let imgNum = randomNum(5, 9);
+            .put(value)
+            .then((snapshot) => {
+              //取得storage
+              storage
+                .ref()
+                .child(`${userState}/${value.name}`)
+                .getDownloadURL()
+                .then((url) => {
+                  let imgNum = randomNum(5, 9);
 
-              array.push({
-                id: `${userState}/${value.name}`,
-                title: value.name,
-                src: url,
-                img: `/images/mixtape-cover-${imgNum}.png`,
-                icon: `/images/tape-icons-${imgNum}.png`,
-              });
-              // console.log("Uploaded a file!");
-              // console.log(array);
-              //將取得的storage url 放入firestore
-              firestore
-                .collection("mixtape")
-                .doc(userState)
-                .set({
-                  mixtape: [...songFromData, ...array],
-                })
-                .then(() => {
-                  setUserAddLists(true);
-                  setShowLoading(false);
-                  // array = [];
-                  // console.log("Document successfully updte!!!");
+                  array.push({
+                    id: `${userState}/${value.name}`,
+                    title: value.name,
+                    src: url,
+                    img: `/images/mixtape-cover-${imgNum}.png`,
+                    icon: `/images/tape-icons-${imgNum}.png`,
+                  });
+                  // console.log("Uploaded a file!");
+                  //將取得的storage url 放入firestore
+                  firestore
+                    .collection("mixtape")
+                    .doc(userState)
+                    .set({
+                      mixtape: [...songFromData, ...array],
+                    })
+                    .then(() => {
+                      setUserAddLists(true);
+                      setShowLoading(false);
+                      fileRef.current.value = null;
+                      // console.log("Document successfully updte!!!");
+                    })
+                    .catch((error) => {
+                      setNotification({
+                        title: error?.code,
+                        content: error?.message,
+                      });
+                    });
                 })
                 .catch((error) => {
                   setNotification({
@@ -273,8 +276,26 @@ const Music = ({
                   });
                 });
             });
-        });
-    });
+        } else {
+          setNotification({
+            title: "Notification/The song size is limited to 10MB",
+            content: `${value.name
+              .slice(0, 20)
+              .padEnd(
+                23,
+                "."
+              )}, This song has exceeded the song size limit ,will not be uploaded.  `,
+          });
+          setShowLoading(false);
+          fileRef.current.value = null;
+        }
+      });
+    } else {
+      setNotification({
+        title: "Notification",
+        content: "No files chosen! Please, choose files!",
+      });
+    }
   };
 
   const deletePlayList = (id) => {
@@ -350,7 +371,7 @@ const Music = ({
         setShowWindow={setShowWindow}
         showWindow={showWindow}
         position={position}
-        label="Music"
+        label="Mixtape"
       />
 
       <div className="tape-container-all">
@@ -533,7 +554,11 @@ const Music = ({
             </div>
           </div>
           <div className="music-lists-all">
-            <SettingBar setMore={setMusicListsShow} more={musicListsShow} />
+            <SettingBar
+              setMore={setMusicListsShow}
+              more={musicListsShow}
+              label={"Playlists"}
+            />
 
             {musicListsShow ? (
               <div className="toggle-playList-con">
@@ -594,6 +619,7 @@ const Music = ({
                   }}
                 >
                   <input
+                    ref={fileRef}
                     type="file"
                     accept="audio/*"
                     multiple

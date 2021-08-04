@@ -112,9 +112,10 @@ const Sign = ({
         <div className="sign-switch-con">
           {SignInShow ? (
             <p>
-              doesn't have an account&nbsp;
+              Doesn't have an account?&nbsp;
               <button
                 className="pointer"
+                type="button"
                 onClick={() => {
                   setSignInShow(!SignInShow);
                 }}
@@ -124,9 +125,10 @@ const Sign = ({
             </p>
           ) : (
             <p>
-              already have an acoount&nbsp;
+              Already have an acoount?&nbsp;
               <button
                 className="pointer"
+                type="button"
                 onClick={() => {
                   setSignInShow(!SignInShow);
                 }}

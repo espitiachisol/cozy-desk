@@ -1,6 +1,6 @@
 import React from "react";
 import "./SettingBar.css";
-const SettingBar = ({ setMore, more }) => {
+const SettingBar = ({ setMore, more, label }) => {
   return (
     <div className="more-con">
       <button
@@ -8,7 +8,7 @@ const SettingBar = ({ setMore, more }) => {
           setMore(!more);
         }}
       >
-        Setting{" "}
+        {label}
         <div
           style={{
             transform: `${more ? "rotate(180deg)" : "rotate(0deg)"}`,

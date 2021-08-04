@@ -1,12 +1,12 @@
 import "./Tomato.css";
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import useDrag from "../hooks/useDrag";
-import WindowHeader from "../windowHeader/WindowHeader";
+import WindowHeader from "../shared/WindowHeader/WindowHeader";
 import Dropdown from "../Dropdown/Dropdown";
 import { setting, target } from "./tomato-data";
 import { firestore } from "../../firebaseConfig";
-import Alert from "../Alert/Alert";
-import SettingBar from "../SettingBar/SettingBar";
+import Alert from "../shared/Alert/Alert";
+import SettingBar from "../shared/SettingBar/SettingBar";
 
 const calcDisplayTime = (time) => {
   let sec = Math.floor(time % 60);
@@ -73,6 +73,7 @@ const Tomato = ({
     defaultY: parseInt(showWindow.Tomato.y, 10) || 0,
   };
   const [position, mouseDown] = useDrag(startingPosition);
+
   useEffect(() => {
     if (userState) {
       firestore
@@ -92,10 +93,6 @@ const Tomato = ({
             setDeg(returnData.deg);
           } else {
             // console.log("No such document!");
-            setNotification({
-              title: "Notification",
-              content: "No such document!",
-            });
           }
         })
         .catch((error) => {
@@ -334,7 +331,7 @@ const Tomato = ({
             </button>
           </div>
           <div style={{ margin: " 0 10px" }}>
-            <SettingBar setMore={setMore} more={more} />
+            <SettingBar setMore={setMore} more={more} label={"Settings"} />
             <div
               className="tomato-setting-container"
               style={{ minHeight: `${more ? "120px" : "0px"}` }}

@@ -4,7 +4,9 @@
   color: #4f4d4c;
 }
 .tomato-container-all {
+  will-change: filter;
   filter: drop-shadow(3px 3px 6px #50505067);
+  -webkit-filter: drop-shadow(3px 3px 6px #50505067);
 }
 .tomato-container {
   width: 300px;

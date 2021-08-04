@@ -2,7 +2,7 @@ import React from "react";
 import Music from "../Music/Music";
 import Tomato from "../Tomato/Tomato";
 import Todo from "../Todo/Todo";
-import SignWindow from "../member/SignWindow";
+import SignWindow from "../Sign/SignWindow";
 import Notification from "../Notification/Notification";
 import "./MainBody.css";
 const MainBody = ({

@@ -72,14 +72,14 @@ const Header = ({
 
           {auth.currentUser ? (
             <button onClick={userSignout} className="item pointer">
-              {auth.currentUser.email.length > 8
-                ? auth.currentUser.email.slice(0, 8).padEnd(11, ".") +
+              {auth.currentUser.email.length > 6
+                ? auth.currentUser.email.slice(0, 6).padEnd(9, ".") +
                   auth.currentUser.email.slice(
                     auth.currentUser.email.length - 3,
                     auth.currentUser.email.length
                   )
                 : auth.currentUser.email}
-              - Sign out
+              -Sign out
             </button>
           ) : (
             <button

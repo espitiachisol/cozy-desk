@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import Sign from "./Sign";
 import useDrag from "../hooks/useDrag";
-import WindowHeader from "../windowHeader/WindowHeader";
+import WindowHeader from "../shared/WindowHeader/WindowHeader";
 import "./Sign.css";
 import Quote from "../Quote/Quote";
 

@@ -46,7 +46,10 @@ const PlayList = ({
           {userState ? (
             <div className="user-no-songs-message">
               <p>You can add songs with the button below!</p>
-              <p>Note, the total number of songs is limited to ten.</p>
+              <p>
+                Note, the total number of songs is limited to 10. Each song size
+                is limited to 10MB
+              </p>
             </div>
           ) : (
             <div className="guest-no-songs-message">
