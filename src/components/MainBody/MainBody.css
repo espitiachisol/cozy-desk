@@ -88,7 +88,6 @@
   .main-body {
     overflow: auto;
     overflow-x: hidden;
-    /* height: 100vh;  FIXME:先寫下來*/
     height: 100%;
     width: 100%;
     padding-bottom: 120px;
