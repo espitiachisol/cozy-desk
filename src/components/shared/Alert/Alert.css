@@ -5,14 +5,16 @@
   top: 50%;
   left: 50%;
   width: 200px;
-  height: 100px;
+  height: 120px;
   background-color: rgba(234, 229, 225);
   filter: drop-shadow(3px 3px 6px #50505040);
   padding: 20px 10px 10px 10px;
   transform: translate(-50%, -70%);
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   border: 1px solid rgb(167, 167, 167);
+  animation: fadeIn 0.2s ease;
 }
 .alert-message {
   width: 100%;

@@ -1,6 +1,11 @@
 import React from "react";
 import "./Dropdown.css";
-const Dropdown = ({ options, onSelectedChange, Selected }) => {
+const Dropdown = ({
+  options,
+  onSelectedChange,
+  Selected,
+  witchAttentionToShow,
+}) => {
   const renderedOptions = options.map((option) => {
     return (
       <option key={option} className="option">
@@ -16,6 +21,7 @@ const Dropdown = ({ options, onSelectedChange, Selected }) => {
         onChange={(e) => {
           onSelectedChange(parseInt(e.target.value, 10));
         }}
+        onClick={witchAttentionToShow}
       >
         {renderedOptions}
       </select>

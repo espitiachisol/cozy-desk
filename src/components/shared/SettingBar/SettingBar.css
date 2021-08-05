@@ -1,0 +1,12 @@
+.more-con {
+  background-color: #4f4d4c;
+  text-align: center;
+}
+.more-con button {
+  color: rgb(234, 229, 225);
+  background-color: none;
+  border: none;
+  letter-spacing: 2px;
+  font-size: 14px;
+  height: 20px;
+}

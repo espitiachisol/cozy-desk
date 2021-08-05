@@ -1,11 +1,12 @@
 import React, { useState, useCallback, useEffect } from "react";
 import useDrag from "../hooks/useDrag";
-import WindowHeader from "../windowHeader/WindowHeader";
+import WindowHeader from "../shared/WindowHeader/WindowHeader";
 import TodoList from "./TodoList";
 import "./Todo.css";
-import Alert from "../Alert/Alert";
+import Alert from "../shared/Alert/Alert";
 import { firestore } from "../../firebaseConfig";
 import InputRadio from "./InputRadio";
+import NoDataMessage from "../shared/NoDataMessage/NoDataMessage";
 const converPriorityToNumber = (item) => {
   let result;
   switch (item) {
@@ -23,14 +24,22 @@ const converPriorityToNumber = (item) => {
   }
   return result;
 };
-
+const disablePreDay = () => {
+  const Today = new Date();
+  var month = Today.getMonth() + 1;
+  var day = Today.getDate();
+  var year = Today.getFullYear();
+  if (month < 10) month = "0" + month.toString();
+  if (day < 10) day = "0" + day.toString();
+  return year + "-" + month + "-" + day;
+};
 const Todo = function ({
   setShowWindow,
   showWindow,
   zIndex,
   setZIndex,
   userState,
-  setUserstate,
+  setNotification,
 }) {
   const [size, setSize] = useState({});
   const [startPositon, setStartPositon] = useState({});
@@ -59,8 +68,8 @@ const Todo = function ({
     y: startPositon.y,
     width: size.width,
     height: size.height,
-    defaultX: 20,
-    defaultY: 20,
+    defaultX: parseInt(showWindow.Todo.x, 10) || 20,
+    defaultY: parseInt(showWindow.Todo.y, 10) || 0,
   };
   const [position, mouseDown] = useDrag(startingPosition);
   useEffect(() => {
@@ -71,59 +80,74 @@ const Todo = function ({
         .get()
         .then((doc) => {
           if (doc.exists) {
-            console.log("Document data:", doc.data());
+            // console.log("Document data:", doc.data());
             setTodolistAll(doc.data().todolist);
           } else {
-            console.log("No such document!");
+            // console.log("No such document!");
           }
         })
         .catch((error) => {
-          console.log("Error getting document:", error);
+          setNotification({
+            title: error?.code,
+            content: error?.message,
+          });
+          // console.log("Error getting document:", error);
         });
     }
     return () => {
       setTodolistAll([]);
     };
-  }, [userState]);
+  }, [userState, setNotification]);
   const addTodo = (e) => {
     e.preventDefault();
-    console.log(e);
-    let day = new Date();
-    let id = "list" + day.getTime();
+    if (text) {
+      let day = new Date();
+      let id = "list" + day.getTime();
+      let data = {
+        id: id,
+        text: text,
+        deadLine: deadLine,
+        priority: priority,
+        addTime: day.toLocaleDateString("zh"),
+        complete: false,
+      };
+      if (userState) {
+        firestore
+          .collection("todoLists")
+          .doc(userState)
+          .set({ todolist: [...todolistAll, data] })
+          .then(() => {
+            setTodolistAll([...todolistAll, data]);
 
-    let data = {
-      id: id,
-      text: text,
-      deadLine: deadLine,
-      priority: priority,
-      complete: false,
-    };
-    if (userState) {
-      firestore
-        .collection("todoLists")
-        .doc(userState)
-        .set({ todolist: [...todolistAll, data] })
-        .then(() => {
-          setTodolistAll([...todolistAll, data]);
-
-          console.log("Document successfully written!");
-        })
-        .catch((error) => {
-          console.error("Error writing document: ", error);
-        });
+            // console.log("Document successfully written!");
+          })
+          .catch((error) => {
+            setNotification({
+              title: error?.code,
+              content: error?.message,
+            });
+            // console.error("Error writing document: ", error);
+          });
+      } else {
+        //使用者沒有登入的狀況
+        setTodolistAll([...todolistAll, data]);
+      }
+      //clear form
+      e.target[0].value = ""; //text
+      e.target[2].value = ""; //deadline
+      e.target[3].checked = false; //audio
+      e.target[4].checked = false; //audio
+      e.target[5].checked = false; //audio
+      setText("");
+      setPriority("");
+      setDeadLine("");
     } else {
-      //使用者沒有登入的狀況
-      setTodolistAll([...todolistAll, data]);
+      //當沒有內容時跳出注意
+      setNotification({
+        title: "Notification",
+        content: "Todo has no content!! Please, write something!",
+      });
     }
-    //clear form
-    e.target[0].value = ""; //text
-    e.target[2].value = ""; //deadline
-    e.target[3].checked = false; //audio
-    e.target[4].checked = false; //audio
-    e.target[5].checked = false; //audio
-    setText("");
-    setPriority("");
-    setDeadLine("");
   };
   const deleteList = (listid) => {
     let deleteAListFromLists = todolistAll.filter((each) => each.id !== listid);
@@ -135,10 +159,14 @@ const Todo = function ({
         .set({ todolist: deleteAListFromLists })
         .then(() => {
           setTodolistAll(deleteAListFromLists);
-          console.log("Document successfully updte!!!");
+          // console.log("Document successfully updte!!!");
         })
         .catch((error) => {
-          console.error("Error writing document: ", error);
+          setNotification({
+            title: error?.code,
+            content: error?.message,
+          });
+          // console.error("Error writing document: ", error);
         });
     } else {
       //使用者沒有登入的狀況
@@ -146,7 +174,7 @@ const Todo = function ({
     }
   };
   const checkComplete = (listid) => {
-    console.log(listid);
+    // console.log(listid);
     let checkALisToComplete = todolistAll.map((each) => {
       if (each.id === listid) {
         each.complete = !each.complete;
@@ -160,9 +188,13 @@ const Todo = function ({
         .set({ todolist: checkALisToComplete })
         .then(() => {
           setTodolistAll(checkALisToComplete);
-          console.log("Document successfully updte!!!");
+          // console.log("Document successfully updte!!!");
         })
         .catch((error) => {
+          setNotification({
+            title: error?.code,
+            content: error?.message,
+          });
           console.error("Error writing document: ", error);
         });
     } else {
@@ -177,10 +209,14 @@ const Todo = function ({
         .doc(userState)
         .delete()
         .then(() => {
-          console.log("Document successfully deleted!");
+          // console.log("Document successfully deleted!");
           setTodolistAll([]);
         })
         .catch((error) => {
+          setNotification({
+            title: error?.code,
+            content: error?.message,
+          });
           console.error("Error removing document: ", error);
         });
     } else {
@@ -197,15 +233,20 @@ const Todo = function ({
         .set({ todolist: filteredAllDone })
         .then(() => {
           setTodolistAll(filteredAllDone);
-          console.log("Document successfully updte!!!");
+          // console.log("Document successfully updte!!!");
         })
         .catch((error) => {
-          console.error("Error writing document: ", error);
+          setNotification({
+            title: error?.code,
+            content: error?.message,
+          });
+          // console.error("Error writing document: ", error);
         });
     } else {
       //使用者沒有登入的狀況
       setTodolistAll(filteredAllDone);
     }
+    setShowAlert(false);
   };
   useEffect(() => {
     setTodolistAllShow(todolistAll);
@@ -281,7 +322,7 @@ const Todo = function ({
         return 0;
       });
     }
-    console.log(priorityArray);
+    // console.log(priorityArray);
     setTodolistAllShow(priorityArray);
   };
 
@@ -305,6 +346,7 @@ const Todo = function ({
         mouseDown={mouseDown}
         setShowWindow={setShowWindow}
         showWindow={showWindow}
+        position={position}
         label="Todo"
       />
       <div className="todo-container-all">
@@ -321,11 +363,17 @@ const Todo = function ({
               <img src="/images/icon_plus.svg" alt="icon-plus" />
             </button>
             <div className="deadline-priority-con">
-              <div>
+              <div className="deadline-con">
+                <img
+                  src="/images/icon_deadline.svg"
+                  alt="icon deadline"
+                  className="deadline-icon"
+                />
                 <p>Deadline</p>
                 <input
                   type="date"
                   className="add-form-deadline"
+                  min={disablePreDay()}
                   onChange={(e) => {
                     setDeadLine(e.target.value);
                   }}
@@ -391,6 +439,37 @@ const Todo = function ({
                   priority={priority}
                 />
               ) : null}
+              {listsToShow === "All" && todolistAllShow.length === 0 ? (
+                <NoDataMessage
+                  userState={userState}
+                  userMessage={{
+                    title: "Your to-do is empty",
+                    content:
+                      "Rename your “To-Do” list to your “Opportunities” list. Add your to-do list = Add your “Opportunities” list! ☝ ✍",
+                  }}
+                  guestMessage={{
+                    title: "Your to-do is empty",
+                    content:
+                      "Rename your “To-Do” list to your “Opportunities” list. Add your to-do list = Add your “Opportunities” list! ☝ ✍ ---Create an account for save your to-do list!---",
+                  }}
+                />
+              ) : null}
+
+              {listsToShow === "Done" && todolistDone.length === 0 ? (
+                <NoDataMessage
+                  userState={userState}
+                  userMessage={{
+                    title: "No completed to-do!",
+                    content:
+                      "Focusing on your to-do and take joy in check items off  your list!! ✨ ⚡",
+                  }}
+                  guestMessage={{
+                    title: "No completed to-do",
+                    content:
+                      "Focusing on your to-do and take joy in check items off  your list!! ✨ ⚡ ---Create an account for save your to-do list!---",
+                  }}
+                />
+              ) : null}
             </div>
           </div>
           <div className="todo-toolbar-con">
@@ -434,14 +513,16 @@ const Todo = function ({
             </div>
             <button
               className="todo-toolbar-button button-style"
-              onClick={clearAllDone}
+              onClick={() => {
+                setShowAlert("ClearAllDone");
+              }}
             >
               Clear All Done
             </button>
             <button
               className="todo-toolbar-button button-style"
               onClick={() => {
-                setShowAlert(true);
+                setShowAlert("ClearAll");
               }}
             >
               Clear All
@@ -464,13 +545,23 @@ const Todo = function ({
               }}
             ></div>
           </div>
-          {showAlert ? (
+          {showAlert === "ClearAll" ? (
             <Alert
               setShowAlert={setShowAlert}
               confirm={clearAll}
               message={{
                 title: "Are you sure ?",
                 text: "All lists will be deleted.",
+              }}
+            />
+          ) : null}
+          {showAlert === "ClearAllDone" ? (
+            <Alert
+              setShowAlert={setShowAlert}
+              confirm={clearAllDone}
+              message={{
+                title: "Are you sure ?",
+                text: "All  of your completed lists will be deleted.",
               }}
             />
           ) : null}

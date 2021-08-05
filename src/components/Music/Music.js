@@ -1,9 +1,11 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import useDrag from "../hooks/useDrag";
-import WindowHeader from "../windowHeader/WindowHeader";
+import WindowHeader from "../shared/WindowHeader/WindowHeader";
 import "./Music.css";
 import { storage, firestore } from "../../firebaseConfig";
 import PlayList from "./PlayList";
+import Loading from "../shared/Loading/Loading";
+import SettingBar from "../shared/SettingBar/SettingBar";
 
 const calcDisplayFullTime = (time) => {
   if (time) {
@@ -68,8 +70,16 @@ const cozydeskPlaylist = [
     icon: "/images/tape-icons-default3.png",
   },
 ];
-const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
+const Music = ({
+  setShowWindow,
+  showWindow,
+  zIndex,
+  setZIndex,
+  userState,
+  setNotification,
+}) => {
   const control = useRef(null);
+  const fileRef = useRef(null);
   const [size, setSize] = useState({});
   const [startPositon, setStartPositon] = useState({});
   const [songIndex, setSongIndex] = useState(0);
@@ -86,7 +96,7 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
   const defaultSongs = cozydeskPlaylist;
   const [songs, setSongs] = useState(defaultSongs);
   const [currentPlaylistType, setCurrentPlaylistType] = useState("default");
-
+  const [showLoading, setShowLoading] = useState(false);
   // console.log(currentPlaylistType);
   useEffect(() => {
     if (isplaying && songs) {
@@ -110,17 +120,21 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
           if (doc.exists) {
             setSongFromData([...doc.data().mixtape]);
           } else {
-            console.log("No such document!");
+            // console.log("No such document!");
           }
         })
         .catch((error) => {
-          console.log("Error getting document:", error);
+          setNotification({
+            title: error?.code,
+            content: error?.message,
+          });
+          // console.log("Error getting document:", error);
         });
     }
     return () => {
       setSongFromData([]);
     };
-  }, [userState]);
+  }, [userState, setNotification]);
 
   //假如使用者新增新的音樂清單，再向firestore要一次新的資料，將新的資料放入SongFromData
   useEffect(() => {
@@ -134,16 +148,20 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
             setSongFromData([...doc.data().mixtape]);
             // console.log([...doc.data().mixtape]);
             setUserAddLists(false);
-            console.log("setSongFromDataEffect");
+            // console.log("setSongFromDataEffect");
           } else {
-            console.log("No such document!");
+            // console.log("No such document!");
           }
         })
         .catch((error) => {
-          console.log("Error getting document:", error);
+          setNotification({
+            title: error?.code,
+            content: error?.message,
+          });
+          // console.log("Error getting document:", error);
         });
     }
-  }, [userAddLists, userState]);
+  }, [userAddLists, userState, setNotification]);
 
   const curWindow = useCallback((node) => {
     if (node !== null) {
@@ -161,8 +179,8 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
     y: startPositon.y,
     width: size.width,
     height: size.height,
-    defaultX: 550,
-    defaultY: 20,
+    defaultX: parseInt(showWindow.Music.x, 10) || 20,
+    defaultY: parseInt(showWindow.Music.y, 10) || 0,
   };
 
   const [position, mouseDown] = useDrag(startingPosition);
@@ -184,7 +202,6 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
       : setSongIndex(songIndex - 1);
   };
   const next = () => {
-    console.log(songIndex, songs.length);
     //當歌單只有一首歌的時候setSongIndex(0)會沒有改變所以上面的useEffect不會被觸法
     if (songs.length === 1) {
       play();
@@ -197,53 +214,89 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
 
   const uploadFiles = (e) => {
     let array = [];
-    console.log(e);
     //把當前上傳的資料放到雲端storage和firestore
     e.preventDefault();
     const files = e.target[0].files;
-    //多個檔案,loop 每個要上傳的檔案
-    Object.entries(files).forEach(([key, value]) => {
-      //存入storage
-      storage
-        .ref()
-        .child(`${userState}/${value.name}`)
-        .put(value)
-        .then((snapshot) => {
-          //取得storage
+    if (files.length + songFromData.length > 10) {
+      setNotification({
+        title: "Notification/The number of songs is limited to 10",
+        content: `You can only add "${10 - songFromData.length}" more songs. `,
+      });
+      fileRef.current.value = null;
+    } else if (files.length > 0) {
+      setShowLoading(true);
+      //多個檔案,loop 每個要上傳的檔案
+      Object.entries(files).forEach(([key, value]) => {
+        //存入storage
+        if (value.size < 10000000) {
           storage
             .ref()
             .child(`${userState}/${value.name}`)
-            .getDownloadURL()
-            .then((url) => {
-              let imgNum = randomNum(5, 9);
+            .put(value)
+            .then((snapshot) => {
+              //取得storage
+              storage
+                .ref()
+                .child(`${userState}/${value.name}`)
+                .getDownloadURL()
+                .then((url) => {
+                  let imgNum = randomNum(5, 9);
 
-              array.push({
-                id: `${userState}/${value.name}`,
-                title: value.name,
-                src: url,
-                img: `/images/mixtape-cover-${imgNum}.png`,
-                icon: `/images/tape-icons-${imgNum}.png`,
-              });
-              // console.log("Uploaded a file!");
-              // console.log(array);
-              //將取得的storage url 放入firestore
-              firestore
-                .collection("mixtape")
-                .doc(userState)
-                .set({
-                  mixtape: [...songFromData, ...array],
-                })
-                .then(() => {
-                  setUserAddLists(true);
-                  // array = [];
-                  console.log("Document successfully updte!!!");
+                  array.push({
+                    id: `${userState}/${value.name}`,
+                    title: value.name,
+                    src: url,
+                    img: `/images/mixtape-cover-${imgNum}.png`,
+                    icon: `/images/tape-icons-${imgNum}.png`,
+                  });
+                  // console.log("Uploaded a file!");
+                  //將取得的storage url 放入firestore
+                  firestore
+                    .collection("mixtape")
+                    .doc(userState)
+                    .set({
+                      mixtape: [...songFromData, ...array],
+                    })
+                    .then(() => {
+                      setUserAddLists(true);
+                      setShowLoading(false);
+                      fileRef.current.value = null;
+                      // console.log("Document successfully updte!!!");
+                    })
+                    .catch((error) => {
+                      setNotification({
+                        title: error?.code,
+                        content: error?.message,
+                      });
+                    });
                 })
                 .catch((error) => {
-                  console.error("Error writing document: ", error);
+                  setNotification({
+                    title: error?.code,
+                    content: error?.message,
+                  });
                 });
             });
-        });
-    });
+        } else {
+          setNotification({
+            title: "Notification/The song size is limited to 10MB",
+            content: `${value.name
+              .slice(0, 20)
+              .padEnd(
+                23,
+                "."
+              )}, This song has exceeded the song size limit ,will not be uploaded.  `,
+          });
+          setShowLoading(false);
+          fileRef.current.value = null;
+        }
+      });
+    } else {
+      setNotification({
+        title: "Notification",
+        content: "No files chosen! Please, choose files!",
+      });
+    }
   };
 
   const deletePlayList = (id) => {
@@ -253,15 +306,19 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
       .child(id)
       .delete()
       .then(() => {
-        console.log("Document successfully delete from storage");
+        // console.log("Document successfully delete from storage");
       })
       .catch((error) => {
+        setNotification({
+          title: error?.code,
+          content: error?.message,
+        });
         console.error("Error Deleting document from storage: ", error);
       });
     //更新firestore資料
     let filteredArray = songFromData.filter((song) => song.id !== id);
 
-    console.log(filteredArray);
+    // console.log(filteredArray);
     firestore
       .collection("mixtape")
       .doc(userState)
@@ -272,9 +329,13 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
         //更新SongFromData
         setUserAddLists(true);
         filteredArray = [];
-        console.log("Document successfully  delete from firestore !!!");
+        // console.log("Document successfully  delete from firestore !!!");
       })
       .catch((error) => {
+        setNotification({
+          title: error?.code,
+          content: error?.message,
+        });
         console.error("Error writing document: ", error);
       });
   };
@@ -283,14 +344,13 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
     //假如目前播放的音樂"不是"default音樂
     if (!songs[0].id.includes("default")) {
       if (songFromData.length > 0) {
-        console.log("3", songFromData);
+        // console.log("3", songFromData);
         setSongs(songFromData);
       } else {
         setSongs(defaultSongs);
       }
     }
   }, [songFromData, defaultSongs, songs]);
-
   return (
     <div
       className="music window"
@@ -311,7 +371,8 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
         mouseDown={mouseDown}
         setShowWindow={setShowWindow}
         showWindow={showWindow}
-        label="Music"
+        position={position}
+        label="Mixtape"
       />
 
       <div className="tape-container-all">
@@ -330,13 +391,13 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
             className="tape-con left"
             style={{
               clipPath: `circle(${
-                120 - (progress.currentTime * 100) / progress.duration
+                125 - (progress.currentTime * 100) / progress.duration
               }px at center)`,
             }}
           >
             <img
               src="/images/mixtape-tape-on-reel.png"
-              className="tape"
+              className="tapeOnReel"
               alt="tape on reel left"
             />
           </div>
@@ -345,13 +406,13 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
             className="tape-con right"
             style={{
               clipPath: `circle(${
-                20 + (progress.currentTime * 100) / progress.duration
+                25 + (progress.currentTime * 100) / progress.duration
               }px at center)`,
             }}
           >
             <img
               src="/images/mixtape-tape-on-reel.png"
-              className="tape"
+              className="tapeOnReel"
               alt="tape on reel right"
             />
           </div>
@@ -494,15 +555,12 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
             </div>
           </div>
           <div className="music-lists-all">
-            <div className="music-lists-btn-con">
-              <button
-                onClick={() => {
-                  setMusicListsShow(!musicListsShow);
-                }}
-              >
-                Playlist <span>&#9660;</span>
-              </button>
-            </div>
+            <SettingBar
+              setMore={setMusicListsShow}
+              more={musicListsShow}
+              label={"Playlists"}
+            />
+
             {musicListsShow ? (
               <div className="toggle-playList-con">
                 <button
@@ -527,11 +585,16 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
                 </button>
               </div>
             ) : null}
-            <div className="music-lists-container">
+            <div
+              className="music-lists-container"
+              style={{
+                maxHeight: `${musicListsShow ? 200 : 0}px`,
+              }}
+            >
               <div
                 className="music-lists"
                 style={{
-                  height: `${musicListsShow ? 200 : 0}px`,
+                  display: `${musicListsShow ? "flex" : "none"}`,
                 }}
               >
                 <PlayList
@@ -557,11 +620,13 @@ const Music = ({ setShowWindow, showWindow, zIndex, setZIndex, userState }) => {
                   }}
                 >
                   <input
+                    ref={fileRef}
                     type="file"
                     accept="audio/*"
                     multiple
                     disabled={userState ? false : true}
                   ></input>
+                  {showLoading ? <Loading /> : null}
 
                   <button
                     type="submit"

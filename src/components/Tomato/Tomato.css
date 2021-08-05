@@ -1,10 +1,12 @@
 .tomato {
   width: 300px;
-  min-height: 400px;
+  min-height: 300px;
   color: #4f4d4c;
 }
 .tomato-container-all {
+  will-change: filter;
   filter: drop-shadow(3px 3px 6px #50505067);
+  -webkit-filter: drop-shadow(3px 3px 6px #50505067);
 }
 .tomato-container {
   width: 300px;
@@ -15,23 +17,25 @@
   width: 300px;
   height: 300px;
   border-radius: 100%;
-  background-color: rgb(234, 229, 225);
-  border: 20px solid #4f4d4c;
+  border-width: 15px;
+  border-style: solid;
   position: relative;
   box-shadow: 3px 3px 8px #00000067;
+  animation: fadeIn 0.5s ease;
 }
-.tomato-outline::before {
-  box-shadow: inset 5px 5px 30px #00000067;
-  content: "";
-  width: 300px;
-  height: 300px;
+.tomato-outline-color {
+  width: 275px;
+  height: 275px;
   border-radius: 100%;
-  top: -20px;
-  left: -20px;
+  top: -2.5px;
+  left: -2.5px;
   margin: 0;
   position: absolute;
-  border: 15px solid rgb(163, 108, 108);
+  background-color: rgb(234, 229, 225);
+  border: 5px solid #4f4d4c;
+  box-shadow: inset 5px 5px 30px #000000c2;
 }
+
 .tomato-pieces {
   width: 100%;
   height: 100%;
@@ -57,14 +61,22 @@
   left: 0;
   top: 0;
 }
+.cur-session {
+  font-size: 34px;
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: "Great Vibes", cursive;
+}
+
 .target-progress {
-  font-size: 14px;
+  font-size: 12px;
   color: rgb(234, 229, 225);
   text-align: center;
   background-color: rgba(79, 77, 76, 0.9);
-  width: 60px;
-  height: 24px;
-  padding: 2px 0;
+
+  padding: 2px 6px;
   letter-spacing: 3px;
   position: absolute;
   top: 60%;
@@ -76,14 +88,16 @@
   background-color: rgb(234, 229, 225);
   margin-top: -150px;
   padding-top: 150px;
-  padding-bottom: 15px;
+  padding-bottom: 10px;
   border-radius: 0 0 10px 10px;
+  min-height: 240px;
 }
 .tomato-time {
   width: 100%;
   height: 40px;
   text-align: center;
   margin: 10px 0;
+  position: relative;
 }
 .tomato-counter {
   font-size: 40px;
@@ -91,6 +105,16 @@
   display: inline-block;
   font-family: "Courier Prime", monospace;
 }
+.tomato-time .delete-time {
+  position: absolute;
+  top: 0px;
+  left: 30px;
+  font-size: 26px;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgb(167, 167, 167);
+}
+
 /*  */
 .tomato-play-icon {
   width: 35px;
@@ -101,45 +125,35 @@
 .tomato-play-icon img {
   width: 100%;
 }
-/* toggle setting */
-.tomato-btn-con {
-  margin: 0 10px;
-  background-color: #4f4d4c;
-  text-align: center;
-}
-.tomato-btn-con button {
-  color: rgb(234, 229, 225);
-  background-color: none;
-  border: none;
-  letter-spacing: 2px;
-  font-size: 14px;
-  height: 20px;
-}
-.tomato-btn-con button span {
-  font-size: 10px;
-}
 .tomato-setting-container {
   font-size: 14px;
-  margin: 0 10px;
   background-color: rgb(242, 241, 240);
 }
 .tomato-setting {
   padding: 10px;
-  height: 100%;
+  min-height: 100px;
   display: flex;
   justify-content: space-between;
   flex-direction: row;
   flex-wrap: wrap;
-  align-content: space-between;
-  align-items: center;
 }
+.dropdown-label {
+  margin-bottom: 6px;
+}
+
 .tomato-setting .dropdown-label {
   width: 50%;
 }
 .tomato-setting .restart {
   width: 100%;
 }
-.tomato-setting .restart-warn {
-  margin-top: -4px;
-  font-size: 12px;
+.change-length-attention {
+  width: 100%;
+  font-size: 10px;
+  color: rgb(167, 167, 167);
+  margin-bottom: 6px;
+}
+.change-length-attention span {
+  color: rgb(163, 108, 108);
+  font-weight: 900;
 }

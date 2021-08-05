@@ -1,0 +1,12 @@
+.rotate-arrow {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid rgb(234, 229, 225);
+  transition: all 0.3s ease;
+}
+.rotate-arrow:hover {
+  border-top: 9px solid rgb(242, 241, 240);
+}

@@ -1,14 +1,15 @@
 .todo {
   width: 500px;
-  min-height: 440px;
+  min-height: 430px;
   color: #4f4d4c;
 }
 .todo-container-all {
   filter: drop-shadow(3px 3px 6px #50505067);
+  -webkit-filter: drop-shadow(3px 3px 6px #50505067);
 }
 .todo-container {
   width: 500px;
-  height: 440px;
+  height: 430px;
   border-radius: 10px;
   background-color: rgb(234, 229, 225);
   padding: 15px;
@@ -38,6 +39,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+}
+.deadline-icon {
+  width: 14px;
+  height: 14px;
+  margin-bottom: -1px;
 }
 .add-form-deadline {
   padding: 0 6px;
@@ -162,15 +169,19 @@ button.icon-plus {
   width: 100%;
   border-bottom: 1px solid rgb(167, 167, 167);
 }
-.todo-list-text-time {
+.todo-list-deadline-time,
+.todo-list-create-time {
   font-size: 12px;
   text-align: end;
   border-bottom: none;
   color: rgb(167, 167, 167);
 }
+.todo-list-deadline-time {
+  margin-left: 6px;
+}
 .todo-list-priority {
   /* margin-top: 2px; */
-  width: 40%;
+  /* width: 68px; */
   display: inline-block;
 }
 .todo-list-priority-circle {
@@ -222,11 +233,12 @@ button.icon-plus {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
 }
 .todo-toolbar-deadline,
 .todo-toolbar-priority {
   font-size: 14px;
-  width: 120px;
+  min-width: 100px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -249,4 +261,45 @@ button.icon-plus {
 }
 .todo-toolbar-button {
   padding: 0 10px;
+  width: 25%;
+}
+/* @mediaonlymaxwidth: 800px */
+@media only screen and (max-width: 520px) {
+  .todo-container {
+    width: 95%;
+    min-height: 475px;
+    margin: 0 auto;
+  }
+  .todo-content {
+    width: 100%;
+  }
+  .deadline-priority-con {
+    height: 45px;
+    margin-top: 6px;
+  }
+  .add-form-text {
+    width: 90%;
+  }
+  .todo-toolbar-deadline,
+  .todo-toolbar-priority {
+    width: 40%;
+  }
+  .todo-toolbar-button {
+    width: 49%;
+  }
+  .todo-toolbar-con {
+    height: 50px;
+    margin-top: 6px;
+  }
+  .todo-list-text-con {
+    width: 88%;
+  }
+  .check-box {
+    height: 20px;
+    width: 20px;
+  }
+  .icon-trash {
+    height: 20px;
+    width: 20px;
+  }
 }

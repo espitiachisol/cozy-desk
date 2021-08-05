@@ -12,20 +12,21 @@ const Day = () => {
   const [curDate, setdate] = useState(now);
 
   useEffect(() => {
-    const day = new Date();
     const timeId = setInterval(() => {
+      const day = new Date();
       setdate(
-        `${day.toLocaleDateString("en")}  ${day.toLocaleTimeString("en", {
+        `${day.toLocaleDateString("zh")}  ${day.toLocaleTimeString("en", {
           hour: "2-digit",
           minute: "2-digit",
         })}`
       );
-    }, 1000);
+    }, 30000);
 
     return () => {
       clearInterval(timeId);
     };
   }, []);
+
   return (
     <div className="day">
       <p>{curDate}</p>

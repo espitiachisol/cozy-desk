@@ -1,0 +1,53 @@
+.notification-con {
+  z-index: 100000;
+  width: 250px;
+  min-height: 80px;
+  background-color: rgba(229, 191, 137, 0.9);
+  border: 1px solid rgb(167, 167, 167);
+  animation: SlideInFromLeft 6s ease;
+  animation-fill-mode: both;
+  position: fixed;
+  right: 20px;
+  bottom: 40px;
+  border-radius: 10px;
+}
+.notification-con:hover {
+  animation-play-state: paused;
+}
+.notification-close-window {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  width: 18px;
+  height: 18px;
+  padding: 2px;
+  color: rgb(242, 241, 240);
+  border: 1px solid transparent;
+  border: 1px solid rgb(242, 241, 240);
+  transition: all 0.2s ease-in-out;
+}
+.notification-content-con {
+  padding: 20px;
+}
+.notification-title {
+  display: block;
+  font-weight: 900;
+}
+@keyframes SlideInFromLeft {
+  0% {
+    margin-right: -30%;
+    opacity: 0;
+  }
+  20% {
+    margin-right: 0%;
+    opacity: 100;
+  }
+  80% {
+    margin-right: 0%;
+    opacity: 100;
+  }
+  100% {
+    margin-right: -30%;
+    opacity: 0;
+  }
+}

@@ -1,0 +1,40 @@
+.loading-box {
+  display: flex;
+  width: 70px;
+  height: 20px;
+  font-size: 12px;
+  color: rgb(167, 167, 167);
+}
+.loading-con {
+  width: 40px;
+  margin-top: 2px;
+}
+.loading-con div {
+  background: rgb(167, 167, 167);
+  display: inline-block;
+  height: 2px;
+  width: 2px;
+  margin: 1px;
+  border-radius: 50%;
+  animation: bouncedelay 1.6s infinite ease-in-out;
+  animation-fill-mode: both;
+}
+/* .dot1 {
+  animation-delay: -0.4s;
+}
+.dot2 {
+  animation-delay: -0.2s;
+} */
+
+@keyframes bouncedelay {
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 100;
+  }
+}

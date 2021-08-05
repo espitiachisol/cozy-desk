@@ -2,6 +2,8 @@
   width: 400px;
   min-height: 400px;
   background-color: transparent;
+  /* animation: fadeIn 0.3s ease-in-out;
+  animation-fill-mode: both; */
 }
 
 @keyframes rotate {
@@ -28,7 +30,8 @@
   /* background-color: rgb(88, 85, 85); */
   border-radius: 10px;
   position: relative;
-  filter: drop-shadow(0px 0px 4px #00000067);
+  -webkit-filter: drop-shadow(0px 0px 4px #0a0a0a67);
+  filter: drop-shadow(0px 0px 4px #0a0a0a67);
 }
 
 .a {
@@ -59,12 +62,12 @@
 .tape-con.right {
   right: 36px;
 }
-.tape {
+.tapeOnReel {
   width: 100%;
   animation: rotate 3s linear infinite;
   animation-play-state: paused;
 }
-.tape.play .tape-con .tape {
+.tape.play .tape-con .tapeOnReel {
   animation-play-state: running;
 }
 .tape-con img {
@@ -158,6 +161,7 @@
 .tape-container-all {
   width: 400px;
   filter: drop-shadow(3px 3px 6px #50505067);
+  -webkit-filter: drop-shadow(3px 3px 6px #50505067);
 }
 .tape-play {
   margin-top: -15px;
@@ -261,7 +265,7 @@
   margin: 0 10px;
   border: 1px solid rgb(207, 207, 207);
 }
-.music-lists-btn-con {
+/* .music-lists-btn-con {
   background-color: #4f4d4c;
   text-align: center;
 }
@@ -275,7 +279,7 @@
 }
 .music-lists-btn-con button span {
   font-size: 10px;
-}
+} */
 .toggle-playList-con {
   display: flex;
   height: 20px;
@@ -296,14 +300,17 @@
 .toggle-playList-con button.active {
   background-color: rgb(242, 241, 240);
 }
-
+/* .music-lists-container {
+} */
 .music-lists {
-  display: flex;
+  /* display: flex; */
+  overflow: auto;
+  min-height: 80px;
+  max-height: 100px;
   justify-content: space-between;
   flex-direction: row;
   flex-wrap: wrap;
-  overflow: auto;
-  padding: 0 6px;
+  padding: 6px;
   background-color: rgb(242, 241, 240);
   /* background-image: url("../../../public/images/welcome.jpg"); */
 }
@@ -311,36 +318,22 @@
   text-align: center;
   width: 30%;
   height: 40%;
-  margin: 15px 0 0 0;
+  margin: 12px 0 0 0;
   cursor: pointer;
   position: relative;
 }
-.music-list-no-songs-message {
-  color: rgb(167, 167, 167);
-  padding: 0 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-}
-.user-no-songs-message,
-.guest-no-songs-message {
-  font-size: 14px;
-}
-.music-list-no-songs-message p:first-child {
-  font-weight: bold;
-}
+
 .music-list img {
   width: 65%;
   height: 50%;
   object-fit: contain;
 }
 .music-list p {
-  height: 32px;
+  height: 30px;
   display: block;
   font-size: 12px;
   color: #4f4d4c;
+  line-height: 1.2;
 }
 .delete-playList {
   position: absolute;
@@ -358,19 +351,19 @@
 }
 .add-music input[type="file"] {
   color: #4f4d4c;
-
-  width: 60%;
+  width: 50%;
 }
+
 .add-music input[type="file"]::file-selector-button {
   font-size: 12px;
   height: 20px;
-  cursor: pointer;
-  padding: 0 10px;
+  padding: 0 6px;
   border-radius: 5px;
   background-color: transparent;
-
   border: 1px solid rgb(167, 167, 167);
+  cursor: pointer;
 }
+
 .add-music button {
   font-size: 12px;
   width: 30%;
@@ -383,3 +376,38 @@
 /* /////////// */
 /* music-lists */
 /* /////////// */
+/* @mediaonlymaxwidth: 800px */
+@media only screen and (max-width: 410px) {
+  .music {
+    width: 360px;
+    margin: 0 auto;
+  }
+  .tape {
+    width: 360px;
+    height: 230.2px;
+  }
+  .tape-con {
+    width: 140px;
+    height: 140px;
+    top: 27px;
+  }
+  .tape-con.left {
+    left: 34px;
+  }
+  .tape-con.right {
+    right: 34px;
+  }
+  .tape-container-all {
+    width: 360px;
+  }
+  .tape-content {
+    color: #4f4d4c;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 10px 10px;
+    width: 100%;
+  }
+}

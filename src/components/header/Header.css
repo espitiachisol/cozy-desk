@@ -1,5 +1,5 @@
 .header-content {
-  padding: 4px 15px;
+  padding: 4px 10px;
   display: flex;
   margin: 0;
   display: flex;
@@ -18,13 +18,35 @@
   width: 100%;
 }
 .header .item {
-  margin-left: 20px;
   color: rgb(242, 241, 240);
-  padding: 1px 10px;
+  padding: 1px 6px;
   border: 1px solid rgb(242, 241, 240);
   background-color: transparent;
   border-radius: 5px;
+  margin-left: 5px;
 }
 .logo {
+  width: 110px;
+  height: 20px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+.logo p {
+  font-family: "Prata", serif;
+  margin-right: 6px;
+}
+.logo-icon {
+  height: 100%;
+  width: 20px;
+}
+.left-item {
+  display: flex;
+  align-items: center;
+}
+/* @mediaonlymaxwidth: 800px */
+@media only screen and (max-width: 400px) {
+  .header-content {
+    padding: 4px 2px;
+  }
 }

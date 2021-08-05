@@ -1,0 +1,16 @@
+.no-data-message-display {
+  color: rgb(167, 167, 167);
+  padding: 10px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+.user-no-data-message,
+.guest-no-data-message {
+  font-size: 12px;
+}
+.no-data-message-display p:first-child {
+  font-weight: bold;
+}
