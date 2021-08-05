@@ -269,6 +269,7 @@ const MainBody = ({
       {/* <div className="test">
         <img src="/images/test.png" alt="tomato" style={{ width: "800px" }} />
       </div> */}
+      <p className="copyright">Copyright © 2021 CozyDesk /Sol Chi</p>
     </div>
   );
 };
