@@ -65,7 +65,7 @@
   border-top: 1px solid rgb(234, 229, 225);
   border-bottom: 2px solid transparent;
   padding: 2px 10px;
-  animation: fadeIn 0.3s ease;
+  animation: fadeIn 0.5s ease;
   animation-fill-mode: both;
   display: flex;
   justify-content: space-between;
@@ -88,7 +88,8 @@
   .main-body {
     overflow: auto;
     overflow-x: hidden;
-    height: 100vh;
+    /* height: 100vh;  FIXME:先寫下來*/
+    height: 100%;
     width: 100%;
     padding-bottom: 120px;
     display: flex;

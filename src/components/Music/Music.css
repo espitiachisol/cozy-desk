@@ -307,11 +307,9 @@
   overflow: auto;
   min-height: 80px;
   max-height: 100px;
-
   justify-content: space-between;
   flex-direction: row;
   flex-wrap: wrap;
-
   padding: 6px;
   background-color: rgb(242, 241, 240);
   /* background-image: url("../../../public/images/welcome.jpg"); */
@@ -348,26 +346,24 @@
 
 .add-music {
   padding: 6px;
-
   display: flex;
   justify-content: space-between;
 }
 .add-music input[type="file"] {
   color: #4f4d4c;
-
   width: 50%;
 }
 
 .add-music input[type="file"]::file-selector-button {
   font-size: 12px;
   height: 20px;
-  cursor: pointer;
   padding: 0 6px;
   border-radius: 5px;
   background-color: transparent;
-
   border: 1px solid rgb(167, 167, 167);
+  cursor: pointer;
 }
+
 .add-music button {
   font-size: 12px;
   width: 30%;
@@ -389,7 +385,6 @@
   .tape {
     width: 360px;
     height: 230.2px;
-    /* background-color: rgb(88, 85, 85); */
   }
   .tape-con {
     width: 140px;

@@ -24,7 +24,15 @@ const converPriorityToNumber = (item) => {
   }
   return result;
 };
-
+const disablePreDay = () => {
+  const Today = new Date();
+  var month = Today.getMonth() + 1;
+  var day = Today.getDate();
+  var year = Today.getFullYear();
+  if (month < 10) month = "0" + month.toString();
+  if (day < 10) day = "0" + day.toString();
+  return year + "-" + month + "-" + day;
+};
 const Todo = function ({
   setShowWindow,
   showWindow,
@@ -238,6 +246,7 @@ const Todo = function ({
       //使用者沒有登入的狀況
       setTodolistAll(filteredAllDone);
     }
+    setShowAlert(false);
   };
   useEffect(() => {
     setTodolistAllShow(todolistAll);
@@ -364,6 +373,7 @@ const Todo = function ({
                 <input
                   type="date"
                   className="add-form-deadline"
+                  min={disablePreDay()}
                   onChange={(e) => {
                     setDeadLine(e.target.value);
                   }}
@@ -503,14 +513,16 @@ const Todo = function ({
             </div>
             <button
               className="todo-toolbar-button button-style"
-              onClick={clearAllDone}
+              onClick={() => {
+                setShowAlert("ClearAllDone");
+              }}
             >
               Clear All Done
             </button>
             <button
               className="todo-toolbar-button button-style"
               onClick={() => {
-                setShowAlert(true);
+                setShowAlert("ClearAll");
               }}
             >
               Clear All
@@ -533,13 +545,23 @@ const Todo = function ({
               }}
             ></div>
           </div>
-          {showAlert ? (
+          {showAlert === "ClearAll" ? (
             <Alert
               setShowAlert={setShowAlert}
               confirm={clearAll}
               message={{
                 title: "Are you sure ?",
                 text: "All lists will be deleted.",
+              }}
+            />
+          ) : null}
+          {showAlert === "ClearAllDone" ? (
+            <Alert
+              setShowAlert={setShowAlert}
+              confirm={clearAllDone}
+              message={{
+                title: "Are you sure ?",
+                text: "All  of your completed lists will be deleted.",
               }}
             />
           ) : null}

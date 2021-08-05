@@ -222,6 +222,7 @@ const Music = ({
         title: "Notification/The number of songs is limited to 10",
         content: `You can only add "${10 - songFromData.length}" more songs. `,
       });
+      fileRef.current.value = null;
     } else if (files.length > 0) {
       setShowLoading(true);
       //多個檔案,loop 每個要上傳的檔案

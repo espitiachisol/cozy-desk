@@ -198,6 +198,7 @@ const Tomato = ({
     if (currentSessionType === "Break") {
       setTimeLeft(breakSelected * 60);
     }
+    setShowAlert(false);
   };
   useEffect(() => {
     setChangeLengthAttention({
@@ -324,7 +325,7 @@ const Tomato = ({
             <button
               className="tomato-play-icon button-style"
               onClick={() => {
-                clearCurTime();
+                setShowAlert("RESET");
               }}
             >
               <img src={`/images/icon_reset.svg`} alt="playStop-icon" />
@@ -378,7 +379,7 @@ const Tomato = ({
                   <button
                     className="restart button-style"
                     onClick={() => {
-                      setShowAlert(true);
+                      setShowAlert("RESETALL");
                     }}
                   >
                     RESETALL
@@ -390,13 +391,23 @@ const Tomato = ({
           <audio ref={playBreaksoundEffect} src="/music/Break.mp3"></audio>
           <audio ref={playSessionsoundEffect} src="/music/Work.mp3"></audio>
         </div>
-        {showAlert ? (
+        {showAlert === "RESETALL" ? (
           <Alert
             setShowAlert={setShowAlert}
             confirm={resetAll}
             message={{
               title: "Are you sure ?",
               text: "Reset all will lose all your progress.",
+            }}
+          />
+        ) : null}
+        {showAlert === "RESET" ? (
+          <Alert
+            setShowAlert={setShowAlert}
+            confirm={clearCurTime}
+            message={{
+              title: "Are you sure ?",
+              text: "Your current interval will be reset.",
             }}
           />
         ) : null}
