@@ -6,7 +6,7 @@
   border: 1px solid rgb(167, 167, 167);
   animation: SlideInFromLeft 6s ease;
   animation-fill-mode: both;
-  position: absolute;
+  position: fixed;
   right: 20px;
   bottom: 100px;
   border-radius: 10px;
