@@ -8,7 +8,7 @@
   animation-fill-mode: both;
   position: fixed;
   right: 20px;
-  bottom: 100px;
+  bottom: 40px;
   border-radius: 10px;
 }
 .notification-con:hover {

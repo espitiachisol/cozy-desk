@@ -77,10 +77,11 @@
 }
 .copyright {
   color: rgb(167, 167, 167);
+  z-index: -1;
   font-size: 12px;
-  position: absolute;
-  bottom: 40px;
-  right: 20px;
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
 }
 /* @mediaonlymaxwidth: 800px */
 @media only screen and (max-width: 900px) {
