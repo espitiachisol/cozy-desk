@@ -6,6 +6,7 @@ import "./Todo.css";
 import Alert from "../shared/Alert/Alert";
 import { firestore } from "../../firebaseConfig";
 import InputRadio from "./InputRadio";
+import NoDataMessage from "../shared/NoDataMessage/NoDataMessage";
 const converPriorityToNumber = (item) => {
   let result;
   switch (item) {
@@ -91,48 +92,54 @@ const Todo = function ({
   }, [userState, setNotification]);
   const addTodo = (e) => {
     e.preventDefault();
-    // console.log(e);
-    let day = new Date();
-    let id = "list" + day.getTime();
+    if (text) {
+      let day = new Date();
+      let id = "list" + day.getTime();
+      let data = {
+        id: id,
+        text: text,
+        deadLine: deadLine,
+        priority: priority,
+        addTime: day.toLocaleDateString("zh"),
+        complete: false,
+      };
+      if (userState) {
+        firestore
+          .collection("todoLists")
+          .doc(userState)
+          .set({ todolist: [...todolistAll, data] })
+          .then(() => {
+            setTodolistAll([...todolistAll, data]);
 
-    let data = {
-      id: id,
-      text: text,
-      deadLine: deadLine,
-      priority: priority,
-      addTime: day.toLocaleDateString("zh"),
-      complete: false,
-    };
-    if (userState) {
-      firestore
-        .collection("todoLists")
-        .doc(userState)
-        .set({ todolist: [...todolistAll, data] })
-        .then(() => {
-          setTodolistAll([...todolistAll, data]);
-
-          // console.log("Document successfully written!");
-        })
-        .catch((error) => {
-          setNotification({
-            title: error?.code,
-            content: error?.message,
+            // console.log("Document successfully written!");
+          })
+          .catch((error) => {
+            setNotification({
+              title: error?.code,
+              content: error?.message,
+            });
+            // console.error("Error writing document: ", error);
           });
-          // console.error("Error writing document: ", error);
-        });
+      } else {
+        //使用者沒有登入的狀況
+        setTodolistAll([...todolistAll, data]);
+      }
+      //clear form
+      e.target[0].value = ""; //text
+      e.target[2].value = ""; //deadline
+      e.target[3].checked = false; //audio
+      e.target[4].checked = false; //audio
+      e.target[5].checked = false; //audio
+      setText("");
+      setPriority("");
+      setDeadLine("");
     } else {
-      //使用者沒有登入的狀況
-      setTodolistAll([...todolistAll, data]);
+      //當沒有內容時跳出注意
+      setNotification({
+        title: "Notification",
+        content: "Todo has no content!! Please, write something!",
+      });
     }
-    //clear form
-    e.target[0].value = ""; //text
-    e.target[2].value = ""; //deadline
-    e.target[3].checked = false; //audio
-    e.target[4].checked = false; //audio
-    e.target[5].checked = false; //audio
-    setText("");
-    setPriority("");
-    setDeadLine("");
   };
   const deleteList = (listid) => {
     let deleteAListFromLists = todolistAll.filter((each) => each.id !== listid);
@@ -347,7 +354,12 @@ const Todo = function ({
               <img src="/images/icon_plus.svg" alt="icon-plus" />
             </button>
             <div className="deadline-priority-con">
-              <div>
+              <div className="deadline-con">
+                <img
+                  src="/images/icon_deadline.svg"
+                  alt="icon deadline"
+                  className="deadline-icon"
+                />
                 <p>Deadline</p>
                 <input
                   type="date"
@@ -415,6 +427,37 @@ const Todo = function ({
                   checkComplete={checkComplete}
                   deleteList={deleteList}
                   priority={priority}
+                />
+              ) : null}
+              {listsToShow === "All" && todolistAllShow.length === 0 ? (
+                <NoDataMessage
+                  userState={userState}
+                  userMessage={{
+                    title: "Your to-do is empty",
+                    content:
+                      "Rename your “To-Do” list to your “Opportunities” list. Add your to-do list = Add your “Opportunities” list! ☝ ✍",
+                  }}
+                  guestMessage={{
+                    title: "Your to-do is empty",
+                    content:
+                      "Rename your “To-Do” list to your “Opportunities” list. Add your to-do list = Add your “Opportunities” list! ☝ ✍ ---Create an account for save your to-do list!---",
+                  }}
+                />
+              ) : null}
+
+              {listsToShow === "Done" && todolistDone.length === 0 ? (
+                <NoDataMessage
+                  userState={userState}
+                  userMessage={{
+                    title: "No completed to-do!",
+                    content:
+                      "Focusing on your to-do and take joy in check items off  your list!! ✨ ⚡",
+                  }}
+                  guestMessage={{
+                    title: "No completed to-do",
+                    content:
+                      "Focusing on your to-do and take joy in check items off  your list!! ✨ ⚡ ---Create an account for save your to-do list!---",
+                  }}
                 />
               ) : null}
             </div>

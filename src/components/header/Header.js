@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import Day from "./Day";
 import { auth } from "../../firebaseConfig";
+import RotateArrow from "../shared/RotateArrow/RotateArrow";
 
 import "./Header.css";
 
@@ -11,6 +12,8 @@ const Header = ({
   zIndex,
   setZIndex,
   setNotification,
+  showHeaderDropDown,
+  setShowHeaderDropDown,
 }) => {
   const userSignout = () => {
     auth
@@ -41,43 +44,25 @@ const Header = ({
     <div className="header">
       <div className="header-content">
         <div className="left-item">
-          <p
+          <div
             className="logo"
             onClick={() => {
-              setShowWindow({
-                ...showWindow,
-                SignWindow: {
-                  display: true,
-                  x: showWindow.SignWindow.x,
-                  y: showWindow.SignWindow.y,
-                },
-              });
-              if (zIndex.curW !== "SignWindow") {
-                setZIndex({
-                  ...zIndex,
-                  SignWindow: zIndex.cur,
-                  cur: zIndex.cur + 1,
-                  curW: "SignWindow",
-                });
-              }
+              setShowHeaderDropDown(!showHeaderDropDown);
             }}
           >
             <img
               src="/icon_favicon.svg"
               alt="CozyDesk Logo"
               className="logo-icon"
-            />{" "}
-            CozyDesk
-          </p>
+            />
+            <p>CozyDesk</p>
+            <RotateArrow toggle={showHeaderDropDown} />
+          </div>
 
           {auth.currentUser ? (
             <button onClick={userSignout} className="item pointer">
               {auth.currentUser.email.length > 6
-                ? auth.currentUser.email.slice(0, 6).padEnd(9, ".") +
-                  auth.currentUser.email.slice(
-                    auth.currentUser.email.length - 3,
-                    auth.currentUser.email.length
-                  )
+                ? auth.currentUser.email.slice(0, 6).padEnd(9, ".")
                 : auth.currentUser.email}
               -Sign out
             </button>

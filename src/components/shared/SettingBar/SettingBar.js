@@ -1,5 +1,6 @@
 import React from "react";
 import "./SettingBar.css";
+import RotateArrow from "../RotateArrow/RotateArrow";
 const SettingBar = ({ setMore, more, label }) => {
   return (
     <div className="more-con">
@@ -9,11 +10,7 @@ const SettingBar = ({ setMore, more, label }) => {
         }}
       >
         {label}
-        <div
-          style={{
-            transform: `${more ? "rotate(180deg)" : "rotate(0deg)"}`,
-          }}
-        ></div>
+        <RotateArrow toggle={more} />
       </button>
     </div>
   );

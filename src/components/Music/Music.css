@@ -62,12 +62,12 @@
 .tape-con.right {
   right: 36px;
 }
-.tape {
+.tapeOnReel {
   width: 100%;
   animation: rotate 3s linear infinite;
   animation-play-state: paused;
 }
-.tape.play .tape-con .tape {
+.tape.play .tape-con .tapeOnReel {
   animation-play-state: running;
 }
 .tape-con img {
@@ -324,22 +324,7 @@
   cursor: pointer;
   position: relative;
 }
-.music-list-no-songs-message {
-  color: rgb(167, 167, 167);
-  padding: 0 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 
-  width: 100%;
-}
-.user-no-songs-message,
-.guest-no-songs-message {
-  font-size: 12px;
-}
-.music-list-no-songs-message p:first-child {
-  font-weight: bold;
-}
 .music-list img {
   width: 65%;
   height: 50%;
@@ -395,3 +380,39 @@
 /* /////////// */
 /* music-lists */
 /* /////////// */
+/* @mediaonlymaxwidth: 800px */
+@media only screen and (max-width: 410px) {
+  .music {
+    width: 360px;
+    margin: 0 auto;
+  }
+  .tape {
+    width: 360px;
+    height: 230.2px;
+    /* background-color: rgb(88, 85, 85); */
+  }
+  .tape-con {
+    width: 140px;
+    height: 140px;
+    top: 27px;
+  }
+  .tape-con.left {
+    left: 34px;
+  }
+  .tape-con.right {
+    right: 34px;
+  }
+  .tape-container-all {
+    width: 360px;
+  }
+  .tape-content {
+    color: #4f4d4c;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 10px 10px;
+    width: 100%;
+  }
+}

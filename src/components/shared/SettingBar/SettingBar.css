@@ -10,12 +10,3 @@
   font-size: 14px;
   height: 20px;
 }
-.more-con button div {
-  display: inline-block;
-  width: 0;
-  height: 0;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 8px solid rgb(234, 229, 225);
-  transition: all 0.3s ease;
-}

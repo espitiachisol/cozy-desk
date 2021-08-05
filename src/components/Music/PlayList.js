@@ -1,4 +1,5 @@
 import React from "react";
+import NoDataMessage from "../shared/NoDataMessage/NoDataMessage";
 const PlayList = ({
   songs,
   setSongIndex,
@@ -42,21 +43,18 @@ const PlayList = ({
           );
         })
       ) : (
-        <div className="music-list-no-songs-message">
-          {userState ? (
-            <div className="user-no-songs-message">
-              <p>You can add songs with the button below!</p>
-              <p>
-                Note, the total number of songs is limited to 10. Each song size
-                is limited to 10MB
-              </p>
-            </div>
-          ) : (
-            <div className="guest-no-songs-message">
-              <p>Create an account for add your own playlist</p>
-            </div>
-          )}
-        </div>
+        <NoDataMessage
+          userState={userState}
+          userMessage={{
+            title: "You can add songs with the button below! ",
+            content:
+              "Note, the total number of songs is limited to 10. Each song size is limited to 10MB ☟",
+          }}
+          guestMessage={{
+            title: "",
+            content: "Create an account for add your own playlist",
+          }}
+        />
       )}
     </>
   );

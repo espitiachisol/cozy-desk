@@ -396,7 +396,7 @@ const Music = ({
           >
             <img
               src="/images/mixtape-tape-on-reel.png"
-              className="tape"
+              className="tapeOnReel"
               alt="tape on reel left"
             />
           </div>
@@ -411,7 +411,7 @@ const Music = ({
           >
             <img
               src="/images/mixtape-tape-on-reel.png"
-              className="tape"
+              className="tapeOnReel"
               alt="tape on reel right"
             />
           </div>

@@ -27,7 +27,7 @@ function App() {
     cur: 2,
     curW: "",
   });
-
+  const [showHeaderDropDown, setShowHeaderDropDown] = useState(false);
   const [showWindow, setShowWindow] = useState({
     SignWindow: { display: true, x: "", y: "" },
     Tomato: { display: false, x: "", y: "" },
@@ -136,6 +136,8 @@ function App() {
         setZIndex={setZIndex}
         zIndex={zIndex}
         setNotification={setNotification}
+        showHeaderDropDown={showHeaderDropDown}
+        setShowHeaderDropDown={setShowHeaderDropDown}
       />
       <MainBody
         userState={userState}
@@ -147,6 +149,8 @@ function App() {
         quote={quote}
         notification={notification}
         setNotification={setNotification}
+        setShowHeaderDropDown={setShowHeaderDropDown}
+        showHeaderDropDown={showHeaderDropDown}
       />
     </>
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import Music from "../Music/Music";
 import Tomato from "../Tomato/Tomato";
 import Todo from "../Todo/Todo";
@@ -15,12 +15,25 @@ const MainBody = ({
   quote,
   setNotification,
   notification,
+  showHeaderDropDown,
+  setShowHeaderDropDown,
 }) => {
+  const dropDownRef = useRef();
+  const hideHeaderDropDown = (e) => {
+    if (e.target.contains(dropDownRef.current)) {
+      setShowHeaderDropDown(false);
+    } else {
+      return;
+    }
+  };
   return (
     <div
       className="main-body"
       style={{
         backgroundImage: " url('/images/bg-img.png')",
+      }}
+      onClick={(e) => {
+        hideHeaderDropDown(e);
       }}
     >
       {showWindow.SignWindow.display ? (
@@ -151,6 +164,102 @@ const MainBody = ({
           <p>Todo</p>
         </div>
       </div>
+      {showHeaderDropDown ? (
+        <div className="header-drop-down-con" ref={dropDownRef}>
+          <div
+            className="header-drop-down-each"
+            onClick={() => {
+              setShowWindow({
+                ...showWindow,
+                SignWindow: {
+                  display: true,
+                  x: showWindow.SignWindow.x,
+                  y: showWindow.SignWindow.y,
+                },
+              });
+              if (zIndex.curW !== "SignWindow") {
+                setZIndex({
+                  ...zIndex,
+                  SignWindow: zIndex.cur,
+                  cur: zIndex.cur + 1,
+                  curW: "SignWindow",
+                });
+              }
+            }}
+          >
+            <p>Sign</p>
+          </div>
+          <div
+            className="header-drop-down-each"
+            onClick={() => {
+              setShowWindow({
+                ...showWindow,
+                Tomato: {
+                  display: true,
+                  x: showWindow.Tomato.x,
+                  y: showWindow.Tomato.y,
+                },
+              });
+              if (zIndex.curW !== "Tomato") {
+                setZIndex({
+                  ...zIndex,
+                  Tomato: zIndex.cur,
+                  cur: zIndex.cur + 1,
+                  curW: "Tomato",
+                });
+              }
+            }}
+          >
+            <p>Tomato</p>
+          </div>
+          <div
+            className="header-drop-down-each"
+            onClick={() => {
+              setShowWindow({
+                ...showWindow,
+                Music: {
+                  display: true,
+                  x: showWindow.Music.x,
+                  y: showWindow.Music.y,
+                },
+              });
+              if (zIndex.curW !== "Music") {
+                setZIndex({
+                  ...zIndex,
+                  Music: zIndex.cur,
+                  cur: zIndex.cur + 1,
+                  curW: "Music",
+                });
+              }
+            }}
+          >
+            <p>Mixtape</p>
+          </div>
+          <div
+            className="header-drop-down-each"
+            onClick={() => {
+              setShowWindow({
+                ...showWindow,
+                Todo: {
+                  display: true,
+                  x: showWindow.Todo.x,
+                  y: showWindow.Todo.y,
+                },
+              });
+              if (zIndex.curW !== "Todo") {
+                setZIndex({
+                  ...zIndex,
+                  Todo: zIndex.cur,
+                  cur: zIndex.cur + 1,
+                  curW: "Todo",
+                });
+              }
+            }}
+          >
+            <p>Todo</p>
+          </div>
+        </div>
+      ) : null}
       {notification.title ? (
         <Notification
           notification={notification}

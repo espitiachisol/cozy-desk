@@ -1,5 +1,6 @@
 .input-radio-con {
   display: flex;
+  max-width: 100%;
 }
 input[type="radio"] {
   appearance: none;

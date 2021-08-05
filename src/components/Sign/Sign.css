@@ -1,14 +1,15 @@
 .sign {
   width: 700px;
-  min-height: 450px;
+  min-height: 420px;
   color: #4f4d4c;
 }
 .sign .sign-title {
   border-bottom: 1px solid gainsboro;
   margin-bottom: 5px;
 }
+
 .sign-form {
-  height: 140px;
+  height: 120px;
   display: flex;
   width: 100%;
   flex-direction: row;
@@ -16,9 +17,6 @@
   flex-wrap: wrap;
 }
 
-/* .sign-form label {
-  display: block;
-} */
 .sign-input {
   width: 100%;
   height: 25px;
@@ -99,7 +97,7 @@
   .sign-container {
     flex-direction: row;
     flex-wrap: wrap;
-    min-height: 650px;
+    min-height: 450px;
     width: 95%;
     margin: 0 auto;
   }
@@ -112,10 +110,40 @@
   }
   .sign-content {
     width: 100%;
-    height: 50%;
+    height: 30%;
+    flex-wrap: wrap;
   }
 
-  .sign-form {
-    min-height: 95px;
+  .sign-welcome-title {
+    font-size: 22px;
+  }
+  .sign-con {
+    width: 42%;
+  }
+  .sign-welcome-con {
+    width: 58%;
+  }
+}
+/* @mediaonlymaxwidth: 800px */
+@media only screen and (max-width: 520px) {
+  .sign-image-container {
+    height: 45%;
+  }
+  .sign-content {
+    width: 100%;
+    height: 50%;
+    flex-wrap: nowrap;
+  }
+  .sign-con {
+    width: 100%;
+  }
+  .sign-welcome-con {
+    width: 100%;
+  }
+  .sign {
+    min-height: 540px;
+  }
+  .sign-container {
+    height: 540px;
   }
 }

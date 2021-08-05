@@ -79,7 +79,7 @@ const Sign = ({
     }
   };
   return (
-    <>
+    <div className="sign-con">
       <h3 className="sign-title">
         {SignInShow ? "Yo! Login in here" : "hey you! Sign up now!"}
       </h3>
@@ -139,7 +139,7 @@ const Sign = ({
           )}
         </div>
       </form>
-    </>
+    </div>
   );
 };
 export default Sign;
