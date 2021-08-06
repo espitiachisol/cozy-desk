@@ -7,6 +7,7 @@
   will-change: filter;
   filter: drop-shadow(3px 3px 6px #50505067);
   -webkit-filter: drop-shadow(3px 3px 6px #50505067);
+  position: relative;
 }
 .tomato-container {
   width: 300px;

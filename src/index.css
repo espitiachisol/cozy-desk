@@ -50,26 +50,6 @@ button {
     position: static;
   }
 }
-
-/* .window-body {
-  padding: 6px;
-} */
-/* 
-.window-header {
-  cursor: grab;
-  display: flex;
-  justify-content: space-between;
-}
-.close-window {
-  font-size: 24px;
-  padding: 0 10px 0 6px;
-  border-right: 1px solid gainsboro;
-}
-.window-header-text {
-  margin-right: 6px;
-  border: none;
-  color: rgb(126, 126, 126);
-} */
 .pointer {
   cursor: pointer;
 }

@@ -410,4 +410,41 @@
     padding: 10px 10px;
     width: 100%;
   }
+
+  .tape-down {
+    bottom: 0;
+    left: 54px;
+    border-bottom: 50.4px solid rgb(207, 203, 198);
+    border-left: 22.5px solid transparent;
+    border-right: 22.5px solid transparent;
+    height: 0px;
+    width: 252px;
+  }
+  .tape-down-circle {
+    width: 42.5px;
+    height: 42.5px;
+  }
+  .tape-down-circle.left {
+    left: -63px;
+  }
+  .tape-down-circle.right {
+    right: -63px;
+  }
+  .tape-down-circle-sm {
+    top: 22.5px;
+  }
+
+  .tape-down-square {
+    top: 13.5px;
+  }
+  .tape-down-square.left {
+    left: 31.5px;
+  }
+  .tape-down-square.right {
+    right: 31.5px;
+  }
+  .tape-down-label {
+    left: 70.2px;
+    top: 9px;
+  }
 }
