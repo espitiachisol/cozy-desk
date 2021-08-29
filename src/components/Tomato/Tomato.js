@@ -50,10 +50,6 @@ const Tomato = ({
   const [startPositon, setStartPositon] = useState({});
   //
   const [showAlert, setShowAlert] = useState(false);
-  const [changeLengthAttention, setChangeLengthAttention] = useState({
-    session: false,
-    break: false,
-  });
   const curWindow = useCallback((node) => {
     if (node !== null) {
       const response = node.getBoundingClientRect();
@@ -116,6 +112,7 @@ const Tomato = ({
       clearInterval(intervalId);
       setIntervalId(null);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userState, setNotification]);
 
   useEffect(() => {
@@ -186,7 +183,7 @@ const Tomato = ({
     } else {
       const newIntervalId = setInterval(() => {
         setTimeLeft((pretimer) => pretimer - 1);
-      }, 1000);
+      }, 100);
       setIntervalId(newIntervalId);
     }
   };
@@ -200,31 +197,30 @@ const Tomato = ({
     }
     setShowAlert(false);
   };
-  useEffect(() => {
-    setChangeLengthAttention({
-      break: false,
-      session: false,
-    });
-  }, [sessionSelected, breakSelected, currentSessionType, more]);
 
-  const witchAttentionToShow = (e) => {
-    if (e.target.options.length === 9) {
-      if (currentSessionType === "Session") {
-        setChangeLengthAttention({
-          ...changeLengthAttention,
-          session: true,
-        });
+  const witchAttentionToShow = useCallback(
+    (e) => {
+      if (e.target.options.length === 9) {
+        if (currentSessionType === "Session") {
+          setNotification({
+            title: "Attention!",
+            content:
+              "You are currently in the focus time. If you change the session length, your current time will be reset. You can either reset it or wait till the break time.",
+          });
+        }
       }
-    }
-    if (e.target.options.length === 4) {
-      if (currentSessionType === "Break") {
-        setChangeLengthAttention({
-          ...changeLengthAttention,
-          break: true,
-        });
+      if (e.target.options.length === 4) {
+        if (currentSessionType === "Break") {
+          setNotification({
+            title: "Attention!",
+            content:
+              "You are currently in the break time. If you change the break length, your current time will be reset. You can either reset it or wait till the focus time.",
+          });
+        }
       }
-    }
-  };
+    },
+    [currentSessionType, setNotification]
+  );
   const resetAll = () => {
     playSessionsoundEffect.current.load();
     playBreaksoundEffect.current.load();
@@ -353,14 +349,6 @@ const Tomato = ({
                     Selected={sessionSelected}
                     witchAttentionToShow={witchAttentionToShow}
                   />
-                  {changeLengthAttention.session ? (
-                    <p className="change-length-attention">
-                      <span>Attention!</span> You are currently in the focus
-                      time. If you change the session length, your current time
-                      will be reset. You can either reset it or wait till the
-                      break time.
-                    </p>
-                  ) : null}
                   <p className="dropdown-label">Break length</p>
                   <Dropdown
                     options={setting.break}
@@ -368,14 +356,6 @@ const Tomato = ({
                     Selected={breakSelected}
                     witchAttentionToShow={witchAttentionToShow}
                   />
-                  {changeLengthAttention.break ? (
-                    <p className="change-length-attention">
-                      <span>Attention!</span> You are currently in the break
-                      time. If you change the break length, your current time
-                      will be reset. You can either reset it or wait till the
-                      focus time.
-                    </p>
-                  ) : null}
                   <button
                     className="restart button-style"
                     onClick={() => {

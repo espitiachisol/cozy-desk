@@ -194,27 +194,6 @@
 }
 
 /* /////////// */
-/* play icons  */
-/* /////////// */
-.play-icons {
-  width: 45%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-
-.play-icon {
-  width: 35px;
-  height: 35px;
-  padding: 4px;
-}
-.play-icon img {
-  width: 100%;
-}
-.play-icon.action-loop {
-  background-color: rgb(207, 203, 198);
-}
-/* /////////// */
 /*volume-Slider   */
 /* /////////// */
 .volume-slider-con {

@@ -6,7 +6,7 @@ import { storage, firestore } from "../../firebaseConfig";
 import PlayList from "./PlayList";
 import Loading from "../shared/Loading/Loading";
 import SettingBar from "../shared/SettingBar/SettingBar";
-
+import SquareIconBtn from "../shared/SquareIconBtn/SquareIconBtn";
 const calcDisplayFullTime = (time) => {
   if (time) {
     let hour = Math.floor(time / 60 / 60);
@@ -26,7 +26,7 @@ const calcDisplayFullTime = (time) => {
 const randomNum = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
-const cozydeskPlaylist = [
+const defaultSongs = [
   {
     id: "defaultSong01",
     title: "Winter Written by Alexander Nakarada.mp3",
@@ -70,14 +70,14 @@ const cozydeskPlaylist = [
     icon: "/images/tape-icons-default3.png",
   },
 ];
-const Music = ({
+const Music = function ({
   setShowWindow,
   showWindow,
   zIndex,
   setZIndex,
   userState,
   setNotification,
-}) => {
+}) {
   const control = useRef(null);
   const fileRef = useRef(null);
   const [size, setSize] = useState({});
@@ -93,7 +93,7 @@ const Music = ({
   const [musicListsShow, setMusicListsShow] = useState(false);
   const [userAddLists, setUserAddLists] = useState(false);
   const [songFromData, setSongFromData] = useState([]);
-  const defaultSongs = cozydeskPlaylist;
+  // const defaultSongs = cozydeskPlaylist;
   const [songs, setSongs] = useState(defaultSongs);
   const [currentPlaylistType, setCurrentPlaylistType] = useState("default");
   const [showLoading, setShowLoading] = useState(false);
@@ -184,24 +184,26 @@ const Music = ({
   };
 
   const [position, mouseDown] = useDrag(startingPosition);
-  const play = () => {
+  //操作音樂播放
+  const play = useCallback(() => {
     // control.current.load();
     setIsplaying(true);
     setRotate("play");
-
     control.current.play();
-  };
-  const stop = () => {
+  }, []);
+  const stop = useCallback(() => {
     setIsplaying(false);
     setRotate("");
     control.current.pause();
-  };
-  const pre = () => {
+  }, []);
+  const pre = useCallback(() => {
     songIndex === 0
       ? setSongIndex(songs.length - 1)
       : setSongIndex(songIndex - 1);
-  };
+  }, [songIndex, songs]);
+
   const next = () => {
+    // FIXME:嚴重~~~~~~當在播放後面的音樂，刪除前面的index的話會出錯誤，目前先以?.去做處理但會有問題！
     //當歌單只有一首歌的時候setSongIndex(0)會沒有改變所以上面的useEffect不會被觸法
     if (songs.length === 1) {
       play();
@@ -211,6 +213,10 @@ const Music = ({
         : setSongIndex(songIndex + 1);
     }
   };
+
+  const toggleLoopOneSong = useCallback(() => {
+    setLoopOneSong(!loopOneSong);
+  }, [loopOneSong]);
 
   const uploadFiles = (e) => {
     let array = [];
@@ -350,7 +356,8 @@ const Music = ({
         setSongs(defaultSongs);
       }
     }
-  }, [songFromData, defaultSongs, songs]);
+  }, [songFromData, songs]);
+  console.log(songs);
   return (
     <div
       className="music window"
@@ -419,7 +426,7 @@ const Music = ({
 
           <audio
             ref={control}
-            src={songs[songIndex].src}
+            src={songs[songIndex]?.src}
             onCanPlay={(e) => {
               const { currentTime, duration } = e.target;
               setProgress({ currentTime: currentTime, duration: duration });
@@ -449,7 +456,7 @@ const Music = ({
 
           <div className="tape-cover">
             <img
-              src={songs[songIndex].img}
+              src={songs[songIndex]?.img}
               alt="cover"
               style={{ opacity: `${tapeOnReel ? "0.9" : "0.2"}` }}
             />
@@ -479,7 +486,7 @@ const Music = ({
           <div className="tape-content">
             <div className="tape-detail">
               <p className="song-title font-style-prata ">
-                {songs[songIndex].title}
+                {songs[songIndex]?.title}
               </p>
             </div>
             <div className="play-icons">
@@ -501,31 +508,36 @@ const Music = ({
                   }}
                 ></input>
               </div>
-              <button className=" play-icon button-style" onClick={pre}>
-                <img src="/images/icon_pre.svg" alt="icon pre" />
-              </button>
+              <SquareIconBtn
+                ClickSquareIconBtn={pre}
+                imageSrc="/images/icon_pre.svg"
+                imageAlt="icon pre"
+                btnClassName="play-icon"
+              />
               {isplaying ? (
-                <button className="play-icon button-style" onClick={stop}>
-                  <img src="/images/icon_stop.svg" alt="icon stop" />
-                </button>
+                <SquareIconBtn
+                  ClickSquareIconBtn={stop}
+                  imageSrc="/images/icon_stop.svg"
+                  imageAlt="icon stop"
+                  btnClassName="play-icon"
+                />
               ) : (
-                <button className="play-icon button-style" onClick={play}>
-                  <img src="/images/icon_play.svg" alt="icon play" />
-                </button>
+                <SquareIconBtn
+                  ClickSquareIconBtn={play}
+                  imageSrc="/images/icon_play.svg"
+                  imageAlt="icon play"
+                  btnClassName="play-icon"
+                />
               )}
-              <button className="play-icon button-style" onClick={next}>
+              <button className={`button-style play-icon`} onClick={next}>
                 <img src="/images/icon_next.svg" alt="icon next" />
               </button>
-              <button
-                className={`play-icon button-style ${
-                  loopOneSong ? "action-loop" : ""
-                }`}
-                onClick={() => {
-                  setLoopOneSong(!loopOneSong);
-                }}
-              >
-                <img src="/images/icon_loop.svg" alt="icon loop" />
-              </button>
+              <SquareIconBtn
+                ClickSquareIconBtn={toggleLoopOneSong}
+                imageSrc="/images/icon_loop.svg"
+                imageAlt="icon loop"
+                btnClassName={`play-icon ${loopOneSong ? "action-loop" : ""}`}
+              />
             </div>
             <div
               className="progress-con"
@@ -645,8 +657,3 @@ const Music = ({
   );
 };
 export default Music;
-
-// var mountainImagesRef = storage.ref().child("images/welcome.jpg").put("../public/images/welcome.jpg").then((snapshot) => {
-//   console.log("Uploaded a raw string!");
-// });
-//TODO:阻擋沒登入的使用者按上傳檔案

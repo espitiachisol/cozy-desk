@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Day from "./Day";
 import { auth } from "../../firebaseConfig";
 import RotateArrow from "../shared/RotateArrow/RotateArrow";
