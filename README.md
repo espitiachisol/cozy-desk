@@ -27,9 +27,9 @@ CozyDesk is the website version of the computer desktop. It currently provides t
 
 | Skill       | Description     | 
 | ------------- |-------------| 
-| React (hooks)   | useState, useEffect, useCallback, React.memo | 
-| Custom hooks   | Drag and drop windows    | 
-| Firebase     | Authentication, Cloud firestore, Storage, Hosting     |   
-| Prettier   | Format code    | 
-| Eslint  | consistent coding conventions, easy for debugging.   | 
+| React (hooks)   | useState, useEffect, useCallback, React.memo. | 
+| Custom hooks   | Drag and drop windows.    | 
+| Firebase     | Authentication, Cloud firestore, Storage, Hosting.    |   
+| Prettier   | Format code.    | 
+| Eslint  | Consistent coding conventions, helpful for debugging.  | 
 
