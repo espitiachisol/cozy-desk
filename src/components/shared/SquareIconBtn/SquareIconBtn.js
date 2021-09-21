@@ -6,7 +6,6 @@ const SquareIconBtn = React.memo(function ({
   imageAlt,
   btnClassName,
 }) {
-  console.log("asdas");
   return (
     <button
       className={`button-style ${btnClassName}`}

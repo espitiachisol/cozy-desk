@@ -357,7 +357,6 @@ const Music = function ({
       }
     }
   }, [songFromData, songs]);
-  console.log(songs);
   return (
     <div
       className="music window"
@@ -398,7 +397,7 @@ const Music = function ({
             className="tape-con left"
             style={{
               clipPath: `circle(${
-                125 - (progress.currentTime * 100) / progress.duration
+                (130 - (progress.currentTime * 100) / progress.duration) * 0.8
               }px at center)`,
             }}
           >
@@ -413,7 +412,7 @@ const Music = function ({
             className="tape-con right"
             style={{
               clipPath: `circle(${
-                25 + (progress.currentTime * 100) / progress.duration
+                (30 + (progress.currentTime * 100) / progress.duration) * 0.8
               }px at center)`,
             }}
           >
@@ -542,13 +541,17 @@ const Music = function ({
             <div
               className="progress-con"
               onClick={(e) => {
-                setProgress({
-                  ...progress,
-                  currentTime:
-                    (e.nativeEvent.offsetX / 360) * progress.duration,
-                });
-
-                if (progress.duration) {
+                if (
+                  !e.target.parentElement.classList.contains(
+                    "progress-time-label"
+                  ) &&
+                  progress.duration
+                ) {
+                  setProgress({
+                    ...progress,
+                    currentTime:
+                      (e.nativeEvent.offsetX / 360) * progress.duration,
+                  });
                   control.current.currentTime =
                     (e.nativeEvent.offsetX / 360) * progress.duration;
                 }
