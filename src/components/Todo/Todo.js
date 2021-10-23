@@ -2,36 +2,25 @@ import React, { useState, useCallback, useEffect } from "react";
 import useDrag from "../hooks/useDrag";
 import WindowHeader from "../shared/WindowHeader/WindowHeader";
 import TodoList from "./TodoList";
+import TodoForm from "./TodoItems/TodoForm";
+import TodoLabels from "./TodoItems/TodoLabels";
 import "./Todo.css";
 import Alert from "../shared/Alert/Alert";
 import { firestore } from "../../firebaseConfig";
-import InputRadio from "./InputRadio";
+
 import NoDataMessage from "../shared/NoDataMessage/NoDataMessage";
+import { getYearMonthDayString } from "../../utils/helpers/time.helper";
 const converPriorityToNumber = (item) => {
-  let result;
   switch (item) {
     case "High":
-      result = 3;
-      break;
+      return 3;
     case "Medium":
-      result = 2;
-      break;
+      return 2;
     case "Low":
-      result = 1;
-      break;
+      return 1;
     default:
-      result = 0;
+      return 0;
   }
-  return result;
-};
-const disablePreDay = () => {
-  const Today = new Date();
-  var month = Today.getMonth() + 1;
-  var day = Today.getDate();
-  var year = Today.getFullYear();
-  if (month < 10) month = "0" + month.toString();
-  if (day < 10) day = "0" + day.toString();
-  return year + "-" + month + "-" + day;
 };
 const Todo = function ({
   setShowWindow,
@@ -101,14 +90,12 @@ const Todo = function ({
   const addTodo = (e) => {
     e.preventDefault();
     if (text) {
-      let day = new Date();
-      let id = "list" + day.getTime();
       let data = {
-        id: id,
+        id: "list" + new Date().getTime(),
         text: text,
         deadLine: deadLine,
         priority: priority,
-        addTime: day.toLocaleDateString("zh"),
+        addTime: getYearMonthDayString(),
         complete: false,
       };
       if (userState) {
@@ -118,15 +105,13 @@ const Todo = function ({
           .set({ todolist: [...todolistAll, data] })
           .then(() => {
             setTodolistAll([...todolistAll, data]);
-
-            // console.log("Document successfully written!");
           })
           .catch((error) => {
             setNotification({
               title: error?.code,
               content: error?.message,
             });
-            // console.error("Error writing document: ", error);
+            console.error("Error writing document: ", error);
           });
       } else {
         //使用者沒有登入的狀況
@@ -150,15 +135,15 @@ const Todo = function ({
     }
   };
   const deleteList = (listid) => {
-    let deleteAListFromLists = todolistAll.filter((each) => each.id !== listid);
+    let filteredList = todolistAll.filter((each) => each.id !== listid);
     if (userState) {
       //刪除的話直接用寫入覆蓋原本的array
       firestore
         .collection("todoLists")
         .doc(userState)
-        .set({ todolist: deleteAListFromLists })
+        .set({ todolist: filteredList })
         .then(() => {
-          setTodolistAll(deleteAListFromLists);
+          setTodolistAll(filteredList);
           // console.log("Document successfully updte!!!");
         })
         .catch((error) => {
@@ -170,24 +155,20 @@ const Todo = function ({
         });
     } else {
       //使用者沒有登入的狀況
-      setTodolistAll(deleteAListFromLists);
+      setTodolistAll(filteredList);
     }
   };
   const checkComplete = (listid) => {
-    // console.log(listid);
-    let checkALisToComplete = todolistAll.map((each) => {
-      if (each.id === listid) {
-        each.complete = !each.complete;
-      }
-      return each;
-    });
+    let newCompletedList = todolistAll.map((each) =>
+      each.id === listid ? (each.complete = !each.complete) : each
+    );
     if (userState) {
       firestore
         .collection("todoLists")
         .doc(userState)
-        .set({ todolist: checkALisToComplete })
+        .set({ todolist: newCompletedList })
         .then(() => {
-          setTodolistAll(checkALisToComplete);
+          setTodolistAll(newCompletedList);
           // console.log("Document successfully updte!!!");
         })
         .catch((error) => {
@@ -199,7 +180,7 @@ const Todo = function ({
         });
     } else {
       //使用者沒有登入的狀況
-      setTodolistAll(checkALisToComplete);
+      setTodolistAll(newCompletedList);
     }
   };
   const clearAll = () => {
@@ -209,7 +190,6 @@ const Todo = function ({
         .doc(userState)
         .delete()
         .then(() => {
-          // console.log("Document successfully deleted!");
           setTodolistAll([]);
         })
         .catch((error) => {
@@ -255,15 +235,8 @@ const Todo = function ({
     setTodolistTodo(todolistAllShow.filter((each) => !each.complete));
     setTodolistDone(todolistAllShow.filter((each) => each.complete));
   }, [todolistAllShow]);
-
-  const displayAll = () => {
-    setListsToShow("All");
-  };
-  const displayTodo = () => {
-    setListsToShow("Todo");
-  };
-  const displayDone = () => {
-    setListsToShow("Done");
+  const witchLabelToShow = (label) => {
+    setListsToShow(label);
   };
   const sortDeadline = (label) => {
     const deadlineArray = [...todolistAll];
@@ -325,6 +298,17 @@ const Todo = function ({
     // console.log(priorityArray);
     setTodolistAllShow(priorityArray);
   };
+  const witchListToShow = (list) => {
+    switch (list) {
+      case "All":
+        return todolistAllShow;
+      case "Todo":
+        return todolistTodo;
+      case "Done":
+        return todolistDone;
+      default:
+    }
+  };
 
   return (
     <div
@@ -349,70 +333,26 @@ const Todo = function ({
         position={position}
         label="Todo"
       />
+
       <div className="todo-container-all">
         <div className="todo-container">
-          <form className="add-form-container" onSubmit={addTodo}>
-            <textarea
-              className="add-form-text"
-              style={{ resize: "none" }}
-              onChange={(e) => {
-                setText(e.target.value);
-              }}
-            ></textarea>
-            <button className="icon-plus button-style">
-              <img src="/images/icon_plus.svg" alt="icon-plus" />
-            </button>
-            <div className="deadline-priority-con">
-              <div className="deadline-con">
-                <img
-                  src="/images/icon_deadline.svg"
-                  alt="icon deadline"
-                  className="deadline-icon"
-                />
-                <p>Deadline</p>
-                <input
-                  type="date"
-                  className="add-form-deadline"
-                  min={disablePreDay()}
-                  onChange={(e) => {
-                    setDeadLine(e.target.value);
-                  }}
-                ></input>
-              </div>
-              <InputRadio
-                title="Priority"
-                setPriority={setPriority}
-                priority={priority}
-              />
-            </div>
-          </form>
+          <TodoForm
+            addTodo={addTodo}
+            setText={setText}
+            setDeadLine={setDeadLine}
+            setPriority={setPriority}
+            priority={priority}
+          />
           <div className="display-todo-container">
-            <div className="labels-container">
-              <div
-                className={`label-all todo-label ${
-                  listsToShow === "All" ? "lift" : ""
-                }`}
-                onClick={displayAll}
-              >
-                ALL({todolistAll.length})
-              </div>
-              <div
-                className={`label-todo todo-label ${
-                  listsToShow === "Todo" ? "lift" : ""
-                }`}
-                onClick={displayTodo}
-              >
-                TODO({todolistTodo.length})
-              </div>
-              <div
-                className={`label-done todo-label ${
-                  listsToShow === "Done" ? "lift" : ""
-                }`}
-                onClick={displayDone}
-              >
-                DONE({todolistDone.length})
-              </div>
-            </div>
+            <TodoLabels
+              listsToShow={listsToShow}
+              witchLabelToShow={witchLabelToShow}
+              labelLength={{
+                labelAllLength: todolistAll.length,
+                labelTodoLength: todolistTodo.length,
+                labelDoneLength: todolistDone.length,
+              }}
+            />
             <div className={`todo-label-line ${listsToShow}`}></div>
             <div className="todo-content">
               {listsToShow === "All" ? (

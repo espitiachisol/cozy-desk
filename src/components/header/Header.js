@@ -1,8 +1,7 @@
 import React from "react";
-import Day from "./Day";
+import CurrentTime from "./CurrentTime";
 import { auth } from "../../firebaseConfig";
 import RotateArrow from "../shared/RotateArrow/RotateArrow";
-
 import "./Header.css";
 
 const Header = ({
@@ -92,7 +91,7 @@ const Header = ({
             </button>
           )}
         </div>
-        <Day />
+        <CurrentTime />
       </div>
     </div>
   );
