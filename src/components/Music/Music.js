@@ -7,69 +7,11 @@ import PlayList from "./PlayList";
 import Loading from "../shared/Loading/Loading";
 import SettingBar from "../shared/SettingBar/SettingBar";
 import SquareIconBtn from "../shared/SquareIconBtn/SquareIconBtn";
-const calcDisplayFullTime = (time) => {
-  if (time) {
-    let hour = Math.floor(time / 60 / 60);
-    let sec = Math.floor(time % 60);
-    let min = Math.floor(time / 60) - hour * 60;
-    return (
-      hour.toString().padStart(2, "0") +
-      ":" +
-      min.toString().padStart(2, "0") +
-      ":" +
-      sec.toString().padStart(2, "0")
-    );
-  } else {
-    return "00:00:00";
-  }
-};
-const randomNum = (min, max) => {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-};
-const defaultSongs = [
-  {
-    id: "defaultSong01",
-    title: "Winter Written by Alexander Nakarada.mp3",
-    src: "/music/Winter Written by Alexander Nakarada.mp3",
-    img: "/images/mixtape-cover-default1.png",
-    icon: "/images/tape-icons-default1.png",
-  },
-  {
-    id: "defaultSong02",
-    title: "Burt's Requiem by Alexander Nakarada.mp3",
-    src: "/music/Burt's Requiem by Alexander Nakarada.mp3",
-    img: "/images/mixtape-cover-default2.png",
-    icon: "/images/tape-icons-default2.png",
-  },
-  {
-    id: "defaultSong03",
-    title: "Lucky Break Written by Bryan Teoh. Nicklas Waroff on sax.mp3",
-    src: "/music/Lucky Break Written by Bryan Teoh. Nicklas Waroff on sax.mp3",
-    img: "/images/mixtape-cover-default6.png",
-    icon: "/images/tape-icons-default6.png",
-  },
-  {
-    id: "defaultSong04",
-    title: "Nostalgic Piano Written by Rafael Krux.mp3",
-    src: "/music/Nostalgic Piano Written by Rafael Krux.mp3",
-    img: "/images/mixtape-cover-default5.png",
-    icon: "/images/tape-icons-default5.png",
-  },
-  {
-    id: "defaultSong05",
-    title: "Relaxing Ballad Written by Alexander Nakarada.mp3",
-    src: "/music/Relaxing Ballad Written by Alexander Nakarada.mp3",
-    img: "/images/mixtape-cover-default4.png",
-    icon: "/images/tape-icons-default4.png",
-  },
-  {
-    id: "defaultSong06",
-    title: "Jokull Written by Alexander Nakarada.mp3",
-    src: "/music/Jokull Written by Alexander Nakarada.mp3",
-    img: "/images/mixtape-cover-default3.png",
-    icon: "/images/tape-icons-default3.png",
-  },
-];
+//Helpers
+import { defaultSongs } from "../../utils/constants/defaultSongs";
+import { getHourMinuteSecondString } from "../../utils/helpers/time.helper";
+import { randomNum } from "../../utils/helpers/random.helper";
+
 const Music = function ({
   setShowWindow,
   showWindow,
@@ -203,7 +145,7 @@ const Music = function ({
   }, [songIndex, songs]);
 
   const next = () => {
-    // FIXME:嚴重~~~~~~當在播放後面的音樂，刪除前面的index的話會出錯誤，目前先以?.去做處理但會有問題！
+    // FIXME:當在播放後面的音樂，刪除前面的index的話會出錯誤，目前先以?.去做處理但會有問題！
     //當歌單只有一首歌的時候setSongIndex(0)會沒有改變所以上面的useEffect不會被觸法
     if (songs.length === 1) {
       play();
@@ -255,7 +197,6 @@ const Music = function ({
                     img: `/images/mixtape-cover-${imgNum}.png`,
                     icon: `/images/tape-icons-${imgNum}.png`,
                   });
-                  // console.log("Uploaded a file!");
                   //將取得的storage url 放入firestore
                   firestore
                     .collection("mixtape")
@@ -267,7 +208,6 @@ const Music = function ({
                       setUserAddLists(true);
                       setShowLoading(false);
                       fileRef.current.value = null;
-                      // console.log("Document successfully updte!!!");
                     })
                     .catch((error) => {
                       setNotification({
@@ -423,29 +363,6 @@ const Music = function ({
             />
           </div>
 
-          <audio
-            ref={control}
-            src={songs[songIndex]?.src}
-            onCanPlay={(e) => {
-              const { currentTime, duration } = e.target;
-              setProgress({ currentTime: currentTime, duration: duration });
-            }}
-            onTimeUpdate={(e) => {
-              const { currentTime, duration } = e.target;
-              if (currentTime === duration) {
-                //若有單曲循環的話
-                if (loopOneSong) {
-                  control.current.load();
-                  play();
-                } else {
-                  //沒有自動播放下一首
-                  next();
-                }
-              } else {
-                setProgress({ currentTime: currentTime, duration: duration });
-              }
-            }}
-          ></audio>
           <svg viewBox="0 0 860 550" className="tape-up">
             <path
               className="c"
@@ -481,6 +398,29 @@ const Music = function ({
             <div className="tape-down-square right"></div>
           </div>
         </div>
+        <audio
+          ref={control}
+          src={songs[songIndex]?.src}
+          onCanPlay={(e) => {
+            const { currentTime, duration } = e.target;
+            setProgress({ currentTime: currentTime, duration: duration });
+          }}
+          onTimeUpdate={(e) => {
+            const { currentTime, duration } = e.target;
+            if (currentTime === duration) {
+              //若有單曲循環的話
+              if (loopOneSong) {
+                control.current.load();
+                play();
+              } else {
+                //沒有自動播放下一首
+                next();
+              }
+            } else {
+              setProgress({ currentTime: currentTime, duration: duration });
+            }
+          }}
+        ></audio>
         <div className="tape-play">
           <div className="tape-content">
             <div className="tape-detail">
@@ -564,8 +504,8 @@ const Music = function ({
                 }}
               ></div>
               <div className="progress-time-label">
-                <p>{calcDisplayFullTime(progress.currentTime)}</p>
-                <p>{calcDisplayFullTime(progress.duration)}</p>
+                <p>{getHourMinuteSecondString(progress.currentTime)}</p>
+                <p>{getHourMinuteSecondString(progress.duration)}</p>
               </div>
             </div>
           </div>

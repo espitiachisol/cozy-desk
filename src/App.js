@@ -1,20 +1,10 @@
 import Header from "./components/header/Header";
 import MainBody from "./components/MainBody/MainBody";
-import { auth, firestore } from "./firebaseConfig";
-
+import { auth } from "./firebaseConfig";
 import React, { useState, useEffect } from "react";
-import "./App.css";
-import axios from "axios";
-import config from "./config";
 
-const options = {
-  method: "GET",
-  url: "https://quotes15.p.rapidapi.com/quotes/random/",
-  headers: {
-    "x-rapidapi-key": `${config.Quote_API_KEY}`,
-    "x-rapidapi-host": "quotes15.p.rapidapi.com",
-  },
-};
+import { GETFirestore, SETFirestore } from "./api/firestore.api";
+import "./App.css";
 function App() {
   const [userState, setUserstate] = useState("");
   const [notification, setNotification] = useState({ title: "", content: "" });
@@ -49,13 +39,9 @@ function App() {
     auth.onAuthStateChanged((user) => {
       if (user) {
         setUserstate(user.uid);
-        firestore
-          .collection("windowPosition")
-          .doc(user.uid)
-          .get()
+        GETFirestore("windowPosition", user.uid)
           .then((doc) => {
             if (doc.exists) {
-              // console.log("Document data:", doc.data().showWindow);
               setShowWindow(doc.data().showWindow);
             } else {
               // console.log("No such document!");
@@ -88,18 +74,7 @@ function App() {
       });
     };
   }, []);
-  const [quote, setQuote] = useState({});
-  useEffect(() => {
-    const getQuote = async () => {
-      const { data } = await axios.request(options);
-      if (data?.content.length > 250) {
-        getQuote();
-      } else {
-        setQuote({ content: data.content, author: data.originator.name });
-      }
-    };
-    getQuote();
-  }, []);
+
   useEffect(() => {
     if (userState) {
       if (
@@ -108,10 +83,7 @@ function App() {
         showWindow.Todo.x ||
         showWindow.SignWindow.x
       ) {
-        firestore
-          .collection("windowPosition")
-          .doc(userState)
-          .set({ showWindow: showWindow })
+        SETFirestore("windowPosition", userState, { showWindow: showWindow })
           .then(() => {
             // console.log("Document successfully updte!!!");
           })
@@ -146,7 +118,6 @@ function App() {
         showWindow={showWindow}
         setZIndex={setZIndex}
         zIndex={zIndex}
-        quote={quote}
         notification={notification}
         setNotification={setNotification}
         setShowHeaderDropDown={setShowHeaderDropDown}

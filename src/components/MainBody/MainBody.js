@@ -1,9 +1,11 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { returnQuote } from "../../api/axios.api";
 import Music from "../Music/Music";
 import Tomato from "../Tomato/Tomato";
 import Todo from "../Todo/Todo";
 import SignWindow from "../Sign/SignWindow";
 import Notification from "../Notification/Notification";
+
 import "./MainBody.css";
 const MainBody = ({
   userState,
@@ -12,13 +14,24 @@ const MainBody = ({
   showWindow,
   zIndex,
   setZIndex,
-  quote,
   setNotification,
   notification,
   showHeaderDropDown,
   setShowHeaderDropDown,
 }) => {
-  const dropDownRef = useRef();
+  const dropDownRef = useRef(null);
+  const [quote, setQuote] = useState({});
+  useEffect(() => {
+    const getQuote = async () => {
+      const { data } = await returnQuote();
+      if (data?.content.length > 250) {
+        getQuote();
+      } else {
+        setQuote({ content: data.content, author: data.originator.name });
+      }
+    };
+    getQuote();
+  }, []);
   const hideHeaderDropDown = (e) => {
     if (e.target.contains(dropDownRef.current)) {
       setShowHeaderDropDown(false);

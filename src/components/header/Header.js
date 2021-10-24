@@ -18,7 +18,6 @@ const Header = ({
     auth
       .signOut()
       .then(() => {
-        // console.log("Sign-out successful.");
         setUserstate("");
         setShowWindow({
           SignWindow: { display: true, x: "", y: "" },

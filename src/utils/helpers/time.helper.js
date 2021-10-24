@@ -5,6 +5,22 @@ export const getMinuteSecondString = (time) => {
   min = min < 10 ? "0" + min : min;
   return `${min}:${sec}`;
 };
+export const getHourMinuteSecondString = (time) => {
+  if (time) {
+    let hour = Math.floor(time / 60 / 60);
+    let sec = Math.floor(time % 60);
+    let min = Math.floor(time / 60) - hour * 60;
+    return (
+      hour.toString().padStart(2, "0") +
+      ":" +
+      min.toString().padStart(2, "0") +
+      ":" +
+      sec.toString().padStart(2, "0")
+    );
+  } else {
+    return "00:00:00";
+  }
+};
 export const getYearMonthDayString = () => {
   const Today = new Date();
   let month = Today.getMonth() + 1;
