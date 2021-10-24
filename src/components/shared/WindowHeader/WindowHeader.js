@@ -1,3 +1,4 @@
+import React from "react";
 import "./WindowHeader.css";
 const WindowHeader = ({
   mouseDown,

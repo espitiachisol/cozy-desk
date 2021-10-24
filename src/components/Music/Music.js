@@ -20,7 +20,11 @@ import {
   GETurlstorage,
   DELETEstorage,
 } from "../../api/storage.api";
-
+import {
+  GETfirestore,
+  SETfirestore,
+  DELETEfirestore,
+} from "../../api/firestore.api";
 const Music = function ({
   setShowWindow,
   showWindow,
@@ -61,10 +65,7 @@ const Music = function ({
   //確定使用者是登入的狀態，若是登入的狀態向firestore要使用者的歌單，放入SongFromData裡
   useEffect(() => {
     if (userState) {
-      firestore
-        .collection("mixtape")
-        .doc(userState)
-        .get()
+      GETfirestore("mixtape", userState)
         .then((doc) => {
           if (doc.exists) {
             setSongFromData([...doc.data().mixtape]);
@@ -86,10 +87,7 @@ const Music = function ({
   //假如使用者新增新的音樂清單，再向firestore要一次新的資料，將新的資料放入SongFromData
   useEffect(() => {
     if (userAddLists && userState) {
-      firestore
-        .collection("mixtape")
-        .doc(userState)
-        .get()
+      GETfirestore("mixtape", userState)
         .then((doc) => {
           if (doc.exists) {
             setSongFromData([...doc.data().mixtape]);
@@ -204,12 +202,9 @@ const Music = function ({
                   icon: `/images/tape-icons-${imgNum}.png`,
                 });
                 //將取得的storage url 放入firestore
-                firestore
-                  .collection("mixtape")
-                  .doc(userState)
-                  .set({
-                    mixtape: [...songFromData, ...array],
-                  })
+                SETfirestore("mixtape", userState, {
+                  mixtape: [...songFromData, ...array],
+                })
                   .then(() => {
                     setUserAddLists(true);
                     setShowLoading(false);
@@ -262,18 +257,13 @@ const Music = function ({
           title: error?.code,
           content: error?.message,
         });
-        console.error("Error Deleting document from storage: ", error);
+        // console.error("Error Deleting document from storage: ", error);
       });
     //更新firestore資料
     let filteredArray = songFromData.filter((song) => song.id !== id);
-
-    // console.log(filteredArray);
-    firestore
-      .collection("mixtape")
-      .doc(userState)
-      .set({
-        mixtape: [...filteredArray],
-      })
+    SETfirestore("mixtape", userState, {
+      mixtape: [...filteredArray],
+    })
       .then(() => {
         //更新SongFromData
         setUserAddLists(true);
