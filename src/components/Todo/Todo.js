@@ -9,9 +9,9 @@ import "./Todo.css";
 import NoDataMessage from "../shared/NoDataMessage/NoDataMessage";
 import { getYearMonthDayString } from "../../utils/helpers/time.helper";
 import {
-  GETFirestore,
-  SETFirestore,
-  DELETEFirestore,
+  GETfirestore,
+  SETfirestore,
+  DELETEfirestore,
 } from "../../../src/api/firestore.api";
 const converPriorityToNumber = (item) => {
   switch (item) {
@@ -65,7 +65,7 @@ const Todo = function ({
   const [position, mouseDown] = useDrag(startingPosition);
   useEffect(() => {
     if (userState) {
-      GETFirestore("todoLists", userState)
+      GETfirestore("todoLists", userState)
         .then((doc) => {
           if (doc.exists) {
             setTodolistAll(doc.data().todolist);
@@ -96,7 +96,7 @@ const Todo = function ({
         complete: false,
       };
       if (userState) {
-        SETFirestore("todoLists", userState, {
+        SETfirestore("todoLists", userState, {
           todolist: [...todolistAll, data],
         })
           .then(() => {
@@ -134,7 +134,7 @@ const Todo = function ({
     let filteredList = todolistAll.filter((each) => each.id !== listid);
     if (userState) {
       //登入狀態
-      SETFirestore("todoLists", userState, { todolist: filteredList })
+      SETfirestore("todoLists", userState, { todolist: filteredList })
         .then(() => {
           setTodolistAll(filteredList);
         })
@@ -158,7 +158,7 @@ const Todo = function ({
       return each;
     });
     if (userState) {
-      SETFirestore("todoLists", userState, { todolist: newCompletedList })
+      SETfirestore("todoLists", userState, { todolist: newCompletedList })
         .then(() => {
           setTodolistAll(newCompletedList);
         })
@@ -177,7 +177,7 @@ const Todo = function ({
 
   const clearAll = () => {
     if (userState) {
-      DELETEFirestore("todoLists", userState)
+      DELETEfirestore("todoLists", userState)
         .then(() => {
           setTodolistAll([]);
         })
@@ -196,7 +196,7 @@ const Todo = function ({
   const clearAllDone = () => {
     let filteredAllDone = todolistAll.filter((each) => each.complete !== true);
     if (userState) {
-      SETFirestore("todoLists", userState, { todolist: filteredAllDone })
+      SETfirestore("todoLists", userState, { todolist: filteredAllDone })
         .then(() => {
           setTodolistAll(filteredAllDone);
         })

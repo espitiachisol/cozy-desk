@@ -2,15 +2,24 @@ import React, { useState, useCallback, useRef, useEffect } from "react";
 import useDrag from "../hooks/useDrag";
 import WindowHeader from "../shared/WindowHeader/WindowHeader";
 import "./Music.css";
-import { storage, firestore } from "../../firebaseConfig";
+import { firestore } from "../../firebaseConfig";
+//Components
 import PlayList from "./PlayList";
-import Loading from "../shared/Loading/Loading";
 import SettingBar from "../shared/SettingBar/SettingBar";
 import SquareIconBtn from "../shared/SquareIconBtn/SquareIconBtn";
+import RetroTape from "./MusicItems/RetroTape";
+import MusicListLabels from "./MusicItems/MusicListLabels";
+import AddSongsForm from "./MusicItems/AddSongsForm";
 //Helpers
 import { defaultSongs } from "../../utils/constants/defaultSongs";
 import { getHourMinuteSecondString } from "../../utils/helpers/time.helper";
 import { randomNum } from "../../utils/helpers/random.helper";
+//api
+import {
+  PUTstorage,
+  GETurlstorage,
+  DELETEstorage,
+} from "../../api/storage.api";
 
 const Music = function ({
   setShowWindow,
@@ -27,7 +36,6 @@ const Music = function ({
   const [songIndex, setSongIndex] = useState(0);
   const [isplaying, setIsplaying] = useState(false);
   const [rotate, setRotate] = useState("");
-  const [tapeOnReel, setTapeOnReel] = useState(true);
   //如果duration設定為0,下面的運算(progress.currentTime * 1) / progress.duration} 會是NaN% 因為0/0= NaN 設定為1,0/1=0
   const [progress, setProgress] = useState({ currentTime: 0, duration: 1 });
   const [loopOneSong, setLoopOneSong] = useState(false);
@@ -35,11 +43,10 @@ const Music = function ({
   const [musicListsShow, setMusicListsShow] = useState(false);
   const [userAddLists, setUserAddLists] = useState(false);
   const [songFromData, setSongFromData] = useState([]);
-  // const defaultSongs = cozydeskPlaylist;
   const [songs, setSongs] = useState(defaultSongs);
   const [currentPlaylistType, setCurrentPlaylistType] = useState("default");
   const [showLoading, setShowLoading] = useState(false);
-  // console.log(currentPlaylistType);
+
   useEffect(() => {
     if (isplaying && songs) {
       setIsplaying(true);
@@ -61,8 +68,6 @@ const Music = function ({
         .then((doc) => {
           if (doc.exists) {
             setSongFromData([...doc.data().mixtape]);
-          } else {
-            // console.log("No such document!");
           }
         })
         .catch((error) => {
@@ -88,11 +93,7 @@ const Music = function ({
         .then((doc) => {
           if (doc.exists) {
             setSongFromData([...doc.data().mixtape]);
-            // console.log([...doc.data().mixtape]);
             setUserAddLists(false);
-            // console.log("setSongFromDataEffect");
-          } else {
-            // console.log("No such document!");
           }
         })
         .catch((error) => {
@@ -144,6 +145,19 @@ const Music = function ({
       : setSongIndex(songIndex - 1);
   }, [songIndex, songs]);
 
+  const clickProgressBar = (e) => {
+    if (
+      !e.target.parentElement.classList.contains("progress-time-label") &&
+      progress.duration
+    ) {
+      let currentTime = (e.nativeEvent.offsetX / 360) * progress.duration;
+      setProgress({
+        ...progress,
+        currentTime: currentTime,
+      });
+      control.current.currentTime = currentTime;
+    }
+  };
   const next = () => {
     // FIXME:當在播放後面的音樂，刪除前面的index的話會出錯誤，目前先以?.去做處理但會有問題！
     //當歌單只有一首歌的時候setSongIndex(0)會沒有改變所以上面的useEffect不會被觸法
@@ -177,52 +191,44 @@ const Music = function ({
       Object.entries(files).forEach(([key, value]) => {
         //存入storage
         if (value.size < 10000000) {
-          storage
-            .ref()
-            .child(`${userState}/${value.name}`)
-            .put(value)
-            .then((snapshot) => {
-              //取得storage
-              storage
-                .ref()
-                .child(`${userState}/${value.name}`)
-                .getDownloadURL()
-                .then((url) => {
-                  let imgNum = randomNum(5, 9);
-
-                  array.push({
-                    id: `${userState}/${value.name}`,
-                    title: value.name,
-                    src: url,
-                    img: `/images/mixtape-cover-${imgNum}.png`,
-                    icon: `/images/tape-icons-${imgNum}.png`,
-                  });
-                  //將取得的storage url 放入firestore
-                  firestore
-                    .collection("mixtape")
-                    .doc(userState)
-                    .set({
-                      mixtape: [...songFromData, ...array],
-                    })
-                    .then(() => {
-                      setUserAddLists(true);
-                      setShowLoading(false);
-                      fileRef.current.value = null;
-                    })
-                    .catch((error) => {
-                      setNotification({
-                        title: error?.code,
-                        content: error?.message,
-                      });
-                    });
-                })
-                .catch((error) => {
-                  setNotification({
-                    title: error?.code,
-                    content: error?.message,
-                  });
+          PUTstorage(`${userState}/${value.name}`, value).then((snapshot) => {
+            //取得storage
+            GETurlstorage(`${userState}/${value.name}`)
+              .then((url) => {
+                let imgNum = randomNum(5, 9);
+                array.push({
+                  id: `${userState}/${value.name}`,
+                  title: value.name,
+                  src: url,
+                  img: `/images/mixtape-cover-${imgNum}.png`,
+                  icon: `/images/tape-icons-${imgNum}.png`,
                 });
-            });
+                //將取得的storage url 放入firestore
+                firestore
+                  .collection("mixtape")
+                  .doc(userState)
+                  .set({
+                    mixtape: [...songFromData, ...array],
+                  })
+                  .then(() => {
+                    setUserAddLists(true);
+                    setShowLoading(false);
+                    fileRef.current.value = null;
+                  })
+                  .catch((error) => {
+                    setNotification({
+                      title: error?.code,
+                      content: error?.message,
+                    });
+                  });
+              })
+              .catch((error) => {
+                setNotification({
+                  title: error?.code,
+                  content: error?.message,
+                });
+              });
+          });
         } else {
           setNotification({
             title: "Notification/The song size is limited to 10MB",
@@ -247,10 +253,7 @@ const Music = function ({
 
   const deletePlayList = (id) => {
     //刪除storage資料
-    storage
-      .ref()
-      .child(id)
-      .delete()
+    DELETEstorage(id)
       .then(() => {
         // console.log("Document successfully delete from storage");
       })
@@ -297,6 +300,7 @@ const Music = function ({
       }
     }
   }, [songFromData, songs]);
+
   return (
     <div
       className="music window"
@@ -322,82 +326,11 @@ const Music = function ({
       />
 
       <div className="tape-container-all">
-        <div className={`tape ${rotate}`}>
-          <svg viewBox="0 0 860 550">
-            <path
-              className="a"
-              d="M799.87,32c-.43,0-.85,0-1.28,0H61.09c-.38,0-.75,0-1.12,0l-1.23.09A25.06,25.06,0,0,0,36.43,57.16V406.74H823.58V57.16A25,25,0,0,0,799.87,32ZM247.3,279c-26,0-47-21.34-47-47.68s21.05-47.67,47-47.67,47,21.35,47,47.67S273.27,279,247.3,279Zm363.19,0c-26,0-47-21.34-47-47.68s21-47.67,47-47.67,47,21.35,47,47.67S636.46,279,610.49,279Z"
-            />
-            <path
-              className="b"
-              d="M839.27,0H20.72A20.87,20.87,0,0,0,0,21V529a20.87,20.87,0,0,0,20.72,21H839.27A20.88,20.88,0,0,0,860,529V21A20.88,20.88,0,0,0,839.27,0ZM823.58,406.74H36.26V57.16A25,25,0,0,1,58.74,32.1L60,32c.37,0,.74,0,1.12,0h737.5c.43,0,.85,0,1.28,0a25,25,0,0,1,23.71,25.15Z"
-            />
-          </svg>
-          <div
-            className="tape-con left"
-            style={{
-              clipPath: `circle(${
-                (130 - (progress.currentTime * 100) / progress.duration) * 0.8
-              }px at center)`,
-            }}
-          >
-            <img
-              src="/images/mixtape-tape-on-reel.png"
-              className="tapeOnReel"
-              alt="tape on reel left"
-            />
-          </div>
-
-          <div
-            className="tape-con right"
-            style={{
-              clipPath: `circle(${
-                (30 + (progress.currentTime * 100) / progress.duration) * 0.8
-              }px at center)`,
-            }}
-          >
-            <img
-              src="/images/mixtape-tape-on-reel.png"
-              className="tapeOnReel"
-              alt="tape on reel right"
-            />
-          </div>
-
-          <svg viewBox="0 0 860 550" className="tape-up">
-            <path
-              className="c"
-              d="M610.49,169.71H247.3c-33.56,0-60.76,27.59-60.76,61.61s27.2,61.62,60.76,61.62H610.49c33.56,0,60.76-27.58,60.76-61.62S644.05,169.71,610.49,169.71ZM247.3,279c-26,0-47-21.34-47-47.68s21.05-47.67,47-47.67,47,21.35,47,47.67S273.27,279,247.3,279Zm281-16.93H331.66V199.4H528.34ZM610.49,279c-26,0-47-21.34-47-47.68s21-47.67,47-47.67,47,21.35,47,47.67S636.46,279,610.49,279Z"
-            />
-          </svg>
-
-          <div className="tape-cover">
-            <img
-              src={songs[songIndex]?.img}
-              alt="cover"
-              style={{ opacity: `${tapeOnReel ? "0.9" : "0.2"}` }}
-            />
-          </div>
-
-          <div className="tape-down">
-            <div className="tape-down-label">
-              <p>COZY DESK</p>
-              <button
-                onClick={() => {
-                  setTapeOnReel(!tapeOnReel);
-                }}
-              >
-                '' Click ''
-              </button>
-            </div>
-
-            <div className="tape-down-circle left"></div>
-            <div className="tape-down-circle-sm "></div>
-            <div className="tape-down-square left"></div>
-            <div className="tape-down-circle right"></div>
-            <div className="tape-down-circle-sm  right"></div>
-            <div className="tape-down-square right"></div>
-          </div>
-        </div>
+        <RetroTape
+          rotate={rotate}
+          progress={progress}
+          coverImg={songs[songIndex]}
+        />
         <audio
           ref={control}
           src={songs[songIndex]?.src}
@@ -468,9 +401,12 @@ const Music = function ({
                   btnClassName="play-icon"
                 />
               )}
-              <button className={`button-style play-icon`} onClick={next}>
-                <img src="/images/icon_next.svg" alt="icon next" />
-              </button>
+              <SquareIconBtn
+                ClickSquareIconBtn={next}
+                imageSrc="/images/icon_next.svg"
+                imageAlt="icon next"
+                btnClassName="play-icon"
+              />
               <SquareIconBtn
                 ClickSquareIconBtn={toggleLoopOneSong}
                 imageSrc="/images/icon_loop.svg"
@@ -478,25 +414,7 @@ const Music = function ({
                 btnClassName={`play-icon ${loopOneSong ? "action-loop" : ""}`}
               />
             </div>
-            <div
-              className="progress-con"
-              onClick={(e) => {
-                if (
-                  !e.target.parentElement.classList.contains(
-                    "progress-time-label"
-                  ) &&
-                  progress.duration
-                ) {
-                  setProgress({
-                    ...progress,
-                    currentTime:
-                      (e.nativeEvent.offsetX / 360) * progress.duration,
-                  });
-                  control.current.currentTime =
-                    (e.nativeEvent.offsetX / 360) * progress.duration;
-                }
-              }}
-            >
+            <div className="progress-con" onClick={clickProgressBar}>
               <div
                 className="progress"
                 style={{
@@ -517,28 +435,10 @@ const Music = function ({
             />
 
             {musicListsShow ? (
-              <div className="toggle-playList-con">
-                <button
-                  className={`${
-                    currentPlaylistType === "default" ? "active" : ""
-                  }`}
-                  onClick={() => {
-                    setCurrentPlaylistType("default");
-                  }}
-                >
-                  Mixtape
-                </button>
-                <button
-                  className={`${
-                    currentPlaylistType === "user" ? "active" : ""
-                  }`}
-                  onClick={() => {
-                    setCurrentPlaylistType("user");
-                  }}
-                >
-                  My Playlist
-                </button>
-              </div>
+              <MusicListLabels
+                currentPlaylistType={currentPlaylistType}
+                setCurrentPlaylistType={setCurrentPlaylistType}
+              />
             ) : null}
             <div
               className="music-lists-container"
@@ -564,33 +464,12 @@ const Music = function ({
                 />
               </div>
               {currentPlaylistType === "user" && musicListsShow ? (
-                <form
-                  method="post"
-                  encType="multipart/form-data"
-                  className="add-music"
-                  onSubmit={(e) => {
-                    if (userState) {
-                      uploadFiles(e);
-                    }
-                  }}
-                >
-                  <input
-                    ref={fileRef}
-                    type="file"
-                    accept="audio/*"
-                    multiple
-                    disabled={userState ? false : true}
-                  ></input>
-                  {showLoading ? <Loading /> : null}
-
-                  <button
-                    type="submit"
-                    className="button-style"
-                    disabled={userState ? false : true}
-                  >
-                    Add songs
-                  </button>
-                </form>
+                <AddSongsForm
+                  userState={userState}
+                  uploadFiles={uploadFiles}
+                  fileRef={fileRef}
+                  showLoading={showLoading}
+                />
               ) : null}
             </div>
           </div>

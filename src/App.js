@@ -3,7 +3,7 @@ import MainBody from "./components/MainBody/MainBody";
 import { auth } from "./firebaseConfig";
 import React, { useState, useEffect } from "react";
 
-import { GETFirestore, SETFirestore } from "./api/firestore.api";
+import { GETfirestore, SETfirestore } from "./api/firestore.api";
 import "./App.css";
 function App() {
   const [userState, setUserstate] = useState("");
@@ -39,7 +39,7 @@ function App() {
     auth.onAuthStateChanged((user) => {
       if (user) {
         setUserstate(user.uid);
-        GETFirestore("windowPosition", user.uid)
+        GETfirestore("windowPosition", user.uid)
           .then((doc) => {
             if (doc.exists) {
               setShowWindow(doc.data().showWindow);
@@ -83,7 +83,7 @@ function App() {
         showWindow.Todo.x ||
         showWindow.SignWindow.x
       ) {
-        SETFirestore("windowPosition", userState, { showWindow: showWindow })
+        SETfirestore("windowPosition", userState, { showWindow: showWindow })
           .then(() => {
             // console.log("Document successfully updte!!!");
           })

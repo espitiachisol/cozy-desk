@@ -37,8 +37,3 @@ export const getFullDateString = () => {
     minute: "2-digit",
   })}`;
 };
-/*
-const disablePreDay = () => {
-  
-};
-*/
