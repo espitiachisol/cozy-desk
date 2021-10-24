@@ -1,13 +1,6 @@
 import React, { useState } from "react";
 import { auth } from "../../firebaseConfig";
-const Sign = ({
-  setUserstate,
-  SignInShow,
-  setShowWindow,
-  showWindow,
-  setSignInShow,
-  setNotification,
-}) => {
+const Sign = ({ setUserstate, SignInShow, setSignInShow, setNotification }) => {
   const [userMail, setUserMail] = useState("");
   const [userPassword, setUserPassword] = useState("");
 
@@ -17,21 +10,10 @@ const Sign = ({
       auth
         .signInWithEmailAndPassword(userMail, userPassword)
         .then((userCredential) => {
-          // Signed in
           const user = userCredential.user;
           // console.log("---response--logn-in", user.uid);
           if (SignInShow) {
             setUserstate(user.uid);
-            setShowWindow({
-              Tomato: { display: false, x: "", y: "" },
-              Music: { display: false, x: "", y: "" },
-              Todo: { display: false, x: "", y: "" },
-              SignWindow: {
-                display: true,
-                x: showWindow.SignWindow.x,
-                y: showWindow.SignWindow.y,
-              },
-            });
             setNotification({
               title: "Notification",
               content: "Logn in successfully",
@@ -53,16 +35,6 @@ const Sign = ({
           const user = userCredential.user;
           // console.log("---response--Sign-up", user.uid);
           setUserstate(user.uid);
-          setShowWindow({
-            Tomato: { display: false, x: "", y: "" },
-            Music: { display: false, x: "", y: "" },
-            Todo: { display: false, x: "", y: "" },
-            SignWindow: {
-              display: true,
-              x: showWindow.SignWindow.x,
-              y: showWindow.SignWindow.y,
-            },
-          });
           setNotification({
             title: "Notification",
             content: "Sign up successfully",
@@ -84,7 +56,6 @@ const Sign = ({
         {SignInShow ? "Yo! Login in here" : "hey you! Sign up now!"}
       </h3>
       <form onSubmit={userSubmit} className="sign-form">
-        {/* <label htmlFor="mail">Mail</label> */}
         <input
           className="sign-input"
           placeholder="mail"
@@ -94,8 +65,6 @@ const Sign = ({
             setUserMail(e.target.value);
           }}
         />
-
-        {/* <label htmlFor="password">password</label> */}
         <input
           className="sign-input"
           placeholder="password"

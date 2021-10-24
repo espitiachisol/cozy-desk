@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import CurrentTime from "./CurrentTime";
 import { auth } from "../../firebaseConfig";
 import RotateArrow from "../shared/RotateArrow/RotateArrow";
@@ -11,20 +11,13 @@ const Header = ({
   zIndex,
   setZIndex,
   setNotification,
-  showHeaderDropDown,
-  setShowHeaderDropDown,
 }) => {
+  const [showHeaderDropDown, setShowHeaderDropDown] = useState(false);
   const userSignout = () => {
     auth
       .signOut()
       .then(() => {
         setUserstate("");
-        setShowWindow({
-          SignWindow: { display: true, x: "", y: "" },
-          Tomato: { display: false, x: "", y: "" },
-          Music: { display: false, x: "", y: "" },
-          Todo: { display: false, x: "", y: "" },
-        });
         setNotification({
           title: "Notification",
           content: "Sign out successfully",
@@ -37,7 +30,6 @@ const Header = ({
         });
       });
   };
-
   return (
     <div className="header">
       <div className="header-content">
@@ -92,6 +84,102 @@ const Header = ({
         </div>
         <CurrentTime />
       </div>
+      {showHeaderDropDown ? (
+        <div className="header-drop-down-con">
+          <div
+            className="header-drop-down-each"
+            onClick={() => {
+              setShowWindow({
+                ...showWindow,
+                SignWindow: {
+                  display: true,
+                  x: showWindow.SignWindow.x,
+                  y: showWindow.SignWindow.y,
+                },
+              });
+              if (zIndex.curW !== "SignWindow") {
+                setZIndex({
+                  ...zIndex,
+                  SignWindow: zIndex.cur,
+                  cur: zIndex.cur + 1,
+                  curW: "SignWindow",
+                });
+              }
+            }}
+          >
+            <p>Sign</p>
+          </div>
+          <div
+            className="header-drop-down-each"
+            onClick={() => {
+              setShowWindow({
+                ...showWindow,
+                Tomato: {
+                  display: true,
+                  x: showWindow.Tomato.x,
+                  y: showWindow.Tomato.y,
+                },
+              });
+              if (zIndex.curW !== "Tomato") {
+                setZIndex({
+                  ...zIndex,
+                  Tomato: zIndex.cur,
+                  cur: zIndex.cur + 1,
+                  curW: "Tomato",
+                });
+              }
+            }}
+          >
+            <p>Tomato</p>
+          </div>
+          <div
+            className="header-drop-down-each"
+            onClick={() => {
+              setShowWindow({
+                ...showWindow,
+                Music: {
+                  display: true,
+                  x: showWindow.Music.x,
+                  y: showWindow.Music.y,
+                },
+              });
+              if (zIndex.curW !== "Music") {
+                setZIndex({
+                  ...zIndex,
+                  Music: zIndex.cur,
+                  cur: zIndex.cur + 1,
+                  curW: "Music",
+                });
+              }
+            }}
+          >
+            <p>Mixtape</p>
+          </div>
+          <div
+            className="header-drop-down-each"
+            onClick={() => {
+              setShowWindow({
+                ...showWindow,
+                Todo: {
+                  display: true,
+                  x: showWindow.Todo.x,
+                  y: showWindow.Todo.y,
+                },
+              });
+              if (zIndex.curW !== "Todo") {
+                setZIndex({
+                  ...zIndex,
+                  Todo: zIndex.cur,
+                  cur: zIndex.cur + 1,
+                  curW: "Todo",
+                });
+              }
+            }}
+          >
+            <p>Todo</p>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 };

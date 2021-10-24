@@ -2,7 +2,6 @@ import Header from "./components/header/Header";
 import MainBody from "./components/MainBody/MainBody";
 import { auth } from "./firebaseConfig";
 import React, { useState, useEffect } from "react";
-
 import { GETfirestore, SETfirestore } from "./api/firestore.api";
 import "./App.css";
 function App() {
@@ -17,7 +16,7 @@ function App() {
     cur: 2,
     curW: "",
   });
-  const [showHeaderDropDown, setShowHeaderDropDown] = useState(false);
+
   const [showWindow, setShowWindow] = useState({
     SignWindow: { display: true, x: "", y: "" },
     Tomato: { display: false, x: "", y: "" },
@@ -36,35 +35,30 @@ function App() {
     }
   }, []);
   useEffect(() => {
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        setUserstate(user.uid);
-        GETfirestore("windowPosition", user.uid)
-          .then((doc) => {
-            if (doc.exists) {
-              setShowWindow(doc.data().showWindow);
-            } else {
-              // console.log("No such document!");
-            }
-          })
-          .catch((error) => {
-            setNotification({
-              title: error?.code,
-              content: error?.message,
-            });
-            // console.log("Error getting document:", error);
+    if (userState) {
+      GETfirestore("windowPosition", userState)
+        .then((doc) => {
+          if (doc.exists) {
+            setShowWindow(doc.data().showWindow);
+          } else {
+            // console.log("No such document!");
+          }
+        })
+        .catch((error) => {
+          setNotification({
+            title: error?.code,
+            content: error?.message,
           });
-      } else {
-        // console.log("not sign in");
-        setShowWindow({
-          SignWindow: { display: true, x: "", y: "" },
-          Tomato: { display: false, x: "", y: "" },
-          Music: { display: false, x: "", y: "" },
-          Todo: { display: false, x: "", y: "" },
+          // console.log("Error getting document:", error);
         });
-      }
-    });
-    //測試 FIXME: not sure!
+    } else {
+      setShowWindow({
+        SignWindow: { display: true, x: "", y: "" },
+        Tomato: { display: false, x: "", y: "" },
+        Music: { display: false, x: "", y: "" },
+        Todo: { display: false, x: "", y: "" },
+      });
+    }
     return () => {
       setShowWindow({
         SignWindow: { display: true, x: "", y: "" },
@@ -73,16 +67,20 @@ function App() {
         Todo: { display: false, x: "", y: "" },
       });
     };
+  }, [userState]);
+
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUserstate(user.uid);
+      }
+    });
   }, []);
 
   useEffect(() => {
     if (userState) {
-      if (
-        showWindow.Tomato.x ||
-        showWindow.Music.x ||
-        showWindow.Todo.x ||
-        showWindow.SignWindow.x
-      ) {
+      const { Tomato, Music, Todo, SignWindow } = showWindow;
+      if (Tomato.x || Music.x || Todo.x || SignWindow.x) {
         SETfirestore("windowPosition", userState, { showWindow: showWindow })
           .then(() => {
             // console.log("Document successfully updte!!!");
@@ -108,8 +106,6 @@ function App() {
         setZIndex={setZIndex}
         zIndex={zIndex}
         setNotification={setNotification}
-        showHeaderDropDown={showHeaderDropDown}
-        setShowHeaderDropDown={setShowHeaderDropDown}
       />
       <MainBody
         userState={userState}
@@ -120,8 +116,6 @@ function App() {
         zIndex={zIndex}
         notification={notification}
         setNotification={setNotification}
-        setShowHeaderDropDown={setShowHeaderDropDown}
-        showHeaderDropDown={showHeaderDropDown}
       />
     </>
   );

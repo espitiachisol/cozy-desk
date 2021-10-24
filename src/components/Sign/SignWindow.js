@@ -92,8 +92,6 @@ const SignWindow = ({
                 userState={userState}
                 setUserstate={setUserstate}
                 SignInShow={SignInShow}
-                setShowWindow={setShowWindow}
-                showWindow={showWindow}
                 setSignInShow={setSignInShow}
                 setNotification={setNotification}
               />
