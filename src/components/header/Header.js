@@ -1,8 +1,7 @@
-import React, { useState } from "react";
-import Day from "./Day";
+import React from "react";
+import CurrentTime from "./CurrentTime";
 import { auth } from "../../firebaseConfig";
 import RotateArrow from "../shared/RotateArrow/RotateArrow";
-
 import "./Header.css";
 
 const Header = ({
@@ -19,7 +18,6 @@ const Header = ({
     auth
       .signOut()
       .then(() => {
-        // console.log("Sign-out successful.");
         setUserstate("");
         setShowWindow({
           SignWindow: { display: true, x: "", y: "" },
@@ -92,7 +90,7 @@ const Header = ({
             </button>
           )}
         </div>
-        <Day />
+        <CurrentTime />
       </div>
     </div>
   );

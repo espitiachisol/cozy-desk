@@ -7,14 +7,8 @@ import { setting, target } from "./tomato-data";
 import { firestore } from "../../firebaseConfig";
 import Alert from "../shared/Alert/Alert";
 import SettingBar from "../shared/SettingBar/SettingBar";
+import { getMinuteSecondString } from "../../utils/helpers/time.helper";
 
-const calcDisplayTime = (time) => {
-  let sec = Math.floor(time % 60);
-  sec = sec < 10 ? "0" + sec : sec;
-  let min = Math.floor(time / 60);
-  min = min < 10 ? "0" + min : min;
-  return `${min}:${sec}`;
-};
 const calcDeg = (sessionSelected, targetSelected, timeLeft, progress) => {
   let thisDeg =
     (360 * (sessionSelected * 60 - timeLeft)) /
@@ -39,6 +33,7 @@ const Tomato = ({
 
   const playSessionsoundEffect = useRef(null);
   const playBreaksoundEffect = useRef(null);
+  // const playMuteSoundEffect = useRef(null);
   const [intervalId, setIntervalId] = useState(null);
   const [deg, setDeg] = useState(0);
   const [progress, setProgress] = useState(0);
@@ -50,10 +45,6 @@ const Tomato = ({
   const [startPositon, setStartPositon] = useState({});
   //
   const [showAlert, setShowAlert] = useState(false);
-  const [changeLengthAttention, setChangeLengthAttention] = useState({
-    session: false,
-    break: false,
-  });
   const curWindow = useCallback((node) => {
     if (node !== null) {
       const response = node.getBoundingClientRect();
@@ -116,6 +107,7 @@ const Tomato = ({
       clearInterval(intervalId);
       setIntervalId(null);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userState, setNotification]);
 
   useEffect(() => {
@@ -182,11 +174,14 @@ const Tomato = ({
     saveData();
     if (isStarted) {
       clearInterval(intervalId);
+      // playMuteSoundEffect.current.pause();
       setIntervalId(null);
     } else {
       const newIntervalId = setInterval(() => {
         setTimeLeft((pretimer) => pretimer - 1);
       }, 1000);
+      // playMuteSoundEffect.current.volume = 0.5;
+      // playMuteSoundEffect.current.play();
       setIntervalId(newIntervalId);
     }
   };
@@ -200,32 +195,32 @@ const Tomato = ({
     }
     setShowAlert(false);
   };
-  useEffect(() => {
-    setChangeLengthAttention({
-      break: false,
-      session: false,
-    });
-  }, [sessionSelected, breakSelected, currentSessionType, more]);
 
-  const witchAttentionToShow = (e) => {
-    if (e.target.options.length === 9) {
-      if (currentSessionType === "Session") {
-        setChangeLengthAttention({
-          ...changeLengthAttention,
-          session: true,
-        });
+  const witchAttentionToShow = useCallback(
+    (e) => {
+      if (e.target.options.length === 9) {
+        if (currentSessionType === "Session") {
+          setNotification({
+            title: "Attention!",
+            content:
+              "You are currently in the focus time. If you change the session length, your current time will be reset. You can either reset it or wait till the break time.",
+          });
+        }
       }
-    }
-    if (e.target.options.length === 4) {
-      if (currentSessionType === "Break") {
-        setChangeLengthAttention({
-          ...changeLengthAttention,
-          break: true,
-        });
+      if (e.target.options.length === 4) {
+        if (currentSessionType === "Break") {
+          setNotification({
+            title: "Attention!",
+            content:
+              "You are currently in the break time. If you change the break length, your current time will be reset. You can either reset it or wait till the focus time.",
+          });
+        }
       }
-    }
-  };
+    },
+    [currentSessionType, setNotification]
+  );
   const resetAll = () => {
+    // playMuteSoundEffect.current.load();
     playSessionsoundEffect.current.load();
     playBreaksoundEffect.current.load();
     clearInterval(intervalId);
@@ -309,7 +304,9 @@ const Tomato = ({
         </div>
         <div className="content-container">
           <div className="tomato-time">
-            <h4 className="tomato-counter">{calcDisplayTime(timeLeft)}</h4>
+            <h4 className="tomato-counter">
+              {getMinuteSecondString(timeLeft)}
+            </h4>
 
             <button
               className="tomato-play-icon button-style"
@@ -353,14 +350,6 @@ const Tomato = ({
                     Selected={sessionSelected}
                     witchAttentionToShow={witchAttentionToShow}
                   />
-                  {changeLengthAttention.session ? (
-                    <p className="change-length-attention">
-                      <span>Attention!</span> You are currently in the focus
-                      time. If you change the session length, your current time
-                      will be reset. You can either reset it or wait till the
-                      break time.
-                    </p>
-                  ) : null}
                   <p className="dropdown-label">Break length</p>
                   <Dropdown
                     options={setting.break}
@@ -368,14 +357,6 @@ const Tomato = ({
                     Selected={breakSelected}
                     witchAttentionToShow={witchAttentionToShow}
                   />
-                  {changeLengthAttention.break ? (
-                    <p className="change-length-attention">
-                      <span>Attention!</span> You are currently in the break
-                      time. If you change the break length, your current time
-                      will be reset. You can either reset it or wait till the
-                      focus time.
-                    </p>
-                  ) : null}
                   <button
                     className="restart button-style"
                     onClick={() => {
@@ -390,6 +371,11 @@ const Tomato = ({
           </div>
           <audio ref={playBreaksoundEffect} src="/music/Break.mp3"></audio>
           <audio ref={playSessionsoundEffect} src="/music/Work.mp3"></audio>
+          {/* <audio
+            ref={playMuteSoundEffect}
+            src="/music/mute_sound.ogg"
+            loop={true}
+          ></audio> */}
         </div>
         {showAlert === "RESETALL" ? (
           <Alert

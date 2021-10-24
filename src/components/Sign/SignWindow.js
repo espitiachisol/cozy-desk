@@ -12,8 +12,8 @@ const SignWindow = ({
   showWindow,
   zIndex,
   setZIndex,
-  quote,
   setNotification,
+  quote,
 }) => {
   const [size, setSize] = useState({});
   const [startPositon, setStartPositon] = useState({});
@@ -40,6 +40,7 @@ const SignWindow = ({
     defaultY: parseInt(showWindow.SignWindow.y, 10) || 0,
   };
   const [position, mouseDown] = useDrag(startingPosition);
+
   return (
     <div
       className="window sign"

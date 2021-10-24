@@ -10,6 +10,7 @@ const NoDataMessage = ({ userState, userMessage, guestMessage }) => {
         </div>
       ) : (
         <div className="guest-no-data-message">
+          <p>{guestMessage.title}</p>
           <p>{guestMessage.content}</p>
         </div>
       )}

@@ -1,6 +1,6 @@
 import React from "react";
 import "./InputRadio.css";
-const InputRadio = ({ title, setPriority, priority }) => {
+const InputRadio = ({ setPriority }) => {
   return (
     <div
       className="input-radio-con"
@@ -8,7 +8,7 @@ const InputRadio = ({ title, setPriority, priority }) => {
         setPriority(e.target.value);
       }}
     >
-      <p>{title}</p>
+      <p>Priority</p>
       <input type="radio" name="priority-options" value="High" id="High" />
       <label htmlFor="High">High</label>
       <input type="radio" name="priority-options" value="Medium" id="Medium" />
