@@ -11,8 +11,8 @@ import MusicListLabels from "./MusicItems/MusicListLabels";
 import AddSongsForm from "./MusicItems/AddSongsForm";
 //Helpers
 import { defaultSongs } from "../../utils/constants/defaultSongs";
-import { getHourMinuteSecondString } from "../../utils/helpers/time.helper";
-import { randomNum } from "../../utils/helpers/random.helper";
+import { getHourMinuteSecondString } from "../../utils/helpers/time";
+import { randomNum } from "../../utils/helpers/random";
 //api
 import { putStorage, getUrlStorage, deleteStorage } from "../../api/storage";
 import { getFirestore, setFirestore } from "../../api/firestore";

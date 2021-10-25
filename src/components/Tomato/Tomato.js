@@ -7,7 +7,7 @@ import { setting, target } from "./tomato-data";
 import { firestore } from "../../firebaseConfig";
 import Alert from "../shared/Alert/Alert";
 import SettingBar from "../shared/SettingBar/SettingBar";
-import { getMinuteSecondString } from "../../utils/helpers/time.helper";
+import { getMinuteSecondString } from "../../utils/helpers/time";
 
 const calcDeg = (sessionSelected, targetSelected, timeLeft, progress) => {
   let thisDeg =

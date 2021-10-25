@@ -7,13 +7,13 @@ import TodoLabels from "./TodoItems/TodoLabels";
 import Alert from "../shared/Alert/Alert";
 import "./Todo.css";
 import NoDataMessage from "../shared/NoDataMessage/NoDataMessage";
-import { getYearMonthDayString } from "../../utils/helpers/time.helper";
+import { getYearMonthDayString } from "../../utils/helpers/time";
 import {
   getFirestore,
   setFirestore,
   deleteFirestore,
 } from "../../api/firestore";
-const converPriorityToNumber = (item) => {
+const convertPriorityToNumber = (item) => {
   switch (item) {
     case "High":
       return 3;
@@ -39,9 +39,9 @@ const Todo = function ({
   const [deadLine, setDeadLine] = useState("");
   const [priority, setPriority] = useState(null);
   const [listsToShow, setListsToShow] = useState("All");
-  const [todolistAll, setTodolistAll] = useState([]);
-  const [todolistTodo, setTodolistTodo] = useState([]);
-  const [todolistDone, setTodolistDone] = useState([]);
+  const [todoListAll, setTodoListAll] = useState([]);
+  const [todoListTodo, setTodoListTodo] = useState([]);
+  const [todoListDone, setTodoListDone] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
 
   const curWindow = useCallback((node) => {
@@ -67,7 +67,7 @@ const Todo = function ({
       getFirestore("todoLists", userState)
         .then((doc) => {
           if (doc.exists) {
-            setTodolistAll(doc.data().todolist);
+            setTodoListAll(doc.data().todoList);
           }
         })
         .catch((error) => {
@@ -79,7 +79,7 @@ const Todo = function ({
         });
     }
     return () => {
-      setTodolistAll([]);
+      setTodoListAll([]);
     };
   }, [userState, setNotification]);
 
@@ -96,10 +96,10 @@ const Todo = function ({
       };
       if (userState) {
         setFirestore("todoLists", userState, {
-          todolist: [...todolistAll, data],
+          todoList: [...todoListAll, data],
         })
           .then(() => {
-            setTodolistAll([...todolistAll, data]);
+            setTodoListAll([...todoListAll, data]);
           })
           .catch((error) => {
             setNotification({
@@ -110,7 +110,7 @@ const Todo = function ({
           });
       } else {
         //使用者沒有登入的狀況
-        setTodolistAll([...todolistAll, data]);
+        setTodoListAll([...todoListAll, data]);
       }
       //clear form input
       e.target[0].value = ""; //text
@@ -129,13 +129,13 @@ const Todo = function ({
       });
     }
   };
-  const deleteList = (listid) => {
-    let filteredList = todolistAll.filter((each) => each.id !== listid);
+  const deleteList = (listId) => {
+    let filteredList = todoListAll.filter((each) => each.id !== listId);
     if (userState) {
       //登入狀態
-      setFirestore("todoLists", userState, { todolist: filteredList })
+      setFirestore("todoLists", userState, { todoList: filteredList })
         .then(() => {
-          setTodolistAll(filteredList);
+          setTodoListAll(filteredList);
         })
         .catch((error) => {
           setNotification({
@@ -146,20 +146,20 @@ const Todo = function ({
         });
     } else {
       //未登入裝態
-      setTodolistAll(filteredList);
+      setTodoListAll(filteredList);
     }
   };
-  const checkComplete = (listid) => {
-    let newCompletedList = todolistAll.map((each) => {
-      if (each.id === listid) {
+  const checkComplete = (listId) => {
+    let newCompletedList = todoListAll.map((each) => {
+      if (each.id === listId) {
         each.complete = !each.complete;
       }
       return each;
     });
     if (userState) {
-      setFirestore("todoLists", userState, { todolist: newCompletedList })
+      setFirestore("todoLists", userState, { todoList: newCompletedList })
         .then(() => {
-          setTodolistAll(newCompletedList);
+          setTodoListAll(newCompletedList);
         })
         .catch((error) => {
           setNotification({
@@ -170,7 +170,7 @@ const Todo = function ({
         });
     } else {
       //使用者沒有登入的狀況
-      setTodolistAll(newCompletedList);
+      setTodoListAll(newCompletedList);
     }
   };
 
@@ -178,7 +178,7 @@ const Todo = function ({
     if (userState) {
       deleteFirestore("todoLists", userState)
         .then(() => {
-          setTodolistAll([]);
+          setTodoListAll([]);
         })
         .catch((error) => {
           setNotification({
@@ -188,16 +188,16 @@ const Todo = function ({
           // console.error("Error removing document: ", error);
         });
     } else {
-      setTodolistAll([]);
+      setTodoListAll([]);
     }
     setShowAlert(false);
   };
   const clearAllDone = () => {
-    let filteredAllDone = todolistAll.filter((each) => each.complete !== true);
+    let filteredAllDone = todoListAll.filter((each) => each.complete !== true);
     if (userState) {
-      setFirestore("todoLists", userState, { todolist: filteredAllDone })
+      setFirestore("todoLists", userState, { todoList: filteredAllDone })
         .then(() => {
-          setTodolistAll(filteredAllDone);
+          setTodoListAll(filteredAllDone);
         })
         .catch((error) => {
           setNotification({
@@ -208,18 +208,18 @@ const Todo = function ({
         });
     } else {
       //使用者沒有登入的狀況
-      setTodolistAll(filteredAllDone);
+      setTodoListAll(filteredAllDone);
     }
     setShowAlert(false);
   };
 
   useEffect(() => {
-    setTodolistTodo(todolistAll.filter((each) => !each.complete));
-    setTodolistDone(todolistAll.filter((each) => each.complete));
-  }, [todolistAll]);
+    setTodoListTodo(todoListAll.filter((each) => !each.complete));
+    setTodoListDone(todoListAll.filter((each) => each.complete));
+  }, [todoListAll]);
 
   const sortDeadline = (label) => {
-    const deadlineArray = [...todolistAll];
+    const deadlineArray = [...todoListAll];
     let firstReturn, secondReturn;
     if (label === "Increase") {
       firstReturn = -1;
@@ -240,10 +240,10 @@ const Todo = function ({
       }
       return 0;
     });
-    setTodolistAll(deadlineArray);
+    setTodoListAll(deadlineArray);
   };
   const sortPriority = (label) => {
-    const priorityArray = [...todolistAll];
+    const priorityArray = [...todoListAll];
     let firstReturn, secondReturn;
     if (label === "Increase") {
       firstReturn = -1;
@@ -254,8 +254,8 @@ const Todo = function ({
       secondReturn = -1;
     }
     priorityArray.sort((listFir, listSec) => {
-      listFir = converPriorityToNumber(listFir.priority);
-      listSec = converPriorityToNumber(listSec.priority);
+      listFir = convertPriorityToNumber(listFir.priority);
+      listSec = convertPriorityToNumber(listSec.priority);
       if (listFir < listSec) {
         return firstReturn;
       }
@@ -264,7 +264,7 @@ const Todo = function ({
       }
       return 0;
     });
-    setTodolistAll(priorityArray);
+    setTodoListAll(priorityArray);
   };
   const witchLabelToShow = (label) => {
     setListsToShow(label);
@@ -272,11 +272,11 @@ const Todo = function ({
   const witchListToShow = (list) => {
     switch (list) {
       case "All":
-        return todolistAll;
+        return todoListAll;
       case "Todo":
-        return todolistTodo;
+        return todoListTodo;
       case "Done":
-        return todolistDone;
+        return todoListDone;
       default:
     }
   };
@@ -319,9 +319,9 @@ const Todo = function ({
               listsToShow={listsToShow}
               witchLabelToShow={witchLabelToShow}
               labelLength={{
-                labelAllLength: todolistAll.length,
-                labelTodoLength: todolistTodo.length,
-                labelDoneLength: todolistDone.length,
+                labelAllLength: todoListAll.length,
+                labelTodoLength: todoListTodo.length,
+                labelDoneLength: todoListDone.length,
               }}
             />
             <div className={`todo-label-line ${listsToShow}`}></div>
@@ -332,7 +332,7 @@ const Todo = function ({
                 deleteList={deleteList}
                 priority={priority}
               />
-              {listsToShow === "All" && todolistAll.length === 0 ? (
+              {listsToShow === "All" && todoListAll.length === 0 ? (
                 <NoDataMessage
                   userState={userState}
                   userMessage={{
@@ -348,7 +348,7 @@ const Todo = function ({
                 />
               ) : null}
 
-              {listsToShow === "Done" && todolistDone.length === 0 ? (
+              {listsToShow === "Done" && todoListDone.length === 0 ? (
                 <NoDataMessage
                   userState={userState}
                   userMessage={{
@@ -422,8 +422,8 @@ const Todo = function ({
             </button>
           </div>
           <div className="todo-progress-container">
-            <p className="todo-progresse-text">
-              {Math.floor((todolistDone.length * 100) / todolistAll.length) ||
+            <p className="todo-progress-text">
+              {Math.floor((todoListDone.length * 100) / todoListAll.length) ||
                 0}
               %
             </p>
@@ -432,7 +432,7 @@ const Todo = function ({
               style={{
                 width: `${
                   Math.floor(
-                    (todolistDone.length * 100) / todolistAll.length
+                    (todoListDone.length * 100) / todoListAll.length
                   ) || 0
                 }%`,
               }}

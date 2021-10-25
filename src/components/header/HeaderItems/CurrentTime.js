@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getFullDateString } from "../../utils/helpers/time.helper";
+import { getFullDateString } from "../../../utils/helpers/time";
 const Day = () => {
   const [todayDate, setTodayDate] = useState(getFullDateString());
   useEffect(() => {

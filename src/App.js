@@ -79,23 +79,26 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (userState) {
-      if (
-        showWindow.tomato.x ||
-        showWindow.music.x ||
-        showWindow.todo.x ||
-        showWindow.signWindow.x
-      ) {
-        setFirestore("windowPosition", userState, { showWindow: showWindow })
-          .then(() => {})
-          .catch((error) => {
-            setNotification({
-              title: error?.code,
-              content: error?.message,
-            });
-            console.error("Error writing document: ", error);
+    if (!userState) return;
+    if (
+      showWindow.tomato.x ||
+      showWindow.music.x ||
+      showWindow.todo.x ||
+      showWindow.signWindow.x
+    ) {
+      (async () => {
+        try {
+          await setFirestore("windowPosition", userState, {
+            showWindow: showWindow,
           });
-      }
+        } catch (error) {
+          setNotification({
+            title: error?.code,
+            content: error?.message,
+          });
+          console.error("Error writing document: ", error);
+        }
+      })();
     }
   }, [userState, showWindow]);
 

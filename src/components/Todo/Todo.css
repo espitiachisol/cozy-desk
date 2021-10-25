@@ -127,7 +127,7 @@ button.icon-plus {
   transition: all 0.8s ease-in;
   background-color: rgb(27, 101, 149);
 }
-.todo-progresse-text {
+.todo-progress-text {
   color: white;
   font-size: 14px;
   display: inline-block;

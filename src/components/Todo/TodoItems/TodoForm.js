@@ -1,6 +1,6 @@
 import React from "react";
 import InputRadio from "../InputRadio";
-import { getYearMonthDayString } from "../../../utils/helpers/time.helper";
+import { getYearMonthDayString } from "../../../utils/helpers/time";
 const TodoForm = ({ addTodo, setText, setDeadLine, setPriority, priority }) => {
   return (
     <>
