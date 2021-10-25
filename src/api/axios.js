@@ -1,6 +1,6 @@
 import axios from "axios";
 import config from "../config";
-export const returnQuote = function () {
+export const returnRandomQuote = function () {
   return axios.request({
     method: "GET",
     url: "https://quotes15.p.rapidapi.com/quotes/random/",

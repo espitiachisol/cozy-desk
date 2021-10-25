@@ -13,25 +13,25 @@ const WindowHeader = ({
       case "Todo":
         result = setShowWindow({
           ...showWindow,
-          Todo: { display: false, x: position.x, y: position.y },
+          todo: { display: false, x: position.x, y: position.y },
         });
         break;
       case "Mixtape":
         result = setShowWindow({
           ...showWindow,
-          Music: { display: false, x: position.x, y: position.y },
+          music: { display: false, x: position.x, y: position.y },
         });
         break;
       case "Tomato":
         result = setShowWindow({
           ...showWindow,
-          Tomato: { display: false, x: position.x, y: position.y },
+          tomato: { display: false, x: position.x, y: position.y },
         });
         break;
       case "CozyDesk":
         result = setShowWindow({
           ...showWindow,
-          SignWindow: { display: false, x: position.x, y: position.y },
+          signWindow: { display: false, x: position.x, y: position.y },
         });
         break;
       default:
@@ -45,25 +45,25 @@ const WindowHeader = ({
       case "Todo":
         result = setShowWindow({
           ...showWindow,
-          Todo: { display: true, x: position.x, y: position.y },
+          todo: { display: true, x: position.x, y: position.y },
         });
         break;
       case "Mixtape":
         result = setShowWindow({
           ...showWindow,
-          Music: { display: true, x: position.x, y: position.y },
+          music: { display: true, x: position.x, y: position.y },
         });
         break;
       case "Tomato":
         result = setShowWindow({
           ...showWindow,
-          Tomato: { display: true, x: position.x, y: position.y },
+          tomato: { display: true, x: position.x, y: position.y },
         });
         break;
       case "CozyDesk":
         result = setShowWindow({
           ...showWindow,
-          SignWindow: { display: true, x: position.x, y: position.y },
+          signWindow: { display: true, x: position.x, y: position.y },
         });
         break;
       default:

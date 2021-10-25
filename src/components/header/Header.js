@@ -5,7 +5,7 @@ import RotateArrow from "../shared/RotateArrow/RotateArrow";
 import "./Header.css";
 
 const Header = ({
-  setUserstate,
+  setUserState,
   setShowWindow,
   showWindow,
   zIndex,
@@ -17,7 +17,7 @@ const Header = ({
     auth
       .signOut()
       .then(() => {
-        setUserstate("");
+        setUserState("");
         setNotification({
           title: "Notification",
           content: "Sign out successfully",
@@ -62,18 +62,18 @@ const Header = ({
               onClick={() => {
                 setShowWindow({
                   ...showWindow,
-                  SignWindow: {
+                  signWindow: {
                     display: true,
-                    x: showWindow.SignWindow.x,
-                    y: showWindow.SignWindow.y,
+                    x: showWindow.signWindow.x,
+                    y: showWindow.signWindow.y,
                   },
                 });
-                if (zIndex.curW !== "SignWindow") {
+                if (zIndex.curW !== "signWindow") {
                   setZIndex({
                     ...zIndex,
-                    SignWindow: zIndex.cur,
+                    signWindow: zIndex.cur,
                     cur: zIndex.cur + 1,
-                    curW: "SignWindow",
+                    curW: "signWindow",
                   });
                 }
               }}
@@ -91,18 +91,18 @@ const Header = ({
             onClick={() => {
               setShowWindow({
                 ...showWindow,
-                SignWindow: {
+                signWindow: {
                   display: true,
-                  x: showWindow.SignWindow.x,
-                  y: showWindow.SignWindow.y,
+                  x: showWindow.signWindow.x,
+                  y: showWindow.signWindow.y,
                 },
               });
-              if (zIndex.curW !== "SignWindow") {
+              if (zIndex.curW !== "signWindow") {
                 setZIndex({
                   ...zIndex,
-                  SignWindow: zIndex.cur,
+                  signWindow: zIndex.cur,
                   cur: zIndex.cur + 1,
-                  curW: "SignWindow",
+                  curW: "signWindow",
                 });
               }
             }}
@@ -114,18 +114,18 @@ const Header = ({
             onClick={() => {
               setShowWindow({
                 ...showWindow,
-                Tomato: {
+                tomato: {
                   display: true,
-                  x: showWindow.Tomato.x,
-                  y: showWindow.Tomato.y,
+                  x: showWindow.tomato.x,
+                  y: showWindow.tomato.y,
                 },
               });
-              if (zIndex.curW !== "Tomato") {
+              if (zIndex.curW !== "tomato") {
                 setZIndex({
                   ...zIndex,
-                  Tomato: zIndex.cur,
+                  tomato: zIndex.cur,
                   cur: zIndex.cur + 1,
-                  curW: "Tomato",
+                  curW: "tomato",
                 });
               }
             }}
@@ -137,18 +137,18 @@ const Header = ({
             onClick={() => {
               setShowWindow({
                 ...showWindow,
-                Music: {
+                music: {
                   display: true,
-                  x: showWindow.Music.x,
-                  y: showWindow.Music.y,
+                  x: showWindow.music.x,
+                  y: showWindow.music.y,
                 },
               });
-              if (zIndex.curW !== "Music") {
+              if (zIndex.curW !== "music") {
                 setZIndex({
                   ...zIndex,
-                  Music: zIndex.cur,
+                  music: zIndex.cur,
                   cur: zIndex.cur + 1,
-                  curW: "Music",
+                  curW: "music",
                 });
               }
             }}
@@ -160,18 +160,18 @@ const Header = ({
             onClick={() => {
               setShowWindow({
                 ...showWindow,
-                Todo: {
+                todo: {
                   display: true,
-                  x: showWindow.Todo.x,
-                  y: showWindow.Todo.y,
+                  x: showWindow.todo.x,
+                  y: showWindow.todo.y,
                 },
               });
-              if (zIndex.curW !== "Todo") {
+              if (zIndex.curW !== "todo") {
                 setZIndex({
                   ...zIndex,
-                  Todo: zIndex.cur,
+                  todo: zIndex.cur,
                   cur: zIndex.cur + 1,
-                  curW: "Todo",
+                  curW: "todo",
                 });
               }
             }}

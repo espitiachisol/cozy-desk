@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { returnQuote } from "../../api/axios.api";
+import { returnRandomQuote } from "../../api/axios";
 //Components
 import Music from "../Music/Music";
 import Tomato from "../Tomato/Tomato";
@@ -12,7 +12,7 @@ import "./MainBody.css";
 
 const MainBody = ({
   userState,
-  setUserstate,
+  setUserState,
   setShowWindow,
   showWindow,
   zIndex,
@@ -21,18 +21,16 @@ const MainBody = ({
   notification,
 }) => {
   const [quote, setQuote] = useState({});
-  useEffect(() => {
-    const getQuote = async () => {
-      const { data } = await returnQuote();
-      if (data?.content.length > 250) {
-        getQuote();
-      } else {
-        setQuote({ content: data.content, author: data.originator.name });
-      }
-    };
-    getQuote();
-  }, []);
-
+  const { signWindow, music, tomato, todo } = showWindow;
+  const getQuote = async () => {
+    const { data } = await returnRandomQuote();
+    if (data?.content.length > 230) {
+      getQuote();
+    } else {
+      setQuote({ content: data.content, author: data.originator.name });
+    }
+  };
+  useEffect(getQuote, []);
   return (
     <div
       className="main-body"
@@ -40,10 +38,10 @@ const MainBody = ({
         backgroundImage: " url('/images/bg-img.png')",
       }}
     >
-      {showWindow.SignWindow.display ? (
+      {signWindow.display ? (
         <SignWindow
           userState={userState}
-          setUserstate={setUserstate}
+          setUserState={setUserState}
           showWindow={showWindow}
           setShowWindow={setShowWindow}
           setZIndex={setZIndex}
@@ -52,7 +50,7 @@ const MainBody = ({
           setNotification={setNotification}
         />
       ) : null}
-      {showWindow.Music.display ? (
+      {music.display ? (
         <Music
           userState={userState}
           showWindow={showWindow}
@@ -62,7 +60,7 @@ const MainBody = ({
           setNotification={setNotification}
         />
       ) : null}
-      {showWindow.Tomato.display ? (
+      {tomato.display ? (
         <Tomato
           userState={userState}
           showWindow={showWindow}
@@ -72,7 +70,7 @@ const MainBody = ({
           setNotification={setNotification}
         />
       ) : null}
-      {showWindow.Todo.display ? (
+      {todo.display ? (
         <Todo
           userState={userState}
           showWindow={showWindow}

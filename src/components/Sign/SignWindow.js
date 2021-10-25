@@ -7,7 +7,7 @@ import Quote from "../Quote/Quote";
 
 const SignWindow = ({
   userState,
-  setUserstate,
+  setUserState,
   setShowWindow,
   showWindow,
   zIndex,
@@ -16,43 +16,41 @@ const SignWindow = ({
   quote,
 }) => {
   const [size, setSize] = useState({});
-  const [startPositon, setStartPositon] = useState({});
+  const [startPosition, setStartPosition] = useState({});
   const [SignInShow, setSignInShow] = useState(true);
   const { innerWidth } = window;
 
   const curWindow = useCallback((node) => {
-    if (node !== null) {
-      const response = node.getBoundingClientRect();
-      setStartPositon({
-        x: response.x,
-        y: response.y - 32,
-      });
-      setSize({ width: response.width, height: response.height });
-    }
+    if (node === null) return;
+    const response = node.getBoundingClientRect();
+    setStartPosition({
+      x: response.x,
+      y: response.y - 32,
+    });
+    setSize({ width: response.width, height: response.height });
   }, []);
 
-  const startingPosition = {
-    x: startPositon.x,
-    y: startPositon.y,
+  const [position, mouseDown] = useDrag({
+    x: startPosition.x,
+    y: startPosition.y,
     width: size.width,
     height: size.height,
-    defaultX: parseInt(showWindow.SignWindow.x, 10) || innerWidth / 2 - 350,
-    defaultY: parseInt(showWindow.SignWindow.y, 10) || 0,
-  };
-  const [position, mouseDown] = useDrag(startingPosition);
+    defaultX: parseInt(showWindow.signWindow.x, 10) || innerWidth / 2 - 350,
+    defaultY: parseInt(showWindow.signWindow.y, 10) || 0,
+  });
 
   return (
     <div
       className="window sign"
       ref={curWindow}
-      style={{ top: position.y, left: position.x, zIndex: zIndex.SignWindow }}
+      style={{ top: position.y, left: position.x, zIndex: zIndex.signWindow }}
       onMouseDown={() => {
-        if (zIndex.curW !== "SignWindow") {
+        if (zIndex.curW !== "signWindow") {
           setZIndex({
             ...zIndex,
-            SignWindow: zIndex.cur,
+            signWindow: zIndex.cur,
             cur: zIndex.cur + 1,
-            curW: "SignWindow",
+            curW: "signWindow",
           });
         }
       }}
@@ -90,7 +88,7 @@ const SignWindow = ({
             {!userState ? (
               <Sign
                 userState={userState}
-                setUserstate={setUserstate}
+                setUserState={setUserState}
                 SignInShow={SignInShow}
                 setSignInShow={setSignInShow}
                 setNotification={setNotification}

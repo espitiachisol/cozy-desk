@@ -2,7 +2,6 @@ import React, { useState, useCallback, useRef, useEffect } from "react";
 import useDrag from "../hooks/useDrag";
 import WindowHeader from "../shared/WindowHeader/WindowHeader";
 import "./Music.css";
-import { firestore } from "../../firebaseConfig";
 //Components
 import PlayList from "./PlayList";
 import SettingBar from "../shared/SettingBar/SettingBar";
@@ -15,16 +14,8 @@ import { defaultSongs } from "../../utils/constants/defaultSongs";
 import { getHourMinuteSecondString } from "../../utils/helpers/time.helper";
 import { randomNum } from "../../utils/helpers/random.helper";
 //api
-import {
-  PUTstorage,
-  GETurlstorage,
-  DELETEstorage,
-} from "../../api/storage.api";
-import {
-  GETfirestore,
-  SETfirestore,
-  DELETEfirestore,
-} from "../../api/firestore.api";
+import { putStorage, getUrlStorage, deleteStorage } from "../../api/storage";
+import { getFirestore, setFirestore } from "../../api/firestore";
 const Music = function ({
   setShowWindow,
   showWindow,
@@ -36,9 +27,9 @@ const Music = function ({
   const control = useRef(null);
   const fileRef = useRef(null);
   const [size, setSize] = useState({});
-  const [startPositon, setStartPositon] = useState({});
+  const [startPosition, setStartPosition] = useState({});
   const [songIndex, setSongIndex] = useState(0);
-  const [isplaying, setIsplaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [rotate, setRotate] = useState("");
   //如果duration設定為0,下面的運算(progress.currentTime * 1) / progress.duration} 會是NaN% 因為0/0= NaN 設定為1,0/1=0
   const [progress, setProgress] = useState({ currentTime: 0, duration: 1 });
@@ -52,12 +43,12 @@ const Music = function ({
   const [showLoading, setShowLoading] = useState(false);
 
   useEffect(() => {
-    if (isplaying && songs) {
-      setIsplaying(true);
+    if (isPlaying && songs) {
+      setIsPlaying(true);
       setRotate("play");
       control.current.play();
     }
-  }, [songIndex, isplaying, songs]);
+  }, [songIndex, isPlaying, songs]);
   //volume被調整後設定audio音量
   useEffect(() => {
     control.current.volume = volume;
@@ -65,7 +56,7 @@ const Music = function ({
   //確定使用者是登入的狀態，若是登入的狀態向firestore要使用者的歌單，放入SongFromData裡
   useEffect(() => {
     if (userState) {
-      GETfirestore("mixtape", userState)
+      getFirestore("mixtape", userState)
         .then((doc) => {
           if (doc.exists) {
             setSongFromData([...doc.data().mixtape]);
@@ -87,7 +78,7 @@ const Music = function ({
   //假如使用者新增新的音樂清單，再向firestore要一次新的資料，將新的資料放入SongFromData
   useEffect(() => {
     if (userAddLists && userState) {
-      GETfirestore("mixtape", userState)
+      getFirestore("mixtape", userState)
         .then((doc) => {
           if (doc.exists) {
             setSongFromData([...doc.data().mixtape]);
@@ -105,35 +96,32 @@ const Music = function ({
   }, [userAddLists, userState, setNotification]);
 
   const curWindow = useCallback((node) => {
-    if (node !== null) {
-      const response = node.getBoundingClientRect();
-      setStartPositon({
-        x: response.x,
-        y: response.y - 32,
-      });
-      setSize({ width: response.width, height: response.height });
-    }
+    if (node === null) return;
+    const response = node.getBoundingClientRect();
+    setStartPosition({
+      x: response.x,
+      y: response.y - 32,
+    });
+    setSize({ width: response.width, height: response.height });
   }, []);
 
-  let startingPosition = {
-    x: startPositon.x,
-    y: startPositon.y,
+  const [position, mouseDown] = useDrag({
+    x: startPosition.x,
+    y: startPosition.y,
     width: size.width,
     height: size.height,
-    defaultX: parseInt(showWindow.Music.x, 10) || 20,
-    defaultY: parseInt(showWindow.Music.y, 10) || 0,
-  };
-
-  const [position, mouseDown] = useDrag(startingPosition);
+    defaultX: parseInt(showWindow.music.x, 10) || 20,
+    defaultY: parseInt(showWindow.music.y, 10) || 0,
+  });
   //操作音樂播放
   const play = useCallback(() => {
     // control.current.load();
-    setIsplaying(true);
+    setIsPlaying(true);
     setRotate("play");
     control.current.play();
   }, []);
   const stop = useCallback(() => {
-    setIsplaying(false);
+    setIsPlaying(false);
     setRotate("");
     control.current.pause();
   }, []);
@@ -174,7 +162,6 @@ const Music = function ({
 
   const uploadFiles = (e) => {
     let array = [];
-    //把當前上傳的資料放到雲端storage和firestore
     e.preventDefault();
     const files = e.target[0].files;
     if (files.length + songFromData.length > 10) {
@@ -189,9 +176,9 @@ const Music = function ({
       Object.entries(files).forEach(([key, value]) => {
         //存入storage
         if (value.size < 10000000) {
-          PUTstorage(`${userState}/${value.name}`, value).then((snapshot) => {
+          putStorage(`${userState}/${value.name}`, value).then((snapshot) => {
             //取得storage
-            GETurlstorage(`${userState}/${value.name}`)
+            getUrlStorage(`${userState}/${value.name}`)
               .then((url) => {
                 let imgNum = randomNum(5, 9);
                 array.push({
@@ -202,7 +189,7 @@ const Music = function ({
                   icon: `/images/tape-icons-${imgNum}.png`,
                 });
                 //將取得的storage url 放入firestore
-                SETfirestore("mixtape", userState, {
+                setFirestore("mixtape", userState, {
                   mixtape: [...songFromData, ...array],
                 })
                   .then(() => {
@@ -246,37 +233,22 @@ const Music = function ({
     }
   };
 
-  const deletePlayList = (id) => {
-    //刪除storage資料
-    DELETEstorage(id)
-      .then(() => {
-        // console.log("Document successfully delete from storage");
-      })
-      .catch((error) => {
-        setNotification({
-          title: error?.code,
-          content: error?.message,
-        });
-        // console.error("Error Deleting document from storage: ", error);
+  const deletePlayList = async (id) => {
+    try {
+      await deleteStorage(id);
+      let filteredArray = songFromData.filter((song) => song.id !== id);
+      await setFirestore("mixtape", userState, {
+        mixtape: [...filteredArray],
       });
-    //更新firestore資料
-    let filteredArray = songFromData.filter((song) => song.id !== id);
-    SETfirestore("mixtape", userState, {
-      mixtape: [...filteredArray],
-    })
-      .then(() => {
-        //更新SongFromData
-        setUserAddLists(true);
-        filteredArray = [];
-        // console.log("Document successfully  delete from firestore !!!");
-      })
-      .catch((error) => {
-        setNotification({
-          title: error?.code,
-          content: error?.message,
-        });
-        console.error("Error writing document: ", error);
+      setUserAddLists(true);
+      filteredArray = [];
+    } catch (error) {
+      console.error("Error writing document: ", error);
+      setNotification({
+        title: error?.code,
+        content: error?.message,
       });
+    }
   };
   // 刪除檔案時songFromData會更新，假如目前在播放的清單是user自建清單，會重新設定播放中的清單
   useEffect(() => {
@@ -295,14 +267,14 @@ const Music = function ({
     <div
       className="music window"
       ref={curWindow}
-      style={{ top: position.y, left: position.x, zIndex: zIndex.Music }}
+      style={{ top: position.y, left: position.x, zIndex: zIndex.music }}
       onMouseDown={() => {
-        if (zIndex.curW !== "Music") {
+        if (zIndex.curW !== "music") {
           setZIndex({
             ...zIndex,
-            Music: zIndex.cur,
+            music: zIndex.cur,
             cur: zIndex.cur + 1,
-            curW: "Music",
+            curW: "music",
           });
         }
       }}
@@ -376,7 +348,7 @@ const Music = function ({
                 imageAlt="icon pre"
                 btnClassName="play-icon"
               />
-              {isplaying ? (
+              {isPlaying ? (
                 <SquareIconBtn
                   ClickSquareIconBtn={stop}
                   imageSrc="/images/icon_stop.svg"

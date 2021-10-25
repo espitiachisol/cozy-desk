@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { auth } from "../../firebaseConfig";
-const Sign = ({ setUserstate, SignInShow, setSignInShow, setNotification }) => {
+const Sign = ({ setUserState, SignInShow, setSignInShow, setNotification }) => {
   const [userMail, setUserMail] = useState("");
   const [userPassword, setUserPassword] = useState("");
 
@@ -13,7 +13,7 @@ const Sign = ({ setUserstate, SignInShow, setSignInShow, setNotification }) => {
           const user = userCredential.user;
           // console.log("---response--logn-in", user.uid);
           if (SignInShow) {
-            setUserstate(user.uid);
+            setUserState(user.uid);
             setNotification({
               title: "Notification",
               content: "Logn in successfully",
@@ -34,7 +34,7 @@ const Sign = ({ setUserstate, SignInShow, setSignInShow, setNotification }) => {
           // Signed in
           const user = userCredential.user;
           // console.log("---response--Sign-up", user.uid);
-          setUserstate(user.uid);
+          setUserState(user.uid);
           setNotification({
             title: "Notification",
             content: "Sign up successfully",

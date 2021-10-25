@@ -42,28 +42,27 @@ const Tomato = ({
   const [more, setMore] = useState(false);
   //for window drag
   const [size, setSize] = useState({});
-  const [startPositon, setStartPositon] = useState({});
+  const [startPosition, setStartPosition] = useState({});
   //
   const [showAlert, setShowAlert] = useState(false);
   const curWindow = useCallback((node) => {
-    if (node !== null) {
-      const response = node.getBoundingClientRect();
-      setStartPositon({
-        x: response.x,
-        y: response.y - 32,
-      });
-      setSize({ width: response.width, height: response.height });
-    }
+    if (node === null) return;
+    const response = node.getBoundingClientRect();
+    setStartPosition({
+      x: response.x,
+      y: response.y - 32,
+    });
+    setSize({ width: response.width, height: response.height });
   }, []);
-  let startingPosition = {
-    x: startPositon.x,
-    y: startPositon.y,
+
+  const [position, mouseDown] = useDrag({
+    x: startPosition.x,
+    y: startPosition.y,
     width: size.width,
     height: size.height,
-    defaultX: parseInt(showWindow.Tomato.x, 10) || 20,
-    defaultY: parseInt(showWindow.Tomato.y, 10) || 0,
-  };
-  const [position, mouseDown] = useDrag(startingPosition);
+    defaultX: parseInt(showWindow.tomato.x, 10) || 20,
+    defaultY: parseInt(showWindow.tomato.y, 10) || 0,
+  });
 
   useEffect(() => {
     if (userState) {
@@ -239,14 +238,14 @@ const Tomato = ({
     <div
       className="tomato window"
       ref={curWindow}
-      style={{ top: position.y, left: position.x, zIndex: zIndex.Tomato }}
+      style={{ top: position.y, left: position.x, zIndex: zIndex.tomato }}
       onMouseDown={() => {
-        if (zIndex.curW !== "Tomato") {
+        if (zIndex.curW !== "tomato") {
           setZIndex({
             ...zIndex,
-            Tomato: zIndex.cur,
+            tomato: zIndex.cur,
             cur: zIndex.cur + 1,
-            curW: "Tomato",
+            curW: "tomato",
           });
         }
       }}
@@ -328,10 +327,10 @@ const Tomato = ({
               <img src={`/images/icon_reset.svg`} alt="playStop-icon" />
             </button>
           </div>
-          <div style={{ margin: " 0 10px" }}>
+          <div className="tomato-setting-container">
             <SettingBar setMore={setMore} more={more} label={"Settings"} />
             <div
-              className="tomato-setting-container"
+              className="tomato-options-container"
               style={{ minHeight: `${more ? "120px" : "0px"}` }}
             >
               {more ? (

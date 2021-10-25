@@ -12,54 +12,54 @@ const EachIcon = function ({
       case "Tomato":
         setShowWindow({
           ...showWindow,
-          Tomato: {
+          tomato: {
             display: true,
-            x: showWindow.Tomato.x,
-            y: showWindow.Tomato.y,
+            x: showWindow.tomato.x,
+            y: showWindow.tomato.y,
           },
         });
-        if (zIndex.curW !== "Tomato") {
+        if (zIndex.curW !== "tomato") {
           setZIndex({
             ...zIndex,
-            Tomato: zIndex.cur,
+            tomato: zIndex.cur,
             cur: zIndex.cur + 1,
-            curW: "Tomato",
+            curW: "tomato",
           });
         }
         return;
       case "Mixtape":
         setShowWindow({
           ...showWindow,
-          Music: {
+          music: {
             display: true,
-            x: showWindow.Music.x,
-            y: showWindow.Music.y,
+            x: showWindow.music.x,
+            y: showWindow.music.y,
           },
         });
-        if (zIndex.curW !== "Music") {
+        if (zIndex.curW !== "music") {
           setZIndex({
             ...zIndex,
-            Music: zIndex.cur,
+            music: zIndex.cur,
             cur: zIndex.cur + 1,
-            curW: "Music",
+            curW: "music",
           });
         }
         return;
       case "Todo":
         setShowWindow({
           ...showWindow,
-          Todo: {
+          todo: {
             display: true,
-            x: showWindow.Todo.x,
-            y: showWindow.Todo.y,
+            x: showWindow.todo.x,
+            y: showWindow.todo.y,
           },
         });
-        if (zIndex.curW !== "Todo") {
+        if (zIndex.curW !== "todo") {
           setZIndex({
             ...zIndex,
-            Todo: zIndex.cur,
+            todo: zIndex.cur,
             cur: zIndex.cur + 1,
-            curW: "Todo",
+            curW: "todo",
           });
         }
         return;

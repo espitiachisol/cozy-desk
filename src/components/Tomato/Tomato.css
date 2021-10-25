@@ -117,6 +117,7 @@
 }
 
 /*  */
+
 .tomato-play-icon {
   width: 35px;
   height: 35px;
@@ -126,9 +127,12 @@
 .tomato-play-icon img {
   width: 100%;
 }
-.tomato-setting-container {
+.tomato-options-container {
   font-size: 14px;
   background-color: rgb(242, 241, 240);
+}
+.tomato-setting-container {
+  margin: 0 10px;
 }
 .tomato-setting {
   padding: 10px;

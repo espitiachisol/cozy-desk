@@ -9,10 +9,10 @@ import "./Todo.css";
 import NoDataMessage from "../shared/NoDataMessage/NoDataMessage";
 import { getYearMonthDayString } from "../../utils/helpers/time.helper";
 import {
-  GETfirestore,
-  SETfirestore,
-  DELETEfirestore,
-} from "../../../src/api/firestore.api";
+  getFirestore,
+  setFirestore,
+  deleteFirestore,
+} from "../../api/firestore";
 const converPriorityToNumber = (item) => {
   switch (item) {
     case "High":
@@ -34,7 +34,7 @@ const Todo = function ({
   setNotification,
 }) {
   const [size, setSize] = useState({});
-  const [startPositon, setStartPositon] = useState({});
+  const [startPosition, setStartPosition] = useState({});
   const [text, setText] = useState("");
   const [deadLine, setDeadLine] = useState("");
   const [priority, setPriority] = useState(null);
@@ -45,27 +45,26 @@ const Todo = function ({
   const [showAlert, setShowAlert] = useState(false);
 
   const curWindow = useCallback((node) => {
-    if (node !== null) {
-      const response = node.getBoundingClientRect();
-      setStartPositon({
-        x: response.x,
-        y: response.y - 32,
-      });
-      setSize({ width: response.width, height: response.height });
-    }
+    if (node === null) return;
+    const response = node.getBoundingClientRect();
+    setStartPosition({
+      x: response.x,
+      y: response.y - 32,
+    });
+    setSize({ width: response.width, height: response.height });
   }, []);
-  let startingPosition = {
-    x: startPositon.x,
-    y: startPositon.y,
+
+  const [position, mouseDown] = useDrag({
+    x: startPosition.x,
+    y: startPosition.y,
     width: size.width,
     height: size.height,
-    defaultX: parseInt(showWindow.Todo.x, 10) || 20,
-    defaultY: parseInt(showWindow.Todo.y, 10) || 0,
-  };
-  const [position, mouseDown] = useDrag(startingPosition);
+    defaultX: parseInt(showWindow.todo.x, 10) || 20,
+    defaultY: parseInt(showWindow.todo.y, 10) || 0,
+  });
   useEffect(() => {
     if (userState) {
-      GETfirestore("todoLists", userState)
+      getFirestore("todoLists", userState)
         .then((doc) => {
           if (doc.exists) {
             setTodolistAll(doc.data().todolist);
@@ -96,7 +95,7 @@ const Todo = function ({
         complete: false,
       };
       if (userState) {
-        SETfirestore("todoLists", userState, {
+        setFirestore("todoLists", userState, {
           todolist: [...todolistAll, data],
         })
           .then(() => {
@@ -134,7 +133,7 @@ const Todo = function ({
     let filteredList = todolistAll.filter((each) => each.id !== listid);
     if (userState) {
       //登入狀態
-      SETfirestore("todoLists", userState, { todolist: filteredList })
+      setFirestore("todoLists", userState, { todolist: filteredList })
         .then(() => {
           setTodolistAll(filteredList);
         })
@@ -158,7 +157,7 @@ const Todo = function ({
       return each;
     });
     if (userState) {
-      SETfirestore("todoLists", userState, { todolist: newCompletedList })
+      setFirestore("todoLists", userState, { todolist: newCompletedList })
         .then(() => {
           setTodolistAll(newCompletedList);
         })
@@ -177,7 +176,7 @@ const Todo = function ({
 
   const clearAll = () => {
     if (userState) {
-      DELETEfirestore("todoLists", userState)
+      deleteFirestore("todoLists", userState)
         .then(() => {
           setTodolistAll([]);
         })
@@ -196,7 +195,7 @@ const Todo = function ({
   const clearAllDone = () => {
     let filteredAllDone = todolistAll.filter((each) => each.complete !== true);
     if (userState) {
-      SETfirestore("todoLists", userState, { todolist: filteredAllDone })
+      setFirestore("todoLists", userState, { todolist: filteredAllDone })
         .then(() => {
           setTodolistAll(filteredAllDone);
         })
@@ -286,14 +285,14 @@ const Todo = function ({
     <div
       className="todo window"
       ref={curWindow}
-      style={{ top: position.y, left: position.x, zIndex: zIndex.Todo }}
+      style={{ top: position.y, left: position.x, zIndex: zIndex.todo }}
       onMouseDown={() => {
-        if (zIndex.curW !== "Todo") {
+        if (zIndex.curW !== "todo") {
           setZIndex({
             ...zIndex,
-            Todo: zIndex.cur,
+            todo: zIndex.cur,
             cur: zIndex.cur + 1,
-            curW: "Todo",
+            curW: "todo",
           });
         }
       }}
