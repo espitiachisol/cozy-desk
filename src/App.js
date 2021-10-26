@@ -1,43 +1,34 @@
-import { auth } from "./firebaseConfig";
-import { getFirestore, setFirestore } from "./api/firestore";
-import React, { useState, useEffect } from "react";
-import Header from "./components/header/Header";
-import MainBody from "./components/MainBody/MainBody";
-import "./App.css";
+import React, { useState, useEffect } from 'react';
+import { auth } from './firebaseConfig';
+import { getFirestore, setFirestore } from './api/firestore';
+import { defaultZIndex, defaultWindows } from './utils/constants/defaultPosition';
+import Header from './components/header/Header';
+import MainBody from './components/MainBody/MainBody';
+import './App.css';
+
 function App() {
-  const [userState, setUserState] = useState("");
-  const [notification, setNotification] = useState({ title: "", content: "" });
-  const [zIndex, setZIndex] = useState({
-    signWindow: 1,
-    Desk: 1,
-    music: 1,
-    tomato: 1,
-    todo: 1,
-    cur: 2,
-    curW: "",
+  const [userState, setUserState] = useState('');
+  const [notification, setNotification] = useState({
+    title: '',
+    content: '',
   });
+  const [zIndex, setZIndex] = useState(defaultZIndex);
 
-  const [showWindow, setShowWindow] = useState({
-    signWindow: { display: true, x: "", y: "" },
-    tomato: { display: false, x: "", y: "" },
-    music: { display: false, x: "", y: "" },
-    todo: { display: false, x: "", y: "" },
-  });
-
-  //當使用者使用平板或是手機
+  const [showWindow, setShowWindow] = useState(defaultWindows);
+  //  當使用者使用平板或是手機
   useEffect(() => {
     const { innerWidth } = window;
     if (innerWidth < 900) {
       setNotification({
-        title: "Notification",
+        title: 'Notification',
         content:
-          "For the better experience, Using devices with the screen sizes greater than 900px is suggested.",
+          'For the better experience, Using devices with the screen sizes greater than 900px is suggested.',
       });
     }
   }, []);
   useEffect(() => {
     if (userState) {
-      getFirestore("windowPosition", userState)
+      getFirestore('windowPosition', userState)
         .then((doc) => {
           if (doc.exists) {
             setShowWindow(doc.data().showWindow);
@@ -50,23 +41,13 @@ function App() {
             title: error?.code,
             content: error?.message,
           });
-          console.error("Error getting document:", error);
+          console.error('Error getting document:', error);
         });
     } else {
-      setShowWindow({
-        signWindow: { display: true, x: "", y: "" },
-        tomato: { display: false, x: "", y: "" },
-        music: { display: false, x: "", y: "" },
-        todo: { display: false, x: "", y: "" },
-      });
+      setShowWindow(defaultWindows);
     }
     return () => {
-      setShowWindow({
-        signWindow: { display: true, x: "", y: "" },
-        tomato: { display: false, x: "", y: "" },
-        music: { display: false, x: "", y: "" },
-        todo: { display: false, x: "", y: "" },
-      });
+      setShowWindow(defaultWindows);
     };
   }, [userState]);
 
@@ -80,23 +61,16 @@ function App() {
 
   useEffect(() => {
     if (!userState) return;
-    if (
-      showWindow.tomato.x ||
-      showWindow.music.x ||
-      showWindow.todo.x ||
-      showWindow.signWindow.x
-    ) {
+    if (showWindow.tomato.x || showWindow.music.x || showWindow.todo.x || showWindow.signWindow.x) {
       (async () => {
         try {
-          await setFirestore("windowPosition", userState, {
-            showWindow: showWindow,
-          });
+          await setFirestore('windowPosition', userState, { showWindow });
         } catch (error) {
           setNotification({
             title: error?.code,
             content: error?.message,
           });
-          console.error("Error writing document: ", error);
+          console.error('Error writing document: ', error);
         }
       })();
     }

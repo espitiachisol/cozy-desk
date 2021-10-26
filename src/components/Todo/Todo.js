@@ -1,25 +1,22 @@
-import React, { useState, useCallback, useEffect } from "react";
-import useDrag from "../hooks/useDrag";
-import WindowHeader from "../shared/WindowHeader/WindowHeader";
-import TodoList from "./TodoList";
-import TodoForm from "./TodoItems/TodoForm";
-import TodoLabels from "./TodoItems/TodoLabels";
-import Alert from "../shared/Alert/Alert";
-import "./Todo.css";
-import NoDataMessage from "../shared/NoDataMessage/NoDataMessage";
-import { getYearMonthDayString } from "../../utils/helpers/time";
-import {
-  getFirestore,
-  setFirestore,
-  deleteFirestore,
-} from "../../api/firestore";
+import React, { useState, useCallback, useEffect } from 'react';
+import useDrag from '../hooks/useDrag';
+import WindowHeader from '../shared/WindowHeader/WindowHeader';
+import TodoList from './TodoList';
+import TodoForm from './TodoItems/TodoForm';
+import TodoLabels from './TodoItems/TodoLabels';
+import Alert from '../shared/Alert/Alert';
+import './Todo.css';
+import NoDataMessage from '../shared/NoDataMessage/NoDataMessage';
+import { getYearMonthDayString } from '../../utils/helpers/time';
+import { getFirestore, setFirestore, deleteFirestore } from '../../api/firestore';
+
 const convertPriorityToNumber = (item) => {
   switch (item) {
-    case "High":
+    case 'High':
       return 3;
-    case "Medium":
+    case 'Medium':
       return 2;
-    case "Low":
+    case 'Low':
       return 1;
     default:
       return 0;
@@ -35,10 +32,10 @@ const Todo = function ({
 }) {
   const [size, setSize] = useState({});
   const [startPosition, setStartPosition] = useState({});
-  const [text, setText] = useState("");
-  const [deadLine, setDeadLine] = useState("");
+  const [text, setText] = useState('');
+  const [deadLine, setDeadLine] = useState('');
   const [priority, setPriority] = useState(null);
-  const [listsToShow, setListsToShow] = useState("All");
+  const [listsToShow, setListsToShow] = useState('All');
   const [todoListAll, setTodoListAll] = useState([]);
   const [todoListTodo, setTodoListTodo] = useState([]);
   const [todoListDone, setTodoListDone] = useState([]);
@@ -64,7 +61,7 @@ const Todo = function ({
   });
   useEffect(() => {
     if (userState) {
-      getFirestore("todoLists", userState)
+      getFirestore('todoLists', userState)
         .then((doc) => {
           if (doc.exists) {
             setTodoListAll(doc.data().todoList);
@@ -75,7 +72,7 @@ const Todo = function ({
             title: error?.code,
             content: error?.message,
           });
-          // console.log("Error getting document:", error);
+          //  console.log("Error getting document:", error);
         });
     }
     return () => {
@@ -86,16 +83,16 @@ const Todo = function ({
   const addTodo = (e) => {
     e.preventDefault();
     if (text) {
-      let data = {
-        id: "list" + new Date().getTime(),
-        text: text,
-        deadLine: deadLine,
-        priority: priority,
+      const data = {
+        id: `list${new Date().getTime()}`,
+        text,
+        deadLine,
+        priority,
         addTime: getYearMonthDayString(),
         complete: false,
       };
       if (userState) {
-        setFirestore("todoLists", userState, {
+        setFirestore('todoLists', userState, {
           todoList: [...todoListAll, data],
         })
           .then(() => {
@@ -106,34 +103,34 @@ const Todo = function ({
               title: error?.code,
               content: error?.message,
             });
-            // console.error("Error writing document: ", error);
+            //  console.error("Error writing document: ", error);
           });
       } else {
-        //使用者沒有登入的狀況
+        //  使用者沒有登入的狀況
         setTodoListAll([...todoListAll, data]);
       }
-      //clear form input
-      e.target[0].value = ""; //text
-      e.target[2].value = ""; //deadline
-      e.target[3].checked = false; //audio
-      e.target[4].checked = false; //audio
-      e.target[5].checked = false; //audio
-      setText("");
-      setPriority("");
-      setDeadLine("");
+      //  clear form input
+      e.target[0].value = ''; //  text
+      e.target[2].value = ''; //  deadline
+      e.target[3].checked = false; // audio
+      e.target[4].checked = false; // audio
+      e.target[5].checked = false; // audio
+      setText('');
+      setPriority('');
+      setDeadLine('');
     } else {
-      //當沒有內容時跳出注意
+      //  當沒有內容時跳出注意
       setNotification({
-        title: "Notification",
-        content: "Todo has no content!! Please, write something!",
+        title: 'Notification',
+        content: 'Todo has no content!! Please, write something!',
       });
     }
   };
   const deleteList = (listId) => {
-    let filteredList = todoListAll.filter((each) => each.id !== listId);
+    const filteredList = todoListAll.filter((each) => each.id !== listId);
     if (userState) {
-      //登入狀態
-      setFirestore("todoLists", userState, { todoList: filteredList })
+      // 登入狀態
+      setFirestore('todoLists', userState, { todoList: filteredList })
         .then(() => {
           setTodoListAll(filteredList);
         })
@@ -142,22 +139,22 @@ const Todo = function ({
             title: error?.code,
             content: error?.message,
           });
-          // console.error("Error writing document: ", error);
+          console.error('Error writing document: ', error);
         });
     } else {
-      //未登入裝態
+      //  未登入裝態
       setTodoListAll(filteredList);
     }
   };
   const checkComplete = (listId) => {
-    let newCompletedList = todoListAll.map((each) => {
+    const newCompletedList = todoListAll.map((each) => {
       if (each.id === listId) {
         each.complete = !each.complete;
       }
       return each;
     });
     if (userState) {
-      setFirestore("todoLists", userState, { todoList: newCompletedList })
+      setFirestore('todoLists', userState, { todoList: newCompletedList })
         .then(() => {
           setTodoListAll(newCompletedList);
         })
@@ -166,17 +163,17 @@ const Todo = function ({
             title: error?.code,
             content: error?.message,
           });
-          // console.error("Error writing document: ", error);
+          console.error('Error writing document: ', error);
         });
     } else {
-      //使用者沒有登入的狀況
+      //  使用者沒有登入的狀況
       setTodoListAll(newCompletedList);
     }
   };
 
   const clearAll = () => {
     if (userState) {
-      deleteFirestore("todoLists", userState)
+      deleteFirestore('todoLists', userState)
         .then(() => {
           setTodoListAll([]);
         })
@@ -185,7 +182,7 @@ const Todo = function ({
             title: error?.code,
             content: error?.message,
           });
-          // console.error("Error removing document: ", error);
+          //  console.error("Error removing document: ", error);
         });
     } else {
       setTodoListAll([]);
@@ -193,9 +190,9 @@ const Todo = function ({
     setShowAlert(false);
   };
   const clearAllDone = () => {
-    let filteredAllDone = todoListAll.filter((each) => each.complete !== true);
+    const filteredAllDone = todoListAll.filter((each) => each.complete !== true);
     if (userState) {
-      setFirestore("todoLists", userState, { todoList: filteredAllDone })
+      setFirestore('todoLists', userState, { todoList: filteredAllDone })
         .then(() => {
           setTodoListAll(filteredAllDone);
         })
@@ -204,10 +201,10 @@ const Todo = function ({
             title: error?.code,
             content: error?.message,
           });
-          // console.error("Error writing document: ", error);
+          //  console.error("Error writing document: ", error);
         });
     } else {
-      //使用者沒有登入的狀況
+      //  使用者沒有登入的狀況
       setTodoListAll(filteredAllDone);
     }
     setShowAlert(false);
@@ -220,18 +217,19 @@ const Todo = function ({
 
   const sortDeadline = (label) => {
     const deadlineArray = [...todoListAll];
-    let firstReturn, secondReturn;
-    if (label === "Increase") {
+    let firstReturn;
+    let secondReturn;
+    if (label === 'Increase') {
       firstReturn = -1;
       secondReturn = 1;
     }
-    if (label === "Decrease") {
+    if (label === 'Decrease') {
       firstReturn = 1;
       secondReturn = -1;
     }
     deadlineArray.sort((listFir, listSec) => {
-      listFir = Number(listFir.deadLine.replaceAll("-", ""));
-      listSec = Number(listSec.deadLine.replaceAll("-", ""));
+      listFir = Number(listFir.deadLine.replaceAll('-', ''));
+      listSec = Number(listSec.deadLine.replaceAll('-', ''));
       if (listFir < listSec) {
         return firstReturn;
       }
@@ -244,12 +242,13 @@ const Todo = function ({
   };
   const sortPriority = (label) => {
     const priorityArray = [...todoListAll];
-    let firstReturn, secondReturn;
-    if (label === "Increase") {
+    let firstReturn;
+    let secondReturn;
+    if (label === 'Increase') {
       firstReturn = -1;
       secondReturn = 1;
     }
-    if (label === "Decrease") {
+    if (label === 'Decrease') {
       firstReturn = 1;
       secondReturn = -1;
     }
@@ -271,11 +270,11 @@ const Todo = function ({
   };
   const witchListToShow = (list) => {
     switch (list) {
-      case "All":
+      case 'All':
         return todoListAll;
-      case "Todo":
+      case 'Todo':
         return todoListTodo;
-      case "Done":
+      case 'Done':
         return todoListDone;
       default:
     }
@@ -287,12 +286,12 @@ const Todo = function ({
       ref={curWindow}
       style={{ top: position.y, left: position.x, zIndex: zIndex.todo }}
       onMouseDown={() => {
-        if (zIndex.curW !== "todo") {
+        if (zIndex.curW !== 'todo') {
           setZIndex({
             ...zIndex,
             todo: zIndex.cur,
             cur: zIndex.cur + 1,
-            curW: "todo",
+            curW: 'todo',
           });
         }
       }}
@@ -324,7 +323,7 @@ const Todo = function ({
                 labelDoneLength: todoListDone.length,
               }}
             />
-            <div className={`todo-label-line ${listsToShow}`}></div>
+            <div className={`todo-label-line ${listsToShow}`} />
             <div className="todo-content">
               <TodoList
                 lists={witchListToShow(listsToShow)}
@@ -332,34 +331,34 @@ const Todo = function ({
                 deleteList={deleteList}
                 priority={priority}
               />
-              {listsToShow === "All" && todoListAll.length === 0 ? (
+              {listsToShow === 'All' && todoListAll.length === 0 ? (
                 <NoDataMessage
                   userState={userState}
                   userMessage={{
-                    title: "Your to-do is empty",
+                    title: 'Your to-do is empty',
                     content:
-                      "Rename your “To-Do” list to your “Opportunities” list. Add your to-do list = Add your “Opportunities” list! ☝ ✍",
+                      'Rename your “To-Do” list to your “Opportunities” list. Add your to-do list = Add your “Opportunities” list! ☝ ✍',
                   }}
                   guestMessage={{
-                    title: "Your to-do is empty",
+                    title: 'Your to-do is empty',
                     content:
-                      "Rename your “To-Do” list to your “Opportunities” list. Add your to-do list = Add your “Opportunities” list! ☝ ✍ ---Create an account for save your to-do list!---",
+                      'Rename your “To-Do” list to your “Opportunities” list. Add your to-do list = Add your “Opportunities” list! ☝ ✍ ---Create an account for save your to-do list!---',
                   }}
                 />
               ) : null}
 
-              {listsToShow === "Done" && todoListDone.length === 0 ? (
+              {listsToShow === 'Done' && todoListDone.length === 0 ? (
                 <NoDataMessage
                   userState={userState}
                   userMessage={{
-                    title: "No completed to-do!",
+                    title: 'No completed to-do!',
                     content:
-                      "Focusing on your to-do and take joy in check items off  your list!! ✨ ⚡",
+                      'Focusing on your to-do and take joy in check items off  your list!! ✨ ⚡',
                   }}
                   guestMessage={{
-                    title: "No completed to-do",
+                    title: 'No completed to-do',
                     content:
-                      "Focusing on your to-do and take joy in check items off  your list!! ✨ ⚡ ---Create an account for save your to-do list!---",
+                      'Focusing on your to-do and take joy in check items off  your list!! ✨ ⚡ ---Create an account for save your to-do list!---',
                   }}
                 />
               ) : null}
@@ -373,7 +372,7 @@ const Todo = function ({
                 alt="icon increase"
                 className="todo-toolbar-img"
                 onClick={() => {
-                  sortDeadline("Increase");
+                  sortDeadline('Increase');
                 }}
               />
               <img
@@ -381,7 +380,7 @@ const Todo = function ({
                 alt="icon decrease"
                 className="todo-toolbar-img"
                 onClick={() => {
-                  sortDeadline("Decrease");
+                  sortDeadline('Decrease');
                 }}
               />
             </div>
@@ -392,7 +391,7 @@ const Todo = function ({
                 alt="icon increase"
                 className="todo-toolbar-img"
                 onClick={() => {
-                  sortPriority("Increase");
+                  sortPriority('Increase');
                 }}
               />
               <img
@@ -400,14 +399,14 @@ const Todo = function ({
                 alt="icon decrease"
                 className="todo-toolbar-img"
                 onClick={() => {
-                  sortPriority("Decrease");
+                  sortPriority('Decrease');
                 }}
               />
             </div>
             <button
               className="todo-toolbar-button button-style"
               onClick={() => {
-                setShowAlert("ClearAllDone");
+                setShowAlert('ClearAllDone');
               }}
             >
               Clear All Done
@@ -415,7 +414,7 @@ const Todo = function ({
             <button
               className="todo-toolbar-button button-style"
               onClick={() => {
-                setShowAlert("ClearAll");
+                setShowAlert('ClearAll');
               }}
             >
               Clear All
@@ -423,38 +422,32 @@ const Todo = function ({
           </div>
           <div className="todo-progress-container">
             <p className="todo-progress-text">
-              {Math.floor((todoListDone.length * 100) / todoListAll.length) ||
-                0}
-              %
+              {Math.floor((todoListDone.length * 100) / todoListAll.length) || 0}%
             </p>
             <div
               className="todo-progress"
               style={{
-                width: `${
-                  Math.floor(
-                    (todoListDone.length * 100) / todoListAll.length
-                  ) || 0
-                }%`,
+                width: `${Math.floor((todoListDone.length * 100) / todoListAll.length) || 0}%`,
               }}
-            ></div>
+            />
           </div>
-          {showAlert === "ClearAll" ? (
+          {showAlert === 'ClearAll' ? (
             <Alert
               setShowAlert={setShowAlert}
               confirm={clearAll}
               message={{
-                title: "Are you sure ?",
-                text: "All lists will be deleted.",
+                title: 'Are you sure ?',
+                text: 'All lists will be deleted.',
               }}
             />
           ) : null}
-          {showAlert === "ClearAllDone" ? (
+          {showAlert === 'ClearAllDone' ? (
             <Alert
               setShowAlert={setShowAlert}
               confirm={clearAllDone}
               message={{
-                title: "Are you sure ?",
-                text: "All  of your completed lists will be deleted.",
+                title: 'Are you sure ?',
+                text: 'All  of your completed lists will be deleted.',
               }}
             />
           ) : null}

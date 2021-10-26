@@ -1,9 +1,9 @@
-import React, { useState, useCallback } from "react";
-import Sign from "./Sign";
-import useDrag from "../hooks/useDrag";
-import WindowHeader from "../shared/WindowHeader/WindowHeader";
-import "./Sign.css";
-import Quote from "../Quote/Quote";
+import React, { useState, useCallback } from 'react';
+import Sign from './Sign';
+import useDrag from '../hooks/useDrag';
+import WindowHeader from '../shared/WindowHeader/WindowHeader';
+import './Sign.css';
+import Quote from '../Quote/Quote';
 
 const SignWindow = ({
   userState,
@@ -45,12 +45,12 @@ const SignWindow = ({
       ref={curWindow}
       style={{ top: position.y, left: position.x, zIndex: zIndex.signWindow }}
       onMouseDown={() => {
-        if (zIndex.curW !== "signWindow") {
+        if (zIndex.curW !== 'signWindow') {
           setZIndex({
             ...zIndex,
             signWindow: zIndex.cur,
             cur: zIndex.cur + 1,
-            curW: "signWindow",
+            curW: 'signWindow',
           });
         }
       }}
@@ -65,7 +65,7 @@ const SignWindow = ({
       <div className="sign-container-all">
         <div className="sign-container">
           <div className="sign-image-container">
-            <img src="/images/welcome.jpg" alt="welcome"></img>
+            <img src="/images/welcome.jpg" alt="welcome" />
             {quote?.content ? <Quote quote={quote} /> : null}
           </div>
           <div className="sign-content">

@@ -1,10 +1,8 @@
-import React from "react";
-import Loading from "../../shared/Loading/Loading";
+import React from 'react';
+import Loading from '../../shared/Loading/Loading';
+
 const AddSongsForm = function ({
-  userState,
-  uploadFiles,
-  fileRef,
-  showLoading,
+  userState, uploadFiles, fileRef, showLoading,
 }) {
   return (
     <>
@@ -18,20 +16,10 @@ const AddSongsForm = function ({
           }
         }}
       >
-        <input
-          ref={fileRef}
-          type="file"
-          accept="audio/*"
-          multiple
-          disabled={userState ? false : true}
-        ></input>
+        <input ref={fileRef} type="file" accept="audio/*" multiple disabled={!userState} />
         {showLoading ? <Loading /> : null}
 
-        <button
-          type="submit"
-          className="button-style"
-          disabled={userState ? false : true}
-        >
+        <button type="submit" className="button-style" disabled={!userState}>
           Add songs
         </button>
       </form>

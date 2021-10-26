@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { returnRandomQuote } from "../../api/axios";
-//Components
-import Music from "../Music/Music";
-import Tomato from "../Tomato/Tomato";
-import Todo from "../Todo/Todo";
-import SignWindow from "../Sign/SignWindow";
-import Notification from "../Notification/Notification";
-import EachIcon from "./MainBodyItems/EachIcon";
-//styles
-import "./MainBody.css";
+import React, { useState, useEffect } from 'react';
+import returnRandomQuote from '../../api/axios';
+// Components
+import Music from '../Music/Music';
+import Tomato from '../Tomato/Tomato';
+import Todo from '../Todo/Todo';
+import SignWindow from '../Sign/SignWindow';
+import Notification from '../Notification/Notification';
+import EachIcon from './MainBodyItems/EachIcon';
+// styles
+import './MainBody.css';
 
 const MainBody = ({
   userState,
@@ -86,31 +86,28 @@ const MainBody = ({
           showWindow={showWindow}
           setZIndex={setZIndex}
           zIndex={zIndex}
-          label={"Tomato"}
-          iconImg={"/images/icon-tomato.png"}
+          label="Tomato"
+          iconImg="/images/icon-tomato.png"
         />
         <EachIcon
           setShowWindow={setShowWindow}
           showWindow={showWindow}
           setZIndex={setZIndex}
           zIndex={zIndex}
-          label={"Mixtape"}
-          iconImg={"/images/icon-mixtape.png"}
+          label="Mixtape"
+          iconImg="/images/icon-mixtape.png"
         />
         <EachIcon
           setShowWindow={setShowWindow}
           showWindow={showWindow}
           setZIndex={setZIndex}
           zIndex={zIndex}
-          label={"Todo"}
-          iconImg={"/images/icon-todo.png"}
+          label="Todo"
+          iconImg="/images/icon-todo.png"
         />
       </div>
       {notification.title ? (
-        <Notification
-          notification={notification}
-          setNotification={setNotification}
-        />
+        <Notification notification={notification} setNotification={setNotification} />
       ) : null}
       <p className="copyright">Copyright © 2021 CozyDesk /Sol Chi</p>
     </div>

@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
-import "./Notification.css";
+import React, { useEffect } from 'react';
+import './Notification.css';
+
 const Notification = React.memo(({ notification, setNotification }) => {
   useEffect(() => {
     if (notification?.title) {
       const setTimeoutId = setTimeout(() => {
-        setNotification({ title: "", content: "" });
+        setNotification({ title: '', content: '' });
       }, 6000);
       return () => {
         clearTimeout(setTimeoutId);
@@ -16,7 +17,7 @@ const Notification = React.memo(({ notification, setNotification }) => {
       <p
         className="delete notification-close-window"
         onClick={() => {
-          setNotification({ title: "", content: "" });
+          setNotification({ title: '', content: '' });
         }}
       >
         X

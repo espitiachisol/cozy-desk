@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import CurrentTime from "./HeaderItems/CurrentTime";
-import HeaderDropMenu from "./HeaderItems/HeaderDropMenu";
-import { auth } from "../../firebaseConfig";
-import RotateArrow from "../shared/RotateArrow/RotateArrow";
-import "./Header.css";
+import React, { useState } from 'react';
+import CurrentTime from './HeaderItems/CurrentTime';
+import HeaderDropMenu from './HeaderItems/HeaderDropMenu';
+import { auth } from '../../firebaseConfig';
+import RotateArrow from '../shared/RotateArrow/RotateArrow';
+import './Header.css';
 
 const Header = ({
   setUserState,
@@ -18,10 +18,10 @@ const Header = ({
     auth
       .signOut()
       .then(() => {
-        setUserState("");
+        setUserState('');
         setNotification({
-          title: "Notification",
-          content: "Sign out successfully",
+          title: 'Notification',
+          content: 'Sign out successfully',
         });
       })
       .catch((error) => {
@@ -41,11 +41,7 @@ const Header = ({
               setShowHeaderDropDown(!showHeaderDropDown);
             }}
           >
-            <img
-              src="/icon_favicon.svg"
-              alt="CozyDesk Logo"
-              className="logo-icon"
-            />
+            <img src="/icon_favicon.svg" alt="CozyDesk Logo" className="logo-icon" />
             <p>CozyDesk</p>
             <RotateArrow toggle={showHeaderDropDown} />
           </div>
@@ -53,7 +49,7 @@ const Header = ({
           {auth.currentUser ? (
             <button onClick={userSignOut} className="item pointer">
               {auth.currentUser.email.length > 6
-                ? auth.currentUser.email.slice(0, 6).padEnd(9, ".")
+                ? auth.currentUser.email.slice(0, 6).padEnd(9, '.')
                 : auth.currentUser.email}
               -Sign out
             </button>
@@ -69,12 +65,12 @@ const Header = ({
                     y: showWindow.signWindow.y,
                   },
                 });
-                if (zIndex.curW !== "signWindow") {
+                if (zIndex.curW !== 'signWindow') {
                   setZIndex({
                     ...zIndex,
                     signWindow: zIndex.cur,
                     cur: zIndex.cur + 1,
-                    curW: "signWindow",
+                    curW: 'signWindow',
                   });
                 }
               }}

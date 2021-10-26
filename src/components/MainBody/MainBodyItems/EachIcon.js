@@ -1,15 +1,11 @@
-import React from "react";
+import React from 'react';
+
 const EachIcon = function ({
-  setShowWindow,
-  showWindow,
-  setZIndex,
-  zIndex,
-  label,
-  iconImg,
+  setShowWindow, showWindow, setZIndex, zIndex, label, iconImg,
 }) {
   const witchWindowToShow = () => {
     switch (label) {
-      case "Tomato":
+      case 'Tomato':
         setShowWindow({
           ...showWindow,
           tomato: {
@@ -18,16 +14,16 @@ const EachIcon = function ({
             y: showWindow.tomato.y,
           },
         });
-        if (zIndex.curW !== "tomato") {
+        if (zIndex.curW !== 'tomato') {
           setZIndex({
             ...zIndex,
             tomato: zIndex.cur,
             cur: zIndex.cur + 1,
-            curW: "tomato",
+            curW: 'tomato',
           });
         }
         return;
-      case "Mixtape":
+      case 'Mixtape':
         setShowWindow({
           ...showWindow,
           music: {
@@ -36,16 +32,16 @@ const EachIcon = function ({
             y: showWindow.music.y,
           },
         });
-        if (zIndex.curW !== "music") {
+        if (zIndex.curW !== 'music') {
           setZIndex({
             ...zIndex,
             music: zIndex.cur,
             cur: zIndex.cur + 1,
-            curW: "music",
+            curW: 'music',
           });
         }
         return;
-      case "Todo":
+      case 'Todo':
         setShowWindow({
           ...showWindow,
           todo: {
@@ -54,26 +50,20 @@ const EachIcon = function ({
             y: showWindow.todo.y,
           },
         });
-        if (zIndex.curW !== "todo") {
+        if (zIndex.curW !== 'todo') {
           setZIndex({
             ...zIndex,
             todo: zIndex.cur,
             cur: zIndex.cur + 1,
-            curW: "todo",
+            curW: 'todo',
           });
         }
-        return;
+        break;
       default:
-        return;
     }
   };
   return (
-    <div
-      className="each-icon"
-      onClick={() => {
-        witchWindowToShow();
-      }}
-    >
+    <div className="each-icon" onClick={witchWindowToShow}>
       <img className="desk-icon" src={iconImg} alt={label} />
       <p>{label}</p>
     </div>

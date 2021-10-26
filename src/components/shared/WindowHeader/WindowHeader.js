@@ -1,34 +1,31 @@
-import React from "react";
-import "./WindowHeader.css";
+import React from 'react';
+import './WindowHeader.css';
+
 const WindowHeader = ({
-  mouseDown,
-  setShowWindow,
-  showWindow,
-  label,
-  position,
+  mouseDown, setShowWindow, showWindow, label, position,
 }) => {
   const witchLabelToDisplay = () => {
     let result;
     switch (label) {
-      case "Todo":
+      case 'Todo':
         result = setShowWindow({
           ...showWindow,
           todo: { display: false, x: position.x, y: position.y },
         });
         break;
-      case "Mixtape":
+      case 'Mixtape':
         result = setShowWindow({
           ...showWindow,
           music: { display: false, x: position.x, y: position.y },
         });
         break;
-      case "Tomato":
+      case 'Tomato':
         result = setShowWindow({
           ...showWindow,
           tomato: { display: false, x: position.x, y: position.y },
         });
         break;
-      case "CozyDesk":
+      case 'CozyDesk':
         result = setShowWindow({
           ...showWindow,
           signWindow: { display: false, x: position.x, y: position.y },
@@ -42,25 +39,25 @@ const WindowHeader = ({
   const saveCurPosition = () => {
     let result;
     switch (label) {
-      case "Todo":
+      case 'Todo':
         result = setShowWindow({
           ...showWindow,
           todo: { display: true, x: position.x, y: position.y },
         });
         break;
-      case "Mixtape":
+      case 'Mixtape':
         result = setShowWindow({
           ...showWindow,
           music: { display: true, x: position.x, y: position.y },
         });
         break;
-      case "Tomato":
+      case 'Tomato':
         result = setShowWindow({
           ...showWindow,
           tomato: { display: true, x: position.x, y: position.y },
         });
         break;
-      case "CozyDesk":
+      case 'CozyDesk':
         result = setShowWindow({
           ...showWindow,
           signWindow: { display: true, x: position.x, y: position.y },

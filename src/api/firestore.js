@@ -1,4 +1,4 @@
-import { firestore } from "../firebaseConfig";
+import { firestore } from '../firebaseConfig';
 
 export const getFirestore = function (collection, doc) {
   return firestore.collection(collection).doc(doc).get();

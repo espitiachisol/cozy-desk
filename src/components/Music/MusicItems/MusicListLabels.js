@@ -1,22 +1,20 @@
-import React from "react";
-const MusicListLabels = function ({
-  currentPlaylistType,
-  setCurrentPlaylistType,
-}) {
+import React from 'react';
+
+const MusicListLabels = function ({ currentPlaylistType, setCurrentPlaylistType }) {
   return (
     <div className="toggle-playList-con">
       <button
-        className={`${currentPlaylistType === "default" ? "active" : ""}`}
+        className={`${currentPlaylistType === 'default' ? 'active' : ''}`}
         onClick={() => {
-          setCurrentPlaylistType("default");
+          setCurrentPlaylistType('default');
         }}
       >
         Mixtape
       </button>
       <button
-        className={`${currentPlaylistType === "user" ? "active" : ""}`}
+        className={`${currentPlaylistType === 'user' ? 'active' : ''}`}
         onClick={() => {
-          setCurrentPlaylistType("user");
+          setCurrentPlaylistType('user');
         }}
       >
         My Playlist

@@ -30,3 +30,5 @@ firebase.json
 /.firebase
 /.github
 config.js
+yarn.lock
+.prettierignore 

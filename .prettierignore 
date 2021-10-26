@@ -1,0 +1,6 @@
+build
+public
+.firebase
+.github
+workflows
+node_modules

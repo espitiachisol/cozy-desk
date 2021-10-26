@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 const RetroTape = React.memo(function ({ rotate, progress, coverImg }) {
   const [tapeOnReel, setTapeOnReel] = useState(true);
@@ -52,11 +52,7 @@ const RetroTape = React.memo(function ({ rotate, progress, coverImg }) {
       </svg>
 
       <div className="tape-cover">
-        <img
-          src={coverImg?.img}
-          alt="cover"
-          style={{ opacity: `${tapeOnReel ? "0.9" : "0.2"}` }}
-        />
+        <img src={coverImg?.img} alt="cover" style={{ opacity: `${tapeOnReel ? '0.9' : '0.2'}` }} />
       </div>
 
       <div className="tape-down">
@@ -71,12 +67,12 @@ const RetroTape = React.memo(function ({ rotate, progress, coverImg }) {
           </button>
         </div>
 
-        <div className="tape-down-circle left"></div>
-        <div className="tape-down-circle-sm "></div>
-        <div className="tape-down-square left"></div>
-        <div className="tape-down-circle right"></div>
-        <div className="tape-down-circle-sm  right"></div>
-        <div className="tape-down-square right"></div>
+        <div className="tape-down-circle left" />
+        <div className="tape-down-circle-sm " />
+        <div className="tape-down-square left" />
+        <div className="tape-down-circle right" />
+        <div className="tape-down-circle-sm  right" />
+        <div className="tape-down-square right" />
       </div>
     </div>
   );

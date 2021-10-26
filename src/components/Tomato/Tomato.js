@@ -1,35 +1,27 @@
-import "./Tomato.css";
-import React, { useState, useCallback, useEffect, useRef } from "react";
-import useDrag from "../hooks/useDrag";
-import WindowHeader from "../shared/WindowHeader/WindowHeader";
-import Dropdown from "../Dropdown/Dropdown";
-import { setting, target } from "./tomato-data";
-import { firestore } from "../../firebaseConfig";
-import Alert from "../shared/Alert/Alert";
-import SettingBar from "../shared/SettingBar/SettingBar";
-import { getMinuteSecondString } from "../../utils/helpers/time";
+import './Tomato.css';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import useDrag from '../hooks/useDrag';
+import WindowHeader from '../shared/WindowHeader/WindowHeader';
+import Dropdown from '../Dropdown/Dropdown';
+import { setting, target } from '../../utils/constants/tomatoSetting';
+import { firestore } from '../../firebaseConfig';
+import Alert from '../shared/Alert/Alert';
+import SettingBar from '../shared/SettingBar/SettingBar';
+import { getMinuteSecondString } from '../../utils/helpers/time';
 
 const calcDeg = (sessionSelected, targetSelected, timeLeft, progress) => {
-  let thisDeg =
-    (360 * (sessionSelected * 60 - timeLeft)) /
-    (sessionSelected * 60 * targetSelected);
+  const thisDeg =
+    (360 * (sessionSelected * 60 - timeLeft)) / (sessionSelected * 60 * targetSelected);
   return thisDeg + progress * (360 / targetSelected);
 };
 
-const Tomato = ({
-  setShowWindow,
-  showWindow,
-  zIndex,
-  setZIndex,
-  userState,
-  setNotification,
-}) => {
-  //data from user
+const Tomato = ({ setShowWindow, showWindow, zIndex, setZIndex, userState, setNotification }) => {
+  // data from user
   const [targetSelected, setTargetSelected] = useState(setting.target[0]);
   const [sessionSelected, setSessionSelected] = useState(setting.session[1]);
   const [breakSelected, setBreakSelected] = useState(setting.break[0]);
-  const [currentSessionType, setCurrentSessionType] = useState("Session"); // 'Session' or 'Break'
-  //timer
+  const [currentSessionType, setCurrentSessionType] = useState('Session'); // 'Session' or 'Break'
+  // timer
 
   const playSessionsoundEffect = useRef(null);
   const playBreaksoundEffect = useRef(null);
@@ -40,7 +32,7 @@ const Tomato = ({
 
   const [timeLeft, setTimeLeft] = useState(sessionSelected * 60);
   const [more, setMore] = useState(false);
-  //for window drag
+  // for window drag
   const [size, setSize] = useState({});
   const [startPosition, setStartPosition] = useState({});
   //
@@ -67,7 +59,7 @@ const Tomato = ({
   useEffect(() => {
     if (userState) {
       firestore
-        .collection("tomatoClock")
+        .collection('tomatoClock')
         .doc(userState)
         .get()
         .then((doc) => {
@@ -94,7 +86,7 @@ const Tomato = ({
         });
     } else {
       setIntervalId(null);
-      setCurrentSessionType("Session");
+      setCurrentSessionType('Session');
       setTimeLeft(25 * 60);
       setSessionSelected(25);
       setBreakSelected(5);
@@ -111,33 +103,33 @@ const Tomato = ({
 
   useEffect(() => {
     if (timeLeft === 0) {
-      if (currentSessionType === "Session") {
+      if (currentSessionType === 'Session') {
         // console.log("play");
         playBreaksoundEffect.current.play();
-        setCurrentSessionType("Break");
+        setCurrentSessionType('Break');
         setProgress((preProgress) => preProgress + 1);
         setTimeLeft(breakSelected * 60);
-      } else if (currentSessionType === "Break") {
+      } else if (currentSessionType === 'Break') {
         // console.log("play");
         playSessionsoundEffect.current.play();
-        setCurrentSessionType("Session");
+        setCurrentSessionType('Session');
         setTimeLeft(sessionSelected * 60);
       }
     }
   }, [timeLeft, currentSessionType, breakSelected, sessionSelected]);
   useEffect(() => {
-    if (currentSessionType === "Session") {
+    if (currentSessionType === 'Session') {
       setDeg(calcDeg(sessionSelected, targetSelected, timeLeft, progress));
     }
   }, [timeLeft, currentSessionType, targetSelected, sessionSelected, progress]);
 
   useEffect(() => {
-    if (currentSessionType === "Session") {
+    if (currentSessionType === 'Session') {
       setTimeLeft(sessionSelected * 60);
     }
   }, [sessionSelected, currentSessionType]);
   useEffect(() => {
-    if (currentSessionType === "Break") {
+    if (currentSessionType === 'Break') {
       setTimeLeft(breakSelected * 60);
     }
   }, [breakSelected, currentSessionType]);
@@ -145,16 +137,16 @@ const Tomato = ({
   const saveData = () => {
     if (userState) {
       firestore
-        .collection("tomatoClock")
+        .collection('tomatoClock')
         .doc(userState)
         .set({
           target: targetSelected,
           session: sessionSelected,
           break: breakSelected,
-          timeLeft: timeLeft,
-          progress: progress,
-          currentSessionType: currentSessionType,
-          deg: deg,
+          timeLeft,
+          progress,
+          currentSessionType,
+          deg,
         })
         .then(() => {
           // console.log("Document successfully updte!!!");
@@ -186,10 +178,10 @@ const Tomato = ({
   };
 
   const clearCurTime = () => {
-    if (currentSessionType === "Session") {
+    if (currentSessionType === 'Session') {
       setTimeLeft(sessionSelected * 60);
     }
-    if (currentSessionType === "Break") {
+    if (currentSessionType === 'Break') {
       setTimeLeft(breakSelected * 60);
     }
     setShowAlert(false);
@@ -198,25 +190,25 @@ const Tomato = ({
   const witchAttentionToShow = useCallback(
     (e) => {
       if (e.target.options.length === 9) {
-        if (currentSessionType === "Session") {
+        if (currentSessionType === 'Session') {
           setNotification({
-            title: "Attention!",
+            title: 'Attention!',
             content:
-              "You are currently in the focus time. If you change the session length, your current time will be reset. You can either reset it or wait till the break time.",
+              'You are currently in the focus time. If you change the session length, your current time will be reset. You can either reset it or wait till the break time.',
           });
         }
       }
       if (e.target.options.length === 4) {
-        if (currentSessionType === "Break") {
+        if (currentSessionType === 'Break') {
           setNotification({
-            title: "Attention!",
+            title: 'Attention!',
             content:
-              "You are currently in the break time. If you change the break length, your current time will be reset. You can either reset it or wait till the focus time.",
+              'You are currently in the break time. If you change the break length, your current time will be reset. You can either reset it or wait till the focus time.',
           });
         }
       }
     },
-    [currentSessionType, setNotification]
+    [currentSessionType, setNotification],
   );
   const resetAll = () => {
     // playMuteSoundEffect.current.load();
@@ -224,7 +216,7 @@ const Tomato = ({
     playBreaksoundEffect.current.load();
     clearInterval(intervalId);
     setIntervalId(null);
-    setCurrentSessionType("Session");
+    setCurrentSessionType('Session');
     setTimeLeft(25 * 60);
     setSessionSelected(25);
     setBreakSelected(5);
@@ -240,12 +232,12 @@ const Tomato = ({
       ref={curWindow}
       style={{ top: position.y, left: position.x, zIndex: zIndex.tomato }}
       onMouseDown={() => {
-        if (zIndex.curW !== "tomato") {
+        if (zIndex.curW !== 'tomato') {
           setZIndex({
             ...zIndex,
             tomato: zIndex.cur,
             cur: zIndex.cur + 1,
-            curW: "tomato",
+            curW: 'tomato',
           });
         }
       }}
@@ -263,9 +255,7 @@ const Tomato = ({
             className="tomato-outline"
             style={{
               borderColor: `${
-                currentSessionType === "Session"
-                  ? "rgb(163, 108, 108)"
-                  : "rgb(60, 106, 102)"
+                currentSessionType === 'Session' ? 'rgb(163, 108, 108)' : 'rgb(60, 106, 102)'
               }`,
             }}
           >
@@ -275,7 +265,7 @@ const Tomato = ({
                 style={{
                   backgroundImage: target[targetSelected][progress],
                 }}
-              ></div>
+              />
               <img
                 src={`/images/clock_${targetSelected}.png`}
                 alt="clock-label"
@@ -285,7 +275,7 @@ const Tomato = ({
                 {targetSelected === progress ? (
                   <p>Congratulations!</p>
                 ) : (
-                  <p>{currentSessionType === "Session" ? "Focus" : "Break"}</p>
+                  <p>{currentSessionType === 'Session' ? 'Focus' : 'Break'}</p>
                 )}
               </div>
 
@@ -303,9 +293,7 @@ const Tomato = ({
         </div>
         <div className="content-container">
           <div className="tomato-time">
-            <h4 className="tomato-counter">
-              {getMinuteSecondString(timeLeft)}
-            </h4>
+            <h4 className="tomato-counter">{getMinuteSecondString(timeLeft)}</h4>
 
             <button
               className="tomato-play-icon button-style"
@@ -314,24 +302,24 @@ const Tomato = ({
               }}
             >
               <img
-                src={`/images/${isStarted ? "icon_stop" : "icon_play"}.svg`}
+                src={`/images/${isStarted ? 'icon_stop' : 'icon_play'}.svg`}
                 alt="playStop-icon"
               />
             </button>
             <button
               className="tomato-play-icon button-style"
               onClick={() => {
-                setShowAlert("RESET");
+                setShowAlert('RESET');
               }}
             >
-              <img src={`/images/icon_reset.svg`} alt="playStop-icon" />
+              <img src="/images/icon_reset.svg" alt="playStop-icon" />
             </button>
           </div>
           <div className="tomato-setting-container">
-            <SettingBar setMore={setMore} more={more} label={"Settings"} />
+            <SettingBar setMore={setMore} more={more} label="Settings" />
             <div
               className="tomato-options-container"
-              style={{ minHeight: `${more ? "120px" : "0px"}` }}
+              style={{ minHeight: `${more ? '120px' : '0px'}` }}
             >
               {more ? (
                 <div className="tomato-setting">
@@ -359,7 +347,7 @@ const Tomato = ({
                   <button
                     className="restart button-style"
                     onClick={() => {
-                      setShowAlert("RESETALL");
+                      setShowAlert('RESETALL');
                     }}
                   >
                     RESETALL
@@ -368,31 +356,31 @@ const Tomato = ({
               ) : null}
             </div>
           </div>
-          <audio ref={playBreaksoundEffect} src="/music/Break.mp3"></audio>
-          <audio ref={playSessionsoundEffect} src="/music/Work.mp3"></audio>
+          <audio ref={playBreaksoundEffect} src="/music/Break.mp3" />
+          <audio ref={playSessionsoundEffect} src="/music/Work.mp3" />
           {/* <audio
             ref={playMuteSoundEffect}
             src="/music/mute_sound.ogg"
             loop={true}
           ></audio> */}
         </div>
-        {showAlert === "RESETALL" ? (
+        {showAlert === 'RESETALL' ? (
           <Alert
             setShowAlert={setShowAlert}
             confirm={resetAll}
             message={{
-              title: "Are you sure ?",
-              text: "Reset all will lose all your progress.",
+              title: 'Are you sure ?',
+              text: 'Reset all will lose all your progress.',
             }}
           />
         ) : null}
-        {showAlert === "RESET" ? (
+        {showAlert === 'RESET' ? (
           <Alert
             setShowAlert={setShowAlert}
             confirm={clearCurTime}
             message={{
-              title: "Are you sure ?",
-              text: "Your current interval will be reset.",
+              title: 'Are you sure ?',
+              text: 'Your current interval will be reset.',
             }}
           />
         ) : null}

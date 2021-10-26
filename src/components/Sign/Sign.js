@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { auth } from "../../firebaseConfig";
+import React, { useState } from 'react';
+import { auth } from '../../firebaseConfig';
+
 const Sign = ({ setUserState, SignInShow, setSignInShow, setNotification }) => {
-  const [userMail, setUserMail] = useState("");
-  const [userPassword, setUserPassword] = useState("");
+  const [userMail, setUserMail] = useState('');
+  const [userPassword, setUserPassword] = useState('');
 
   const userSubmit = (e) => {
     e.preventDefault();
@@ -10,13 +11,13 @@ const Sign = ({ setUserState, SignInShow, setSignInShow, setNotification }) => {
       auth
         .signInWithEmailAndPassword(userMail, userPassword)
         .then((userCredential) => {
-          const user = userCredential.user;
+          const { user } = userCredential;
           // console.log("---response--logn-in", user.uid);
           if (SignInShow) {
             setUserState(user.uid);
             setNotification({
-              title: "Notification",
-              content: "Logn in successfully",
+              title: 'Notification',
+              content: 'Logn in successfully',
             });
           }
         })
@@ -32,12 +33,12 @@ const Sign = ({ setUserState, SignInShow, setSignInShow, setNotification }) => {
         .createUserWithEmailAndPassword(userMail, userPassword)
         .then((userCredential) => {
           // Signed in
-          const user = userCredential.user;
+          const { user } = userCredential;
           // console.log("---response--Sign-up", user.uid);
           setUserState(user.uid);
           setNotification({
-            title: "Notification",
-            content: "Sign up successfully",
+            title: 'Notification',
+            content: 'Sign up successfully',
           });
         })
         .catch((error) => {
@@ -52,9 +53,7 @@ const Sign = ({ setUserState, SignInShow, setSignInShow, setNotification }) => {
   };
   return (
     <div className="sign-con">
-      <h3 className="sign-title">
-        {SignInShow ? "Yo! Login in here" : "hey you! Sign up now!"}
-      </h3>
+      <h3 className="sign-title">{SignInShow ? 'Yo! Login in here' : 'hey you! Sign up now!'}</h3>
       <form onSubmit={userSubmit} className="sign-form">
         <input
           className="sign-input"
@@ -76,7 +75,7 @@ const Sign = ({ setUserState, SignInShow, setSignInShow, setNotification }) => {
         />
 
         <button type="submit" className="sign-submit-btn button-style">
-          {SignInShow ? "Login in" : "Create account"}
+          {SignInShow ? 'Login in' : 'Create account'}
         </button>
         <div className="sign-switch-con">
           {SignInShow ? (

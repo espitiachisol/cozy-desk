@@ -1,4 +1,4 @@
-import { storage } from "../firebaseConfig";
+import { storage } from '../firebaseConfig';
 
 export const putStorage = function (child, put) {
   return storage.ref().child(child).put(put);

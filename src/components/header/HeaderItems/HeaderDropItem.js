@@ -1,14 +1,11 @@
-import React from "react";
+import React from 'react';
+
 const HeaderDropItem = function ({
-  setShowWindow,
-  showWindow,
-  setZIndex,
-  zIndex,
-  label,
+  setShowWindow, showWindow, setZIndex, zIndex, label,
 }) {
   const witchWindowToShow = (label) => {
     switch (label) {
-      case "Sign":
+      case 'Sign':
         setShowWindow({
           ...showWindow,
           signWindow: {
@@ -17,16 +14,16 @@ const HeaderDropItem = function ({
             y: showWindow.signWindow.y,
           },
         });
-        if (zIndex.curW !== "signWindow") {
+        if (zIndex.curW !== 'signWindow') {
           setZIndex({
             ...zIndex,
             signWindow: zIndex.cur,
             cur: zIndex.cur + 1,
-            curW: "signWindow",
+            curW: 'signWindow',
           });
         }
         return;
-      case "Tomato":
+      case 'Tomato':
         setShowWindow({
           ...showWindow,
           tomato: {
@@ -35,16 +32,16 @@ const HeaderDropItem = function ({
             y: showWindow.tomato.y,
           },
         });
-        if (zIndex.curW !== "tomato") {
+        if (zIndex.curW !== 'tomato') {
           setZIndex({
             ...zIndex,
             tomato: zIndex.cur,
             cur: zIndex.cur + 1,
-            curW: "tomato",
+            curW: 'tomato',
           });
         }
         return;
-      case "Mixtape":
+      case 'Mixtape':
         setShowWindow({
           ...showWindow,
           music: {
@@ -53,16 +50,16 @@ const HeaderDropItem = function ({
             y: showWindow.music.y,
           },
         });
-        if (zIndex.curW !== "music") {
+        if (zIndex.curW !== 'music') {
           setZIndex({
             ...zIndex,
             music: zIndex.cur,
             cur: zIndex.cur + 1,
-            curW: "music",
+            curW: 'music',
           });
         }
         return;
-      case "Todo":
+      case 'Todo':
         setShowWindow({
           ...showWindow,
           todo: {
@@ -71,17 +68,16 @@ const HeaderDropItem = function ({
             y: showWindow.todo.y,
           },
         });
-        if (zIndex.curW !== "todo") {
+        if (zIndex.curW !== 'todo') {
           setZIndex({
             ...zIndex,
             todo: zIndex.cur,
             cur: zIndex.cur + 1,
-            curW: "todo",
+            curW: 'todo',
           });
         }
-        return;
+        break;
       default:
-        return;
     }
   };
   return (

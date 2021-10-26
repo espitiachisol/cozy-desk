@@ -1,21 +1,22 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
-import useDrag from "../hooks/useDrag";
-import WindowHeader from "../shared/WindowHeader/WindowHeader";
-import "./Music.css";
-//Components
-import PlayList from "./PlayList";
-import SettingBar from "../shared/SettingBar/SettingBar";
-import SquareIconBtn from "../shared/SquareIconBtn/SquareIconBtn";
-import RetroTape from "./MusicItems/RetroTape";
-import MusicListLabels from "./MusicItems/MusicListLabels";
-import AddSongsForm from "./MusicItems/AddSongsForm";
-//Helpers
-import { defaultSongs } from "../../utils/constants/defaultSongs";
-import { getHourMinuteSecondString } from "../../utils/helpers/time";
-import { randomNum } from "../../utils/helpers/random";
-//api
-import { putStorage, getUrlStorage, deleteStorage } from "../../api/storage";
-import { getFirestore, setFirestore } from "../../api/firestore";
+import React, { useState, useCallback, useRef, useEffect } from 'react';
+import useDrag from '../hooks/useDrag';
+import WindowHeader from '../shared/WindowHeader/WindowHeader';
+import './Music.css';
+//  Components
+import PlayList from './PlayList';
+import SettingBar from '../shared/SettingBar/SettingBar';
+import SquareIconBtn from '../shared/SquareIconBtn/SquareIconBtn';
+import RetroTape from './MusicItems/RetroTape';
+import MusicListLabels from './MusicItems/MusicListLabels';
+import AddSongsForm from './MusicItems/AddSongsForm';
+// Helpers
+import { defaultSongs } from '../../utils/constants/defaultSongs';
+import { getHourMinuteSecondString } from '../../utils/helpers/time';
+import { randomNum } from '../../utils/helpers/random';
+// api
+import { putStorage, getUrlStorage, deleteStorage } from '../../api/storage';
+import { getFirestore, setFirestore } from '../../api/firestore';
+
 const Music = function ({
   setShowWindow,
   showWindow,
@@ -30,8 +31,8 @@ const Music = function ({
   const [startPosition, setStartPosition] = useState({});
   const [songIndex, setSongIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [rotate, setRotate] = useState("");
-  //如果duration設定為0,下面的運算(progress.currentTime * 1) / progress.duration} 會是NaN% 因為0/0= NaN 設定為1,0/1=0
+  const [rotate, setRotate] = useState('');
+  // 如果duration設定為0,下面的運算(progress.currentTime * 1) / progress.duration} 會是NaN% 因為0/0= NaN 設定為1,0/1=0
   const [progress, setProgress] = useState({ currentTime: 0, duration: 1 });
   const [loopOneSong, setLoopOneSong] = useState(false);
   const [volume, setVolume] = useState(1);
@@ -39,24 +40,24 @@ const Music = function ({
   const [userAddLists, setUserAddLists] = useState(false);
   const [songFromData, setSongFromData] = useState([]);
   const [songs, setSongs] = useState(defaultSongs);
-  const [currentPlaylistType, setCurrentPlaylistType] = useState("default");
+  const [currentPlaylistType, setCurrentPlaylistType] = useState('default');
   const [showLoading, setShowLoading] = useState(false);
 
   useEffect(() => {
     if (isPlaying && songs) {
       setIsPlaying(true);
-      setRotate("play");
+      setRotate('play');
       control.current.play();
     }
   }, [songIndex, isPlaying, songs]);
-  //volume被調整後設定audio音量
+  // volume被調整後設定audio音量
   useEffect(() => {
     control.current.volume = volume;
   }, [volume]);
-  //確定使用者是登入的狀態，若是登入的狀態向firestore要使用者的歌單，放入SongFromData裡
+  // 確定使用者是登入的狀態，若是登入的狀態向firestore要使用者的歌單，放入SongFromData裡
   useEffect(() => {
     if (userState) {
-      getFirestore("mixtape", userState)
+      getFirestore('mixtape', userState)
         .then((doc) => {
           if (doc.exists) {
             setSongFromData([...doc.data().mixtape]);
@@ -75,10 +76,10 @@ const Music = function ({
     };
   }, [userState, setNotification]);
 
-  //假如使用者新增新的音樂清單，再向firestore要一次新的資料，將新的資料放入SongFromData
+  // 假如使用者新增新的音樂清單，再向firestore要一次新的資料，將新的資料放入SongFromData
   useEffect(() => {
     if (userAddLists && userState) {
-      getFirestore("mixtape", userState)
+      getFirestore('mixtape', userState)
         .then((doc) => {
           if (doc.exists) {
             setSongFromData([...doc.data().mixtape]);
@@ -113,46 +114,39 @@ const Music = function ({
     defaultX: parseInt(showWindow.music.x, 10) || 20,
     defaultY: parseInt(showWindow.music.y, 10) || 0,
   });
-  //操作音樂播放
+  // 操作音樂播放
   const play = useCallback(() => {
     // control.current.load();
     setIsPlaying(true);
-    setRotate("play");
+    setRotate('play');
     control.current.play();
   }, []);
   const stop = useCallback(() => {
     setIsPlaying(false);
-    setRotate("");
+    setRotate('');
     control.current.pause();
   }, []);
   const pre = useCallback(() => {
-    songIndex === 0
-      ? setSongIndex(songs.length - 1)
-      : setSongIndex(songIndex - 1);
+    songIndex === 0 ? setSongIndex(songs.length - 1) : setSongIndex(songIndex - 1);
   }, [songIndex, songs]);
 
   const clickProgressBar = (e) => {
-    if (
-      !e.target.parentElement.classList.contains("progress-time-label") &&
-      progress.duration
-    ) {
-      let currentTime = (e.nativeEvent.offsetX / 360) * progress.duration;
+    if (!e.target.parentElement.classList.contains('progress-time-label') && progress.duration) {
+      const currentTime = (e.nativeEvent.offsetX / 360) * progress.duration;
       setProgress({
         ...progress,
-        currentTime: currentTime,
+        currentTime,
       });
       control.current.currentTime = currentTime;
     }
   };
   const next = () => {
     // FIXME:當在播放後面的音樂，刪除前面的index的話會出錯誤，目前先以?.去做處理但會有問題！
-    //當歌單只有一首歌的時候setSongIndex(0)會沒有改變所以上面的useEffect不會被觸法
+    // 當歌單只有一首歌的時候setSongIndex(0)會沒有改變所以上面的useEffect不會被觸法
     if (songs.length === 1) {
       play();
     } else {
-      songIndex === songs.length - 1
-        ? setSongIndex(0)
-        : setSongIndex(songIndex + 1);
+      songIndex === songs.length - 1 ? setSongIndex(0) : setSongIndex(songIndex + 1);
     }
   };
 
@@ -161,26 +155,26 @@ const Music = function ({
   }, [loopOneSong]);
 
   const uploadFiles = (e) => {
-    let array = [];
+    const array = [];
     e.preventDefault();
-    const files = e.target[0].files;
+    const { files } = e.target[0];
     if (files.length + songFromData.length > 10) {
       setNotification({
-        title: "Notification/The number of songs is limited to 10",
+        title: 'Notification/The number of songs is limited to 10',
         content: `You can only add "${10 - songFromData.length}" more songs. `,
       });
       fileRef.current.value = null;
     } else if (files.length > 0) {
       setShowLoading(true);
-      //多個檔案,loop 每個要上傳的檔案
+      // 多個檔案,loop 每個要上傳的檔案
       Object.entries(files).forEach(([key, value]) => {
-        //存入storage
+        // 存入storage
         if (value.size < 10000000) {
           putStorage(`${userState}/${value.name}`, value).then((snapshot) => {
-            //取得storage
+            // 取得storage
             getUrlStorage(`${userState}/${value.name}`)
               .then((url) => {
-                let imgNum = randomNum(5, 9);
+                const imgNum = randomNum(5, 9);
                 array.push({
                   id: `${userState}/${value.name}`,
                   title: value.name,
@@ -188,8 +182,8 @@ const Music = function ({
                   img: `/images/mixtape-cover-${imgNum}.png`,
                   icon: `/images/tape-icons-${imgNum}.png`,
                 });
-                //將取得的storage url 放入firestore
-                setFirestore("mixtape", userState, {
+                // 將取得的storage url 放入firestore
+                setFirestore('mixtape', userState, {
                   mixtape: [...songFromData, ...array],
                 })
                   .then(() => {
@@ -213,12 +207,12 @@ const Music = function ({
           });
         } else {
           setNotification({
-            title: "Notification/The song size is limited to 10MB",
+            title: 'Notification/The song size is limited to 10MB',
             content: `${value.name
               .slice(0, 20)
               .padEnd(
                 23,
-                "."
+                '.',
               )}, This song has exceeded the song size limit ,will not be uploaded.  `,
           });
           setShowLoading(false);
@@ -227,8 +221,8 @@ const Music = function ({
       });
     } else {
       setNotification({
-        title: "Notification",
-        content: "No files chosen! Please, choose files!",
+        title: 'Notification',
+        content: 'No files chosen! Please, choose files!',
       });
     }
   };
@@ -237,13 +231,13 @@ const Music = function ({
     try {
       await deleteStorage(id);
       let filteredArray = songFromData.filter((song) => song.id !== id);
-      await setFirestore("mixtape", userState, {
+      await setFirestore('mixtape', userState, {
         mixtape: [...filteredArray],
       });
       setUserAddLists(true);
       filteredArray = [];
     } catch (error) {
-      console.error("Error writing document: ", error);
+      console.error('Error writing document: ', error);
       setNotification({
         title: error?.code,
         content: error?.message,
@@ -252,8 +246,8 @@ const Music = function ({
   };
   // 刪除檔案時songFromData會更新，假如目前在播放的清單是user自建清單，會重新設定播放中的清單
   useEffect(() => {
-    //假如目前播放的音樂"不是"default音樂
-    if (!songs[0].id.includes("default")) {
+    // 假如目前播放的音樂"不是"default音樂
+    if (!songs[0].id.includes('default')) {
       if (songFromData.length > 0) {
         // console.log("3", songFromData);
         setSongs(songFromData);
@@ -269,12 +263,12 @@ const Music = function ({
       ref={curWindow}
       style={{ top: position.y, left: position.x, zIndex: zIndex.music }}
       onMouseDown={() => {
-        if (zIndex.curW !== "music") {
+        if (zIndex.curW !== 'music') {
           setZIndex({
             ...zIndex,
             music: zIndex.cur,
             cur: zIndex.cur + 1,
-            curW: "music",
+            curW: 'music',
           });
         }
       }}
@@ -288,45 +282,39 @@ const Music = function ({
       />
 
       <div className="tape-container-all">
-        <RetroTape
-          rotate={rotate}
-          progress={progress}
-          coverImg={songs[songIndex]}
-        />
+        <RetroTape rotate={rotate} progress={progress} coverImg={songs[songIndex]} />
         <audio
           ref={control}
           src={songs[songIndex]?.src}
           onCanPlay={(e) => {
             const { currentTime, duration } = e.target;
-            setProgress({ currentTime: currentTime, duration: duration });
+            setProgress({ currentTime, duration });
           }}
           onTimeUpdate={(e) => {
             const { currentTime, duration } = e.target;
             if (currentTime === duration) {
-              //若有單曲循環的話
+              // 若有單曲循環的話
               if (loopOneSong) {
                 control.current.load();
                 play();
               } else {
-                //沒有自動播放下一首
+                // 沒有自動播放下一首
                 next();
               }
             } else {
-              setProgress({ currentTime: currentTime, duration: duration });
+              setProgress({ currentTime, duration });
             }
           }}
-        ></audio>
+        />
         <div className="tape-play">
           <div className="tape-content">
             <div className="tape-detail">
-              <p className="song-title font-style-prata ">
-                {songs[songIndex]?.title}
-              </p>
+              <p className="song-title font-style-prata ">{songs[songIndex]?.title}</p>
             </div>
             <div className="play-icons">
               <div className="volume-slider-con">
                 <img
-                  src={`/images/icon_${volume === 0 ? "mute" : "volume"}.svg`}
+                  src={`/images/icon_${volume === 0 ? 'mute' : 'volume'}.svg`}
                   alt="icon volume"
                   className="icon-volume"
                 />
@@ -340,7 +328,7 @@ const Music = function ({
                   onChange={(e) => {
                     setVolume(parseInt(e.target.value, 10) * 0.01);
                   }}
-                ></input>
+                />
               </div>
               <SquareIconBtn
                 ClickSquareIconBtn={pre}
@@ -373,7 +361,7 @@ const Music = function ({
                 ClickSquareIconBtn={toggleLoopOneSong}
                 imageSrc="/images/icon_loop.svg"
                 imageAlt="icon loop"
-                btnClassName={`play-icon ${loopOneSong ? "action-loop" : ""}`}
+                btnClassName={`play-icon ${loopOneSong ? 'action-loop' : ''}`}
               />
             </div>
             <div className="progress-con" onClick={clickProgressBar}>
@@ -382,7 +370,7 @@ const Music = function ({
                 style={{
                   width: `${(progress.currentTime * 100) / progress.duration}%`,
                 }}
-              ></div>
+              />
               <div className="progress-time-label">
                 <p>{getHourMinuteSecondString(progress.currentTime)}</p>
                 <p>{getHourMinuteSecondString(progress.duration)}</p>
@@ -390,11 +378,7 @@ const Music = function ({
             </div>
           </div>
           <div className="music-lists-all">
-            <SettingBar
-              setMore={setMusicListsShow}
-              more={musicListsShow}
-              label={"Playlists"}
-            />
+            <SettingBar setMore={setMusicListsShow} more={musicListsShow} label="Playlists" />
 
             {musicListsShow ? (
               <MusicListLabels
@@ -411,13 +395,11 @@ const Music = function ({
               <div
                 className="music-lists"
                 style={{
-                  display: `${musicListsShow ? "flex" : "none"}`,
+                  display: `${musicListsShow ? 'flex' : 'none'}`,
                 }}
               >
                 <PlayList
-                  songs={
-                    currentPlaylistType === "user" ? songFromData : defaultSongs
-                  }
+                  songs={currentPlaylistType === 'user' ? songFromData : defaultSongs}
                   setSongs={setSongs}
                   setSongIndex={setSongIndex}
                   currentPlaylistType={currentPlaylistType}
@@ -425,7 +407,7 @@ const Music = function ({
                   userState={userState}
                 />
               </div>
-              {currentPlaylistType === "user" && musicListsShow ? (
+              {currentPlaylistType === 'user' && musicListsShow ? (
                 <AddSongsForm
                   userState={userState}
                   uploadFiles={uploadFiles}
