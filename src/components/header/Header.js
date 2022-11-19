@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import CurrentTime from './HeaderItems/CurrentTime';
+import CurrentTime from './CurrentTime';
 import HeaderDropMenu from './HeaderItems/HeaderDropMenu';
 import { auth } from '../../firebaseConfig';
 import RotateArrow from '../shared/RotateArrow/RotateArrow';
