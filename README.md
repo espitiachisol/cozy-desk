@@ -4,7 +4,6 @@ Create a cozy working environment.
 
 <img width="600" alt="cozydesk-image-first-visit" src="https://user-images.githubusercontent.com/61710519/131241139-c05d9642-813d-4632-8386-0e9069243ae8.png"></img>
 
-### Demo (https://cozydesk.space/)
 
 ### Test acoount
 - **Account:** test@gmail.com
